@@ -1,0 +1,101 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.DrinkWater" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/RoyalBlue</item>
+        <item name="colorPrimaryVariant">@color/RoyalBlue</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="homeAsUpIndicator">@color/white</item>
+        <!-- Customize your theme here. -->
+    </style>
+    <color name="backgroundColour">@color/White</color>
+    <color name="cardviewcolour">@color/White</color>
+    <color name="textColour">@color/Black</color>
+    <color name="btnColour">@color/colour</color>
+    <color name="textColourlight">#C44E4646</color>
+    <color name="Darkset">#B5A9A9A9</color>
+    <color name="textColourW_B">@color/White</color>
+    <style name="NavigationView" >
+        <item name="android:listDivider">@color/DarkGray</item>
+        <item name="android:textColorSecondary">@color/textColour</item>
+        <item name="android:textColor">@color/textColour</item>
+        <item name="android:background">@color/backgroundColour</item>
+        <item name="android:textSize">@dimen/_9sdp</item>
+    </style>
+    <style name="CircularDeterminateProgressBar">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@drawable/circle_progressbar</item>
+    </style>
+    <style name="CircularDeterminateProgressBar2">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@drawable/blue_circle_progressbar</item>
+    </style>
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="color">@android:color/white</item>
+    </style>
+    <style name="AlertDialogCustom" parent="Base.Theme.AppCompat.Light.Dialog.Alert">
+        <item name="windowFixedWidthMajor">90%</item>
+        <item name="windowFixedWidthMinor">90%</item>
+        <item name="android:textColor">@color/textColour</item>
+        <item name="android:textColorPrimary">@color/textColour</item>
+        <item name="android:background">@color/backgroundColour</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="buttonBarNeutralButtonStyle">@style/NeutralButtonStyle</item>
+    </style>
+    <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/textColour</item>
+        <item name="android:textSize">@dimen/_11sdp</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/textColour</item>
+        <item name="android:textSize">@dimen/_11sdp</item>
+    </style>
+
+    <style name="NeutralButtonStyle"
+        parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/textColour</item>
+    </style>
+    <style name="SCBSwitch" parent="Theme.AppCompat.Light">
+        <!-- active thumb & track color (30% transparency) -->
+        <item name="colorControlActivated">@color/SteelBlue</item>
+
+        <!-- inactive thumb color -->
+        <item name="colorSwitchThumbNormal">@color/White
+        </item>
+
+        <!-- inactive track color (30% transparency) -->
+        <item name="android:colorForeground">@color/DarkGray</item>
+    </style>
+    <style name="SBSwitch" parent="Theme.AppCompat.Light">
+        <!-- active thumb & track color (30% transparency) -->
+        <item name="colorControlActivated">@color/White</item>
+
+        <!-- inactive thumb color -->
+        <item name="colorSwitchThumbNormal">@color/LightSlateGray</item>
+
+        <!-- inactive track color (30% transparency) -->
+        <item name="android:colorForeground">@color/DarkGray</item>
+
+    </style>
+    <style name="mySpinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
+        <item name="android:textColor">@color/White</item>
+    </style>
+    <style name="AppTheme.Picker" parent="Theme.AppCompat.Light.NoActionBar" >
+        <item name="android:textColorPrimary">@color/White</item>
+        <item name="colorControlNormal">@color/White</item>
+    </style>
+    <style name="AppTheme_.Picker" parent="Theme.AppCompat.Light.NoActionBar" >
+        <item name="android:textColorPrimary">@color/textColour</item>
+        <item name="colorControlNormal">@color/textColour</item>
+    </style>
+</resources>

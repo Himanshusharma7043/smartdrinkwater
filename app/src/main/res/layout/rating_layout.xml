@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:background="@color/backgroundColour"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@color/backgroundColour"
+        android:layout_margin="@dimen/_30sdp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/textColour"
+            android:text="Rate Us"
+            android:textSize="@dimen/_13sdp"
+            android:layout_marginBottom="@dimen/_13sdp"/>
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            />
+
+<!--        <androidx.appcompat.widget.AppCompatButton-->
+<!--            android:id="@+id/rating_button"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="submit"-->
+<!--            android:textColor="@color/White"-->
+<!--            android:backgroundTint="@color/Gold"/>-->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/rating_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_7sdp"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:fontFamily="@font/opensans_bold"
+            android:text="submit"
+            android:padding="@dimen/_10sdp"
+            android:background="@drawable/rating_btn"
+            android:textSize="@dimen/_13sdp"/>
+    </LinearLayout>
+
+</LinearLayout>

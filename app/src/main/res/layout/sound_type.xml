@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@color/backgroundColour"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:background="@color/backgroundColour"
+        android:layout_height="wrap_content">
+        <RadioGroup
+            android:id="@+id/soundType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/backgroundColour"
+            android:layout_margin="@dimen/_16sdp"
+            android:orientation="vertical" >
+
+            <RadioButton
+                android:id="@+id/waterSound"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_2sdp"
+                android:textAlignment="textStart"
+                android:layout_gravity="start"
+                android:text="@string/water"
+                android:buttonTint="@color/textColour"
+                android:textColor="@color/textColour"
+                android:textSize="@dimen/_16sdp" />
+            <RadioButton
+                android:id="@+id/dewDropSound"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_2sdp"
+                android:textAlignment="textStart"
+                android:layout_gravity="start"
+                android:text="@string/dew_drop"
+                android:buttonTint="@color/textColour"
+                android:textColor="@color/textColour"
+                android:textSize="@dimen/_16sdp" />
+            <RadioButton
+                android:id="@+id/bubblesSound"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_2sdp"
+                android:textAlignment="textStart"
+                android:layout_gravity="start"
+                android:text="@string/bubbles"
+                android:buttonTint="@color/textColour"
+                android:textColor="@color/textColour"
+                android:textSize="@dimen/_16sdp" />
+            <RadioButton
+                android:id="@+id/systemDefault"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_2sdp"
+                android:textAlignment="textStart"
+                android:layout_gravity="start"
+                android:text="@string/system_default"
+                android:buttonTint="@color/textColour"
+                android:textColor="@color/textColour"
+                android:textSize="@dimen/_16sdp" />
+
+        </RadioGroup>
+    </LinearLayout>
+</LinearLayout>

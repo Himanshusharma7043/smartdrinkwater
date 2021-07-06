@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "276227502354",
+    "project_id": "smart-drink-reminder",
+    "storage_bucket": "smart-drink-reminder.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:276227502354:android:e213768ffcb36e8a0e43cb",
+        "android_client_info": {
+          "package_name": "com.smart.drink_reminder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "276227502354-gsnisfjs379brdig5gv3o4j0end1l6pj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.smart.drink_reminder",
+            "certificate_hash": "da97c03b6d0e0bd2adb7c38ef6afdd4f819a7394"
+          }
+        },
+        {
+          "client_id": "276227502354-elplei5kp5141ffe481b2sh6qrc86fva.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0FIe5FIicabVxRc39OpgeVhmYCH_QBr4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "276227502354-elplei5kp5141ffe481b2sh6qrc86fva.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

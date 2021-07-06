@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_7sdp"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/_7sdp"
+        android:background="@color/backgroundColour"
+        android:orientation="vertical">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/DarkGray"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_height="wrap_content"
+            android:text="@string/you_can_adjust_your_daily_goal_manually"
+            android:layout_margin="@dimen/_7sdp"
+            android:textSize="@dimen/_11sdp"
+            android:textColor="@color/textColour"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/daily_goal_take"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="5000"
+                android:textColor="@color/BlueViolet"
+                android:gravity="center"
+                />
+
+            <TextView
+                android:id="@+id/daily_goal_type_alert"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ml_type"
+                android:textSize="@dimen/_15sdp"
+                android:textColor="@color/textColour"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_marginRight="@dimen/_15sdp"
+            android:layout_marginLeft="@dimen/_15sdp"
+            android:gravity="center_horizontal"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/dailyGoalPCimg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/gym"
+                    android:layout_margin="@dimen/_7sdp"
+                    app:tint="@color/textColourlight" />
+
+
+                <TextView
+                    android:id="@+id/dailyGoalPC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/very_active_621_ml"
+                    android:layout_margin="@dimen/_7sdp"
+                    android:textSize="@dimen/_11sdp"
+                    android:textColor="@color/textColourlight"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/dailyGoalWeatherimg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/weather"
+                    android:layout_margin="@dimen/_7sdp"
+                    app:tint="@color/textColourlight" />
+
+                <TextView
+                    android:id="@+id/dailyGoalWeather"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/normal_0_ml"
+                    android:layout_margin="@dimen/_7sdp"
+                    android:textSize="@dimen/_11sdp"
+                    android:textColor="@color/textColourlight"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/drop"
+                    app:tint="@color/textColourlight"
+                    android:layout_margin="@dimen/_7sdp"/>
+
+
+                <TextView
+                    android:id="@+id/daily_goalTotal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/total_sum_5621_ml"
+                    android:layout_margin="@dimen/_7sdp"
+                    android:textSize="@dimen/_11sdp"
+                    android:textColor="@color/textColourlight"/>
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

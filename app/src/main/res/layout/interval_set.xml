@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:gravity="center_horizontal"
+    android:background="@color/backgroundColour"
+    android:layout_height="wrap_content">
+
+    <com.shawnlin.numberpicker.NumberPicker
+        android:id="@+id/hrPicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        app:np_textColor="@color/textColour"
+        app:np_selectedTextColor="@color/textColour"
+        app:np_dividerColor="@color/textColour"
+        app:np_textSize="@dimen/_10sdp"
+        app:np_selectedTextSize="@dimen/_12sdp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_7sdp"
+        android:layout_marginRight="@dimen/_7sdp"
+        android:text=":"
+        android:textColor="@color/textColour"
+        android:textSize="@dimen/_16sdp"
+        android:layout_gravity="center_vertical"/>
+
+    <com.shawnlin.numberpicker.NumberPicker
+        android:id="@+id/mPicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        app:np_textColor="@color/textColour"
+        app:np_selectedTextColor="@color/textColour"
+        app:np_dividerColor="@color/textColour"
+        app:np_textSize="@dimen/_10sdp"
+        app:np_selectedTextSize="@dimen/_12sdp"
+        />
+</LinearLayout>

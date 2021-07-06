@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <group android:id="@+id/grp1" >
+        <item
+            android:id="@+id/reminder"
+            android:icon="@drawable/bell"
+            android:title="@string/reminder" />
+        <item
+            android:id="@+id/statistics"
+            android:icon="@drawable/statistics"
+            android:title="@string/statistics" />
+
+        <item
+            android:id="@+id/achievement"
+            android:icon="@drawable/trophy"
+            android:title="@string/achievement" />
+    </group>
+    <group android:id="@+id/grp2">
+        <item
+            android:id="@+id/rate"
+            android:icon="@drawable/rate_vector"
+            android:title="@string/rate" />
+
+        <item
+            android:id="@+id/contactus"
+            android:icon="@drawable/contact_us"
+            android:title="@string/contact_us" />
+        <item
+            android:id="@+id/share"
+            android:icon="@drawable/share_vector"
+            android:title="@string/share" />
+    </group>
+    <group android:id="@+id/grp3">
+        <item
+            android:id="@+id/backup"
+            android:icon="@drawable/backup_vector"
+            android:title="@string/backup_and_restore" />
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/setting_vector"
+            android:title="@string/settings" />
+    </group>
+    <group android:id="@+id/grp4">
+        <item
+            android:id="@+id/termAndCondition"
+            android:icon="@drawable/terms"
+            android:title="@string/termcondition" />
+        <item
+            android:id="@+id/privacyPolicyBTN"
+            android:icon="@drawable/policy"
+            android:title="@string/privacy" />
+        <item
+            android:id="@+id/space"
+            android:title=" "
+            />
+    </group>
+</menu>

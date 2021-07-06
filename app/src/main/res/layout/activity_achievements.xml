@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColour"
+    tools:context=".Achievements">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/achievement_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#3498DB"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/opensans_light"
+            android:text="@string/achievement"
+            android:textColor="@color/White"
+            android:textSize="@dimen/_15sdp"
+            android:textStyle="bold" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/backgroundColour"
+        app:layout_constraintTop_toBottomOf="@+id/achievement_toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_6sdp"
+                app:cardBackgroundColor="@color/cardviewcolour"
+                app:cardElevation="@dimen/_7sdp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_10sdp"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/opensans_semibold"
+                        android:text="@string/current_level"
+                        android:textColor="@color/textColour"
+                        android:textSize="@dimen/_10sdp"
+                        android:textStyle="bold" />
+
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="-30dip"
+                        android:layout_marginBottom="-30dip">
+
+                        <ProgressBar
+                            android:id="@+id/achievementProgressBar"
+                            style="@style/CircularDeterminateProgressBar2"
+                            android:layout_width="@dimen/_275sdp"
+                            android:layout_height="@dimen/_265sdp"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:progress="20" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="@+id/achievementProgressBar"
+                            app:layout_constraintEnd_toEndOf="@+id/achievementProgressBar"
+                            app:layout_constraintStart_toStartOf="@+id/achievementProgressBar"
+                            app:layout_constraintTop_toTopOf="@+id/achievementProgressBar">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:layout_width="@dimen/_110sdp"
+                                android:layout_height="@dimen/_110sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/water" />
+
+                            <TextView
+                                android:id="@+id/textView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/opensans_bold"
+                                android:text="Water Student"
+                                android:textColor="@color/textColour"
+                                android:textSize="@dimen/_10sdp"
+                                android:textStyle="bold" />
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_1sdp"
+                                android:layout_marginLeft="@dimen/_8sdp"
+                                android:layout_marginTop="@dimen/_3sdp"
+                                android:layout_marginRight="@dimen/_8sdp"
+                                android:background="@color/textColourlight" />
+
+                            <LinearLayout
+                                android:id="@+id/levelValues"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_4sdp"
+                                android:background="?android:attr/selectableItemBackground"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:orientation="horizontal"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="parent">
+
+                                <TextView
+                                    android:id="@+id/goalAchieve"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/opensans_semibold"
+                                    android:text="200"
+                                    android:textColor="@color/textColour"
+                                    android:textSize="@dimen/_10sdp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/opensans_semibold"
+                                    android:text="@string/slash"
+                                    android:textColor="@color/textColour"
+                                    android:textSize="@dimen/_10sdp" />
+
+                                <TextView
+                                    android:id="@+id/achievementTotalGoal"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/opensans_semibold"
+                                    android:text="30000ml"
+                                    android:textColor="@color/textColour"
+                                    android:textSize="@dimen/_10sdp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/appadscd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_6sdp"
+                app:cardBackgroundColor="@color/cardviewcolour"
+                app:cardElevation="@dimen/_7sdp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/adsll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_4sdp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/waterChoise">
+
+                    <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/madView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="7dp"
+                        android:layout_marginBottom="5dp"
+                        ads:adSize="BANNER"
+                        ads:adUnitId="@string/drink_banner" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_6sdp"
+                app:cardBackgroundColor="@color/cardviewcolour"
+                app:cardElevation="@dimen/_7sdp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_10sdp"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/opensans_semibold"
+                        android:text="@string/achievement"
+                        android:textColor="@color/textColour"
+                        android:textSize="@dimen/_13sdp"
+                        android:textStyle="bold" />
+
+                    <GridLayout
+                        android:id="@+id/gridLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:alignmentMode="alignMargins"
+                        android:columnCount="3"
+                        android:columnOrderPreserved="false"
+                        android:padding="14dp"
+                        android:rowCount="3">
+
+
+                        <LinearLayout
+                            android:id="@+id/strike"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_10sdp"
+                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/strikeimg"
+                                android:layout_width="@dimen/_45sdp"
+                                android:layout_height="@dimen/_45sdp"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_margin="@dimen/_4sdp"
+                                android:alpha="0.3"
+                                android:src="@drawable/mountainflag" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/opensans_light"
+                                android:text="1st Strike"
+                                android:textColor="@color/textColour"
+                                android:textSize="@dimen/_10sdp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/cupmaker"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_10sdp"
+                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            tools:targetApi="lollipop">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/cupMakerIMG"
+                                android:layout_width="@dimen/_45sdp"
+                                android:layout_height="@dimen/_45sdp"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_margin="@dimen/_4sdp"
+                                android:alpha="0.3"
+                                android:src="@drawable/cupmaker" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/opensans_light"
+                                android:text="Cup maker"
+                                android:textColor="@color/textColour"
+                                android:textSize="@dimen/_10sdp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/sharell"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_10sdp"
+                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            tools:targetApi="lollipop">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/shareIMG"
+                                android:layout_width="@dimen/_45sdp"
+                                android:layout_height="@dimen/_45sdp"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_margin="@dimen/_4sdp"
+                                android:alpha="0.3"
+                                android:src="@drawable/share" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/opensans_light"
+                                android:text="Share"
+                                android:textColor="@color/textColour"
+                                android:textSize="@dimen/_10sdp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/highfive"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_10sdp"
+
+                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            tools:targetApi="lollipop">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/highFiveIMG"
+                                android:layout_width="@dimen/_45sdp"
+                                android:layout_height="@dimen/_45sdp"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_margin="@dimen/_4sdp"
+                                android:alpha="0.3"
+                                android:src="@drawable/highfive" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/opensans_light"
+                                android:text="High five"
+                                android:textColor="@color/textColour"
+                                android:textSize="@dimen/_10sdp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/monthlyboss"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_10sdp"
+                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            tools:targetApi="lollipop">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/monthlyBossIMG"
+                                android:layout_width="@dimen/_45sdp"
+                                android:layout_height="@dimen/_45sdp"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_margin="@dimen/_4sdp"
+                                android:alpha="0.3"
+                                android:src="@drawable/monthlyboss" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/opensans_light"
+                                android:text="Monthly boss"
+                                android:textColor="@color/textColour"
+                                android:textSize="@dimen/_10sdp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/devotion"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_10sdp"
+                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            tools:targetApi="lollipop">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/devotionIMG"
+                                android:layout_width="@dimen/_45sdp"
+                                android:layout_height="@dimen/_45sdp"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_margin="@dimen/_4sdp"
+                                android:alpha="0.3"
+                                android:src="@drawable/devotion" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/opensans_light"
+                                android:text="Devotion"
+                                android:textColor="@color/textColour"
+                                android:textSize="@dimen/_10sdp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/chainmaster"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_10sdp"
+                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            tools:targetApi="lollipop">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/chainMasterIMG"
+                                android:layout_width="@dimen/_45sdp"
+                                android:layout_height="@dimen/_45sdp"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_margin="@dimen/_4sdp"
+                                android:alpha="0.3"
+                                android:src="@drawable/chainmaster" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/opensans_light"
+                                android:text="Chain master"
+                                android:textColor="@color/textColour"
+                                android:textSize="@dimen/_10sdp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/waterlord"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_10sdp"
+                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            tools:targetApi="lollipop">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/waterLordIMG"
+                                android:layout_width="@dimen/_45sdp"
+                                android:layout_height="@dimen/_45sdp"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_margin="@dimen/_4sdp"
+                                android:alpha="0.3"
+                                android:src="@drawable/waterlord" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/opensans_light"
+                                android:text="Water lord"
+                                android:textColor="@color/textColour"
+                                android:textSize="@dimen/_10sdp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/aquahero"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_row="0"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_10sdp"
+                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            tools:targetApi="lollipop">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/aquaHeroIMG"
+                                android:layout_width="@dimen/_45sdp"
+                                android:layout_height="@dimen/_45sdp"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_margin="@dimen/_4sdp"
+                                android:alpha="0.3"
+                                android:src="@drawable/aquahero" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/opensans_light"
+                                android:text="Aqua hero"
+                                android:textColor="@color/textColour"
+                                android:textSize="@dimen/_10sdp" />
+                        </LinearLayout>
+
+
+                    </GridLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_40sdp"
+                android:text="" />
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
