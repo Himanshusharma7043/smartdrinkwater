@@ -10,31 +10,7 @@
         android:layout_margin="@dimen/_16sdp"
         android:orientation="vertical">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/opensans_light"
-                android:text="@string/set_as_default"
-                android:textColor="@color/textColour"
-                android:textSize="@dimen/_11sdp"
-                android:layout_margin="@dimen/_7sdp"
-                android:textStyle="bold"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                />
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/physicalSwtich"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -67,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/opensans_light"
-                android:text="@string/_651_ml"
+                android:text="+650 ml"
                 android:textColor="@color/textColourlight"
                 android:textSize="@dimen/_11sdp"
                 android:textStyle="bold"
@@ -98,7 +74,7 @@
                 android:id="@+id/moderate_active1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/moderate_active"
+                android:text="@string/medium_active"
                 android:layout_margin="@dimen/_7sdp"
                 android:textSize="@dimen/_11sdp"
                 android:textColor="@color/textColourlight"
@@ -110,7 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/opensans_light"
-                android:text="@string/_444_ml"
+                android:text="+450 ml"
                 android:textColor="@color/textColourlight"
                 android:textSize="@dimen/_11sdp"
                 android:textStyle="bold"
@@ -140,7 +116,7 @@
                 android:id="@+id/lightlyactive1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/lightly_active"
+                android:text="@string/little_active"
                 android:layout_margin="@dimen/_7sdp"
                 android:textSize="@dimen/_11sdp"
                 android:textColor="@color/textColourlight"
@@ -152,7 +128,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/opensans_light"
-                android:text="@string/_207_ml"
+                android:text="+220 ml"
                 android:textColor="@color/textColourlight"
                 android:textSize="@dimen/_11sdp"
                 android:textStyle="bold"
@@ -182,7 +158,7 @@
                 android:id="@+id/sedentary1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/sedentary"
+                android:text="@string/not_active"
                 android:layout_margin="@dimen/_7sdp"
                 android:textSize="@dimen/_11sdp"
                 android:textColor="@color/textColourlight"

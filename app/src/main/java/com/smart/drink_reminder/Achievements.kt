@@ -113,8 +113,7 @@ class Achievements : AppCompatActivity(), View.OnClickListener {
         totalGoalTEXT.text=mPrefs.getInt("achievementTotalGoal",5000).toString()
         Handler().postDelayed({
             appadscd.visibility = View.VISIBLE
-        }, 10000)
-
+        }, 3000)
         ObjectAnimator.ofInt(progressbar, "progress", mPrefs.getInt("achievementPB",0))
             .setDuration(500)
             .start()
@@ -162,39 +161,6 @@ class Achievements : AppCompatActivity(), View.OnClickListener {
 
     }
     @SuppressLint("SimpleDateFormat")
-    private fun updateAchievementPB() {
-        var totalLog = 0
-        var goalTotal=0
-        DB = DatabaseHandler(this)
-        val calendar = Calendar.getInstance()
-        val nextDate = Calendar.getInstance()
-        val weekCal = Calendar.getInstance()
-        weekCal.timeInMillis = mPrefs.getLong("startedDate", calendar.timeInMillis)
-        for (i in 0..11) {
-            weekCal.set(Calendar.DAY_OF_MONTH, 1).toString()
-            val num = weekCal.getActualMaximum(Calendar.DAY_OF_MONTH)
-
-            for (j in 1..num) {
-                calendar.time = weekCal.time
-                if (DB.checkIfRecordExist(calendar.timeInMillis)) {
-                    val getOldRecord = DB.getonevalue(calendar.timeInMillis)
-                    val getLogval = convertStringToArray(getOldRecord.logvalue!!)
-                    goalTotal+= getOldRecord.dailygoal!!
-                    for (k in 0 until getLogval.size) {
-                        totalLog += getLogval[k].replace("[\\D]".toRegex(), "").toInt()
-                    }
-                }
-                weekCal.add(Calendar.DATE, 1)
-            }
-        }
-        val goalPercent: Float = ((totalLog * 100) / 30000).toFloat()
-        Log.e("TAG", "goalPercent: $goalPercent" )
-        Log.e("TAG", "totalLog: $totalLog" )
-//        if (progrvalue <= 100) {
-//            progrvalue += addpercent
-//            updateProgressBar(num)
-//        }
-    }
 
     fun convertStringToArray(str: String): ArrayList<String> {
         val strSeparator = ","

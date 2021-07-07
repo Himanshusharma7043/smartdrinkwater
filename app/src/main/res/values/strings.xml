@@ -1,8 +1,16 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="google_drive_key"></string>
+    //testing Ads ID
+    <string name="drink_AdsAPPID">ca-app-pub-3940256099942544~3347511713</string>
     <string name="drink_banner">ca-app-pub-3940256099942544/6300978111</string>
     <string name="drink_interstitial">ca-app-pub-3940256099942544/1033173712</string>
+    //Release Ads ID
+    <!--    <string name="drink_AdsAPPID">ca-app-pub-3940256099942544~3347511713</string>-->
+    <!--    <string name="drink_banner">ca-app-pub-3940256099942544/6300978111</string>-->
+    <!--    <string name="drink_interstitial">ca-app-pub-3940256099942544/1033173712</string>-->
+
     <string name="app_name">Smart Drink Reminder</string>
+    <string name="sdp">SmartDrinkReminder</string>
     <string name="stay_healthy">STAY HEALTHY</string>
     <string name="start">Hello blank fragment</string>
     <string name="close">Hello blank fragment</string>
@@ -32,17 +40,17 @@
     <string name="statistics">Statistics</string>
     <string name="reminder">Reminder</string>
     <string name="today_s_log">Today\'s Log</string>
-    <string name="units">Units</string>
+    <string name="units">Water Units</string>
     <string name="current_in_use">Current in use </string>
     <string name="last_set_weight">Last set weight </string>
-    <string name="weight">Weight</string>
-    <string name="languages">Languages</string>
+    <string name="weight">Your Weight</string>
+    <string name="languages">App langauge</string>
     <string name="laguage_prefreneces">Laguage prefreneces</string>
-    <string name="themes">Themes</string>
+    <string name="themes">App themes</string>
     <string name="set_up_your_theme">Set up your theme</string>
     <string name="add_or_remove_cups">Add or remove cups</string>
     <string name="set_daily_goal_manually">Set daily goal manually</string>
-    <string name="daily_goal">Daily goal</string>
+    <string name="daily_goal">Daily Target</string>
     <string name="you_can_adjust_your_daily_goal_manually">You can adjust your daily goal manually:</string>
     <string name="ml_type">ml</string>
     <string name="very_active_621_ml">Very active +621 ml</string>
@@ -62,10 +70,10 @@
     <string name="unit_info">Choose between metric and imperial unit for water logging:</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
-    <string name="rate">Rate</string>
+    <string name="rate">Rate us</string>
     <string name="help">Help</string>
     <string name="contact_us">Contact us</string>
-    <string name="share">Share</string>
+    <string name="share">Share us</string>
     <string name="reminder_interval">Reminder interval</string>
     <string name="further_reminder">Further reminder</string>
     <string name="manage_notification">Manage notification</string>
@@ -127,8 +135,14 @@
     <string name="today_s_drinks">Today\'s drinks:</string>
 
     <string name="add_new_cups">Add new cups</string>
-    <string name="termcondition"><![CDATA[Term & Conditions]]></string>
+    <string name="termcondition">Term and Conditions</string>
     <string name="privacy">Privacy Policy</string>
+    <string name="home">Home</string>
+    <string name="smartreminder">Smart Reminder</string>
+    <string name="statesreport">States Report</string>
+    <string name="medium_active">Medium active</string>
+    <string name="little_active">Little active</string>
+    <string name="not_active">Not active</string>
     <dimen name="selected_text_size">40dp</dimen>
     <dimen name="text_size">25dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>

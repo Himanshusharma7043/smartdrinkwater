@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+    //testing Ads ID
+    <string name="drink_AdsAPPID">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="drink_banner">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="drink_interstitial">ca-app-pub-3940256099942544/1033173712</string>
+    //Release Ads ID
+<!--    <string name="drink_AdsAPPID">ca-app-pub-3940256099942544~3347511713</string>-->
+<!--    <string name="drink_banner">ca-app-pub-3940256099942544/6300978111</string>-->
+<!--    <string name="drink_interstitial">ca-app-pub-3940256099942544/1033173712</string>-->
+
+
+    <string name="sdp">SmartDrinkReminder</string>
     <string name="app_name" >Smart Drink Reminder</string>
     <string name="google_drive_key"></string>
     <string name="stay_healthy" >STAY HEALTHY</string>
-    <string name="drink_banner">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="drink_interstitial">ca-app-pub-3940256099942544/1033173712</string>
     <string name="start" >Hello blank fragment</string>
     <string name="close">Hello blank fragment</string>
     <string name="level">Level</string>
@@ -32,17 +41,17 @@
     <string name="statistics">આંકડા</string>
     <string name="reminder">રીમાઇન્ડર</string>
     <string name="today_s_log">આજ નો લોગ</string>
-    <string name="units">માપવા</string>
+    <string name="units">Water Units</string>
     <string name="current_in_use">હાલમાં ઉપયોગમાં છે</string>
     <string name="last_set_weight">અંતિમ સેટ વજન</string>
-    <string name="weight">વજન</string>
-    <string name="languages">ભાષા</string>
+    <string name="weight">Your Weight</string>
+    <string name="languages">App langauge</string>
     <string name="laguage_prefreneces">ભાષા પસંદગીઓ</string>
-    <string name="themes">થીમ</string>
+    <string name="themes">App themes</string>
     <string name="set_up_your_theme">તમારી થીમ સેટ કરો</string>
     <string name="add_or_remove_cups">કપ ઉમેરો અથવા દૂર કરો</string>
     <string name="set_daily_goal_manually">રોજિંદા લક્ષ્યો તમારા પોતાના પર સેટ કરો</string>
-    <string name="daily_goal">દૈનિક ધ્યેય</string>
+    <string name="daily_goal">Daily Target</string>
     <string name="you_can_adjust_your_daily_goal_manually">તમે તમારા દૈનિક લક્ષ્યને મેન્યુઅલી ગોઠવી શકો છો:</string>
     <string name="ml_type">ml</string>
     <string name="very_active_621_ml">ખૂબ જ સક્રિય +621 ml</string>
@@ -58,10 +67,10 @@
     <string name="no_found">કોઈ જવાબ પસંદ કરવામાં આવ્યો નથી</string>
     <string name="ok">બરાબર</string>
     <string name="cancel">रद्द करना</string>
-    <string name="rate">રેટિંગ</string>
+    <string name="rate">Rate us</string>
     <string name="help">સહાય કરો</string>
-    <string name="contact_us">અમારો સંપર્ક કરો</string>
-    <string name="share">શેર કરો</string>
+    <string name="contact_us">Contact us</string>
+    <string name="share">Share us</string>
     <string name="reminder_interval">Reminder interval</string>
     <string name="further_reminder">Further reminder</string>
     <string name="manage_notification">Manage notification</string>
@@ -111,8 +120,12 @@
     <string name="task">Task</string>
     <string name="today_s_drinks">Today\'s drinks:</string>
     <string name="add_new_cups">Add new cups</string>
-    <string name="termcondition"><![CDATA[Term & Conditions]]></string>
+    <string name="termcondition">Term and Conditions</string>
     <string name="privacy">Privacy Policy</string>
+    <string name="smartreminder">Smart Reminder</string>
+    <string name="medium_active">Medium active</string>
+    <string name="little_active">Little active</string>
+    <string name="not_active">Not active</string>
 
 
     <dimen name="selected_text_size">40dp</dimen>

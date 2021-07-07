@@ -11,34 +11,6 @@
         android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_7sdp"
-                android:fontFamily="@font/opensans_light"
-                android:text="@string/set_as_default"
-                android:textColor="@color/textColour"
-                android:textSize="@dimen/_11sdp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/weatherSwtich"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/hotCL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -59,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_7sdp"
-                android:text="@string/hot"
+                android:text="Summer"
                 android:textColor="@color/textColourlight"
                 android:textSize="@dimen/_11sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -71,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/opensans_light"
-                android:text="@string/_532_ml"
+                android:text="+530 ml"
                 android:textColor="@color/textColourlight"
                 android:textSize="@dimen/_11sdp"
                 android:textStyle="bold"
@@ -101,7 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_7sdp"
-                android:text="@string/warm"
+                android:text="Spring"
                 android:textColor="@color/textColourlight"
                 android:textSize="@dimen/_11sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -113,7 +85,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/opensans_light"
-                android:text="@string/_325_ml"
+                android:text="+325 ml"
                 android:textColor="@color/textColourlight"
                 android:textSize="@dimen/_11sdp"
                 android:textStyle="bold"
@@ -189,7 +161,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_7sdp"
-                android:text="@string/cold"
+                android:text="Winter"
                 android:textColor="@color/textColourlight"
                 android:textSize="@dimen/_11sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -201,7 +173,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/opensans_light"
-                android:text="@string/_207_ml"
+                android:text="+210 ml"
                 android:textColor="@color/textColourlight"
                 android:textSize="@dimen/_11sdp"
                 android:textStyle="bold"

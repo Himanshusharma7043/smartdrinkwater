@@ -36,9 +36,10 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:background="@color/backgroundColour"
-        app:layout_constraintTop_toBottomOf="@+id/reminder_toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/reminder_toolbar"
+        app:layout_constraintBottom_toBottomOf="parent">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -46,253 +47,6 @@
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/reminder_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:layout_marginLeft="@dimen/_6sdp"
-                android:layout_marginRight="@dimen/_6sdp"
-                app:cardElevation="@dimen/_4sdp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/cardviewcolour"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_margin="20dp"
-                        android:orientation="vertical"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <TextView
-                            android:id="@+id/reminder_wakeupText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/textColour"
-                            android:fontFamily="@font/opensans_semibold"
-                            android:text="@string/wake_up"
-                            android:textSize="@dimen/_15sdp" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/reminder_setWakeup"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:fontFamily="@font/opensans_light"
-                                android:text="@string/wakeuptime"
-                                android:textColor="@color/SteelBlue"
-                                android:textSize="@dimen/_13sdp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/_10sdp"
-                                android:layout_marginRight="@dimen/_10sdp"
-                                android:text="-"
-                                android:textColor="@color/textColourlight"
-                                android:textSize="@dimen/_13sdp" />
-
-                            <TextView
-                                android:id="@+id/reminder_setSleep"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:fontFamily="@font/opensans_light"
-                                android:text="@string/sleeptimepicker"
-                                android:textColor="@color/SteelBlue"
-                                android:textSize="@dimen/_14sdp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/reminder_interval"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_6sdp"
-                app:cardElevation="@dimen/_4sdp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/cardviewcolour"
-                    android:orientation="vertical">
-
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_margin="20dp"
-                        android:orientation="vertical"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <TextView
-                            android:id="@+id/reminder_intervalText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/opensans_semibold"
-                            android:text="@string/reminder_interval"
-                            android:textColor="@color/textColour"
-                            android:textSize="@dimen/_15sdp"
-                            />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/everyText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/opensans_light"
-                                android:text="@string/every"
-                                android:textColor="@color/textColour"
-                                android:textSize="@dimen/_13sdp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/reminder_intervalSet"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
-                                android:layout_marginRight="15dp"
-                                android:text="90"
-                                android:textColor="@color/SteelBlue"
-                                android:textSize="@dimen/_14sdp" />
-
-                            <TextView
-                                android:id="@+id/minText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/opensans_light"
-                                android:text="@string/minutes"
-                                android:textColor="@color/textColour"
-                                android:textSize="@dimen/_13sdp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-
-                    </LinearLayout>
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-            <androidx.cardview.widget.CardView
-                android:id="@+id/appadscd"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:visibility="gone"
-                android:layout_marginBottom="5dp"
-                android:foreground="?android:attr/selectableItemBackground">
-
-                <LinearLayout
-                    android:id="@+id/adsll"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-
-                    app:layout_constraintTop_toBottomOf="@+id/waterChoise">
-                    <com.google.android.gms.ads.AdView
-                        xmlns:ads="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/madView"
-                        android:layout_marginTop="7dp"
-                        android:layout_marginBottom="5dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_alignParentBottom="true"
-                        ads:adSize="BANNER"
-                        ads:adUnitId="@string/drink_banner"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-            <androidx.cardview.widget.CardView
-                android:id="@+id/reminder_further"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_6sdp"
-                app:cardElevation="@dimen/_4sdp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/cardviewcolour"
-                    android:orientation="vertical">
-
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_margin="@dimen/_13sdp"
-                        android:orientation="vertical"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <TextView
-                            android:id="@+id/reminder_furtherText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/opensans_semibold"
-                            android:text="@string/further_reminder"
-                            android:textColor="@color/textColour"
-                            android:textSize="@dimen/_15sdp"
-                             />
-
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/_7sdp">
-
-                            <TextView
-                                android:id="@+id/furtherText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentLeft="true"
-                                android:layout_alignParentTop="true"
-                                android:fontFamily="@font/opensans_light"
-                                android:text="@string/Stillremindwhen"
-                                android:textColor="@color/textColour"
-                                android:textSize="@dimen/_13sdp"
-                                android:textStyle="bold" />
-
-                            <androidx.appcompat.widget.SwitchCompat
-
-                                android:id="@+id/reminder_furtherSwitch"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:checked="true"
-                                android:theme="@style/SCBSwitch"
-                                android:layout_alignParentRight="true"
-                                android:layout_alignParentEnd="true" />
-                        </RelativeLayout>
-
-
-                    </LinearLayout>
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
             <androidx.cardview.widget.CardView
                 android:id="@+id/reminder_notification"
                 android:layout_width="match_parent"
@@ -445,7 +199,186 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
             <androidx.cardview.widget.CardView
-                android:id="@+id/reminder_reliability"
+                android:id="@+id/appadscd"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:visibility="gone"
+                android:layout_marginBottom="5dp"
+                android:foreground="?android:attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:id="@+id/adsll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/waterChoise">
+                    <com.google.android.gms.ads.AdView
+                        xmlns:ads="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/madView"
+                        android:layout_marginTop="7dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_alignParentBottom="true"
+                        ads:adSize="BANNER"
+                        ads:adUnitId="@string/drink_banner"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/reminder_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginLeft="@dimen/_6sdp"
+                android:layout_marginRight="@dimen/_6sdp"
+                app:cardElevation="@dimen/_4sdp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/cardviewcolour"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="20dp"
+                        android:orientation="vertical"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/reminder_wakeupText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/textColour"
+                            android:fontFamily="@font/opensans_semibold"
+                            android:text="@string/wake_up"
+                            android:textSize="@dimen/_15sdp" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/reminder_setWakeup"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:fontFamily="@font/opensans_light"
+                                android:text="@string/wakeuptime"
+                                android:textColor="@color/SteelBlue"
+                                android:textSize="@dimen/_13sdp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:layout_marginRight="@dimen/_10sdp"
+                                android:text="-"
+                                android:textColor="@color/textColourlight"
+                                android:textSize="@dimen/_13sdp" />
+
+                            <TextView
+                                android:id="@+id/reminder_setSleep"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:fontFamily="@font/opensans_light"
+                                android:text="@string/sleeptimepicker"
+                                android:textColor="@color/SteelBlue"
+                                android:textSize="@dimen/_14sdp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/reminder_interval"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_6sdp"
+                app:cardElevation="@dimen/_4sdp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/cardviewcolour"
+                    android:orientation="vertical">
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="20dp"
+                        android:orientation="vertical"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/reminder_intervalText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/opensans_semibold"
+                            android:text="@string/reminder_interval"
+                            android:textColor="@color/textColour"
+                            android:textSize="@dimen/_15sdp"
+                            />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/everyText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/opensans_light"
+                                android:text="@string/every"
+                                android:textColor="@color/textColour"
+                                android:textSize="@dimen/_13sdp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/reminder_intervalSet"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginRight="15dp"
+                                android:text="90"
+                                android:textColor="@color/SteelBlue"
+                                android:textSize="@dimen/_14sdp" />
+
+                            <TextView
+                                android:id="@+id/minText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/opensans_light"
+                                android:text="@string/minutes"
+                                android:textColor="@color/textColour"
+                                android:textSize="@dimen/_13sdp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/reminder_further"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_6sdp"
@@ -467,55 +400,51 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
-                            android:id="@+id/reminder_helpText"
+                            android:id="@+id/reminder_furtherText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/opensans_semibold"
-                            android:text="@string/reminder_reliability"
+                            android:text="@string/further_reminder"
                             android:textColor="@color/textColour"
                             android:textSize="@dimen/_15sdp"
-                            />
+                             />
 
                         <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/_5sdp"
-                            android:layout_marginBottom="@dimen/_10sdp">
+                            android:layout_marginTop="@dimen/_7sdp">
 
                             <TextView
-                                android:id="@+id/helpCenterText"
+                                android:id="@+id/furtherText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:fontFamily="@font/opensans_light"
-                                android:text="@string/help_center"
+                                android:layout_alignParentStart="true"
                                 android:layout_alignParentLeft="true"
+                                android:layout_alignParentTop="true"
+                                android:fontFamily="@font/opensans_light"
+                                android:text="@string/Stillremindwhen"
                                 android:textColor="@color/textColour"
                                 android:textSize="@dimen/_13sdp"
-                                android:textStyle="bold"
-                                android:layout_alignParentStart="true" />
+                                android:textStyle="bold" />
 
-                            <TextView
-                                android:id="@+id/reminder_help"
+                            <androidx.appcompat.widget.SwitchCompat
+
+                                android:id="@+id/reminder_furtherSwitch"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:fontFamily="@font/opensans_light"
-                                android:text="@string/open"
+                                android:layout_gravity="center"
+                                android:checked="true"
+                                android:theme="@style/SCBSwitch"
                                 android:layout_alignParentRight="true"
-                                android:textColor="@color/SteelBlue"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:background="?android:attr/selectableItemBackground"
-                                android:textSize="@dimen/_13sdp"
-                                android:contentDescription="@string/help_center"
-                                android:layout_marginRight="@dimen/_3sdp"
-                                android:textStyle="bold"
-                                android:layout_alignParentEnd="true"
-                                android:layout_marginEnd="@dimen/_3sdp" />
+                                android:layout_alignParentEnd="true" />
                         </RelativeLayout>
+
+
                     </LinearLayout>
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

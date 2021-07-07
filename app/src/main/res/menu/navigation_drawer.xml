@@ -6,13 +6,21 @@
 
     <group android:id="@+id/grp1" >
         <item
+            android:id="@+id/home"
+            android:icon="@drawable/home_icon"
+            android:title="@string/home" />
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/setting_vector"
+            android:title="@string/settings" />
+        <item
             android:id="@+id/reminder"
             android:icon="@drawable/bell"
-            android:title="@string/reminder" />
+            android:title="@string/smartreminder" />
         <item
             android:id="@+id/statistics"
             android:icon="@drawable/statistics"
-            android:title="@string/statistics" />
+            android:title="@string/statesreport" />
 
         <item
             android:id="@+id/achievement"
@@ -33,16 +41,6 @@
             android:id="@+id/share"
             android:icon="@drawable/share_vector"
             android:title="@string/share" />
-    </group>
-    <group android:id="@+id/grp3">
-        <item
-            android:id="@+id/backup"
-            android:icon="@drawable/backup_vector"
-            android:title="@string/backup_and_restore" />
-        <item
-            android:id="@+id/settings"
-            android:icon="@drawable/setting_vector"
-            android:title="@string/settings" />
     </group>
     <group android:id="@+id/grp4">
         <item

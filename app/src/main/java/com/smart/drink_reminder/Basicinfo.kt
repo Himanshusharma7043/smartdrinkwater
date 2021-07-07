@@ -35,6 +35,8 @@ class Basicinfo : AppCompatActivity() {
     lateinit var DB: DatabaseHandler
     lateinit var pickerVals: Array<String>
     var weight_number: String? = null
+    var selectedWeight: Int? = null
+    var dailygoal: Int? = null
     var weight_type: Int? = null
     var strSeparator = ","
 
@@ -48,7 +50,6 @@ class Basicinfo : AppCompatActivity() {
         editor = sharedPreferences.edit()
         val apply: Button = findViewById(R.id.basic_apply)
         pickerVals = arrayOf( "100ml", "200ml", "300ml")
-        val getstring: String = convertArrayToString(pickerVals)
         male = findViewById(R.id.male)
         female = findViewById(R.id.female)
         number = findViewById(R.id.weight_numbers)
@@ -69,20 +70,20 @@ class Basicinfo : AppCompatActivity() {
         number.value=65
         number.minValue = 10
         number.wrapSelectorWheel = true
-        weight.setOnValueChangedListener { picker, oldVal, newVal ->
-            if (newVal == 0) {
-                number.maxValue = 300
-                number.value=65
-                number.minValue = 10
-                number.wrapSelectorWheel = true
-            } else {
-                number.maxValue = 661
-                number.minValue = 22
-                number.value=65
-                number.wrapSelectorWheel = true
-            }
-        }
-        weight_type = weight.value
+//        weight.setOnValueChangedListener { picker, oldVal, newVal ->
+//            if (newVal == 0) {
+//                number.maxValue = 300
+//                number.value=65
+//                number.minValue = 10
+//                number.wrapSelectorWheel = true
+//            } else {
+//                number.maxValue = 661
+//                number.minValue = 22
+//                number.value=65
+//                number.wrapSelectorWheel = true
+//            }
+//        }
+    //    weight_type = weight.value
         male.performClick()
         female.setBackgroundColor(resources.getColor(R.color.blur))
         male.setBackgroundColor(Color.WHITE)
@@ -101,12 +102,23 @@ class Basicinfo : AppCompatActivity() {
             weight_number = number.value.toString()
             weight_type = weight.value
             val type: String = pickerVals[weight_type!!]
+            selectedWeight=number.value
+            dailygoal= selectedWeight!! *35
+           // Log.e("TAG", "p1:${dailygoal*} " )
+            Log.e("TAG", "selectedWeight:${selectedWeight!!*35} ")
+
+
             putdataPreferences("gender", gender)
+            putdataPreferences("genderValueTXT", gender)
+            putdataPreferences("targetTXT", "${selectedWeight!!*35}ml")
+            putdataPreferences("weightTXT", "${number.value}kg")
             putdataPreferences("weight_type", type)
             putdataPreferences("weight_number", weight_number!!)
             putdataPreferences("wake_up_time", wakeup_time_picker.text as String)
             putdataPreferences("sleep_time", sleep_time_picker.text as String)
             putdataPreferences("watervalues",  "100ml,200ml, 300ml")
+
+
             val sdfdate = SimpleDateFormat("yyyy-MM-dd")
             val getdate: String =sdfdate.format(Date())
             val date:Date = sdfdate.parse(getdate)
@@ -115,7 +127,10 @@ class Basicinfo : AppCompatActivity() {
             editor = sharedPreferences.edit()
             editor.putBoolean("apply", true)
             editor.putLong("lastdate", date.time)
+            editor.putBoolean("firstTIME", true)
             editor.putLong("startedDate", getdatee)
+            editor.putInt("dailygoal", number.value*35)
+            editor.putInt("totalAchieve", 0)
             editor.commit()
             startActivity(Intent(this, MainActivity::class.java))
             weight_number = null
@@ -166,15 +181,4 @@ class Basicinfo : AppCompatActivity() {
         Log.e("select_time", "" + select_time)
     }
 
-    fun convertArrayToString(array: Array<String>): String {
-        var str: String = ""
-        for (i in array.indices) {
-            str += array[i]
-
-            if (i < array.size - 1) {
-                str += strSeparator
-            }
-        }
-        return str
-    }
 }

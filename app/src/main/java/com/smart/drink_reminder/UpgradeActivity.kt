@@ -15,13 +15,12 @@ import java.io.IOException
 import java.util.*
 
 class UpgradeActivity : AppCompatActivity(), PurchasesUpdatedListener {
-    val PREF_FILE = "DrinkWater"
-    val PURCHASE_KEY = "purchase"
-    val PRODUCT_ID = "purchase"
-    val base64Key = "Add Your Key Here"
+    val PREF_FILE = "SmartDrinkReminder"
+    val PURCHASE_KEY = "purchase_key"
+    val PRODUCT_ID = "purchase_id"
+    val base64Key = "base64key"
     private var billingClient: BillingClient? = null
     lateinit var purchaseButton: Button
-    //  lateinit var purchaseStatus: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_upgrade)

@@ -25,7 +25,7 @@
                 android:layout_width="@dimen/_35sdp"
                 android:layout_height="@dimen/_35sdp"
                 android:background="@drawable/cardview_bg"
-                android:src="@drawable/water"
+                android:src="@drawable/achivement_water_icon"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>

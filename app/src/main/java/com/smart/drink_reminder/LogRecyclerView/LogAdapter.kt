@@ -53,14 +53,13 @@ class LogAdapter(
             R.drawable.fruitjuice -> "Fruit juice"
 
             R.drawable.sodecan -> "Soda"
-           else -> "null"
+            else -> "Water"
        }
         holder.logName.text = name
         holder.drink_water.text = list
         holder.drink_Water_time.text = time
         holder.log_logo.setImageResource(drawable.toInt())
         holder.delete_log.setOnClickListener() {
-            Toast.makeText(context, "Item Deleted", Toast.LENGTH_SHORT).show()
             deleteItem(position)
         }
     }

@@ -94,7 +94,7 @@
                                 android:layout_width="@dimen/_110sdp"
                                 android:layout_height="@dimen/_110sdp"
                                 android:layout_gravity="center"
-                                android:src="@drawable/water" />
+                                android:src="@drawable/achivement_water_icon" />
 
                             <TextView
                                 android:id="@+id/textView"
@@ -193,7 +193,56 @@
                         ads:adUnitId="@string/drink_banner" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/setting_weight"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_60sdp"
+                android:layout_marginBottom="@dimen/_3sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginLeft="@dimen/_6sdp"
+                app:cardBackgroundColor="@color/cardviewcolour"
+                android:layout_marginRight="@dimen/_6sdp"
+                app:cardElevation="@dimen/_7sdp">
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/weighticon"
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="@dimen/_30sdp"
+                        android:src="@drawable/gold_trophy"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/view"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+
+                    <LinearLayout
+                        android:id="@+id/view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_16sdp"
+                            android:layout_marginEnd="@dimen/_16sdp"
+                            android:fontFamily="@font/opensans_semibold"
+                            android:text="Smart drink reminder rank :"
+                            android:textColor="@color/textColour"
+                            android:textStyle="bold"
+                            android:textSize="@dimen/_13sdp"/>
+
+
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -254,7 +303,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/opensans_light"
-                                android:text="1st Strike"
+                                android:text="Start up"
                                 android:textColor="@color/textColour"
                                 android:textSize="@dimen/_10sdp" />
                         </LinearLayout>
@@ -318,7 +367,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/opensans_light"
-                                android:text="Share"
+                                android:text="Share App"
                                 android:textColor="@color/textColour"
                                 android:textSize="@dimen/_10sdp" />
                         </LinearLayout>
@@ -351,7 +400,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/opensans_light"
-                                android:text="High five"
+                                android:text="Supper moment"
                                 android:textColor="@color/textColour"
                                 android:textSize="@dimen/_10sdp" />
                         </LinearLayout>
@@ -383,7 +432,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/opensans_light"
-                                android:text="Monthly boss"
+                                android:text="King of month"
                                 android:textColor="@color/textColour"
                                 android:textSize="@dimen/_10sdp" />
                         </LinearLayout>
@@ -415,7 +464,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/opensans_light"
-                                android:text="Devotion"
+                                android:text="Loyalty"
                                 android:textColor="@color/textColour"
                                 android:textSize="@dimen/_10sdp" />
                         </LinearLayout>
@@ -447,7 +496,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/opensans_light"
-                                android:text="Chain master"
+                                android:text="Ring master"
                                 android:textColor="@color/textColour"
                                 android:textSize="@dimen/_10sdp" />
                         </LinearLayout>
@@ -479,7 +528,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/opensans_light"
-                                android:text="Water lord"
+                                android:text="Water power"
                                 android:textColor="@color/textColour"
                                 android:textSize="@dimen/_10sdp" />
                         </LinearLayout>
@@ -512,7 +561,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/opensans_light"
-                                android:text="Aqua hero"
+                                android:text="Water king"
                                 android:textColor="@color/textColour"
                                 android:textSize="@dimen/_10sdp" />
                         </LinearLayout>

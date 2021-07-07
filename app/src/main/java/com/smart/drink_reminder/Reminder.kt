@@ -51,12 +51,9 @@ class Reminder : AppCompatActivity() {
     lateinit var soundText: TextView
     lateinit var soundtypText: TextView
     lateinit var vibrationText: TextView
-    lateinit var reliabilityText: TextView
-    lateinit var helpcenterText: TextView
     lateinit var soundType: TextView
     var notificationManager: NotificationManager? = null
     var sharedpreferences: SharedPreferences? = null
-    lateinit var openhelp: TextView
     val MyPREFERENCES = "DrinkWater"
     lateinit var furtherReminder: SwitchCompat
     lateinit var permanent_notification: SwitchCompat
@@ -88,8 +85,6 @@ class Reminder : AppCompatActivity() {
         soundText = findViewById(R.id.soundText)
         soundtypText = findViewById(R.id.soundTypeText)
         vibrationText = findViewById(R.id.vibrationText)
-        reliabilityText = findViewById(R.id.reminder_helpText)
-        helpcenterText = findViewById(R.id.helpCenterText)
         val appadscd: CardView = findViewById(R.id.appadscd)
 
 
@@ -107,7 +102,6 @@ class Reminder : AppCompatActivity() {
         soundType = findViewById(R.id.notificationSound_type)
         soundType.text = mPrefs.getString("soundName", "water")
 
-        openhelp = findViewById(R.id.reminder_help)
 
         furtherReminder = findViewById(R.id.reminder_furtherSwitch)
         furtherReminder.isChecked = mPrefs.getBoolean("furtherReminder", true)
@@ -135,7 +129,7 @@ class Reminder : AppCompatActivity() {
         mAdView.loadAd(adRequest)
         Handler().postDelayed({
             appadscd.visibility=View.VISIBLE
-        }, 10000)
+        }, 3000)
         intervalTime.setOnClickListener() {
             var mmzero= false
             var hrzero= false
@@ -287,12 +281,6 @@ class Reminder : AppCompatActivity() {
             dialog.show()
 
         }
-        openhelp.setOnClickListener() {
-            val url = "https://heaveninfotech.com"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
-        }
         furtherReminder.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 Toast.makeText(this, "ONN", Toast.LENGTH_SHORT).show()
@@ -419,20 +407,16 @@ class Reminder : AppCompatActivity() {
             reminderintervalText.setTextColor(ContextCompat.getColor(this, R.color.textColour))
             reminderfuthertext.setTextColor(ContextCompat.getColor(this, R.color.textColour))
             notificationText.setTextColor(ContextCompat.getColor(this, R.color.textColour))
-            reliabilityText.setTextColor(ContextCompat.getColor(this, R.color.textColour))
             everyText.setTextColor(ContextCompat.getColor(this, R.color.textColour))
             minText.setTextColor(ContextCompat.getColor(this, R.color.textColour))
             futherText.setTextColor(ContextCompat.getColor(this, R.color.textColour))
             soundText.setTextColor(ContextCompat.getColor(this, R.color.textColour))
             soundtypText.setTextColor(ContextCompat.getColor(this, R.color.textColour))
             vibrationText.setTextColor(ContextCompat.getColor(this, R.color.textColour))
-            reliabilityText.setTextColor(ContextCompat.getColor(this, R.color.textColour))
-            helpcenterText.setTextColor(ContextCompat.getColor(this, R.color.textColour))
             wakeuptime.setTextColor(ContextCompat.getColor(this, R.color.SteelBlue))
             intervalTime.setTextColor(ContextCompat.getColor(this, R.color.SteelBlue))
             sleeptime.setTextColor(ContextCompat.getColor(this, R.color.SteelBlue))
             soundType.setTextColor(ContextCompat.getColor(this, R.color.SteelBlue))
-            openhelp.setTextColor(ContextCompat.getColor(this, R.color.SteelBlue))
             Log.e("true", "true")
         } else {
             wakesleepText.setTextColor(ContextCompat.getColor(this, R.color.Darkset))
@@ -445,14 +429,10 @@ class Reminder : AppCompatActivity() {
             soundText.setTextColor(ContextCompat.getColor(this, R.color.Darkset))
             soundtypText.setTextColor(ContextCompat.getColor(this, R.color.Darkset))
             vibrationText.setTextColor(ContextCompat.getColor(this, R.color.Darkset))
-            reliabilityText.setTextColor(ContextCompat.getColor(this, R.color.Darkset))
-            helpcenterText.setTextColor(ContextCompat.getColor(this, R.color.Darkset))
-
             wakeuptime.setTextColor(ContextCompat.getColor(this, R.color.Darkset))
             intervalTime.setTextColor(ContextCompat.getColor(this, R.color.Darkset))
             sleeptime.setTextColor(ContextCompat.getColor(this, R.color.Darkset))
             soundType.setTextColor(ContextCompat.getColor(this, R.color.Darkset))
-            openhelp.setTextColor(ContextCompat.getColor(this, R.color.Darkset))
             Log.e("false", "false")
 
         }
@@ -464,7 +444,6 @@ class Reminder : AppCompatActivity() {
         intervalTime.isEnabled = check
         sleeptime.isEnabled = check
         soundType.isEnabled = check
-        openhelp.isEnabled = check
         reminderCheck = check
     }
 

@@ -18,15 +18,13 @@ class SplashsScreen : AppCompatActivity() {
         setContentView(R.layout.activity_splashs_screen)
         val mPrefs = getSharedPreferences(
             MyPREFERENCES, Context.MODE_PRIVATE)
-        val getapply =
-            mPrefs.getBoolean("apply", false)
         editor = mPrefs.edit()
         editor.putBoolean("start", true)
         editor.commit()
         Handler().postDelayed({
             // This method will be executed once the timer is over
             // Start your app main activity
-            if (getapply){
+            if (mPrefs.getBoolean("apply", false)){
                 startActivity(Intent(this,MainActivity::class.java))
             }else{
                 startActivity(Intent(this,Basicinfo::class.java))
