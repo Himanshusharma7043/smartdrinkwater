@@ -1,16 +1,13 @@
 package com.smart.drink_reminder
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -24,11 +21,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
-import com.smart.drink_reminder.AddCupRecyclerView.CupAdapter
+import com.google.android.gms.ads.MobileAds
+import com.smart.drink_reminder.Services.NetworkState
 import java.util.*
 
 @Suppress("DEPRECATION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
@@ -46,8 +42,9 @@ class Setting : AppCompatActivity() {
     var context: Context? = null
     lateinit var toolbar: Toolbar
     lateinit var getgoaltype: String
-    var strSeparator = ","
     var getinput: Int = 0
+    var getGender: String = ""
+    var suggestedDailyGoal: Int = 0
     @SuppressLint("SetTextI18n", "CommitPrefEdits")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +53,9 @@ class Setting : AppCompatActivity() {
         editor = sharedPreferences.edit()
         getinput = sharedPreferences.getInt("dailygoal", 3000)
         getgoaltype = sharedPreferences.getString("goaltype", "ml")!!
+        suggestedDailyGoal = sharedPreferences.getInt("suggestedDailyGoal", 2640)
+        val getlag = sharedPreferences.getString("language", "en")
+        setLocale(R.layout.activity_setting, getlag)
         mAdView = findViewById(R.id.madView)
         unitTXT = findViewById(R.id.setting_unitTXT)
         weightTXT = findViewById(R.id.setting_weightTXT)
@@ -63,11 +63,11 @@ class Setting : AppCompatActivity() {
         lanTXT = findViewById(R.id.setting_lanTXT)
         targetTXT = findViewById(R.id.daily_targetTXT)
         themesTXT = findViewById(R.id.setting_themesTXT)
-        val unit: CardView = findViewById(R.id.setting_units)
+//        val unit: CardView = findViewById(R.id.setting_units)
         val weight: CardView = findViewById(R.id.setting_weight)
         val gender: CardView = findViewById(R.id.setting_gender)
         val daily_goal: CardView = findViewById(R.id.setting_daily_goal)
-        val appadscd: CardView = findViewById(R.id.setting_ads)
+        val appadscd: LinearLayout = findViewById(R.id.setting_ads)
         val language_select: CardView = findViewById(R.id.setting_language)
         val themes: CardView = findViewById(R.id.setting_theme)
         toolbar = findViewById(R.id.setting_toolbar)
@@ -76,76 +76,85 @@ class Setting : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         unitTXT.text = sharedPreferences.getString("unitTXT", "kg,ml")!!
         weightTXT.text = sharedPreferences.getString("weightTXT", "65kg")!!
-        genderValueTXT.text =sharedPreferences.getString("genderValueTXT", "Male")!!
-        lanTXT.text = sharedPreferences.getString("lanTXT", "English")!!
-        targetTXT.text =sharedPreferences.getString("targetTXT", "3000ml")!!
-        themesTXT.text = sharedPreferences.getString("themesTXT", "Light")!!
-        unit.setOnClickListener() {
-            val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
-            builder.setTitle(R.string.units)
-            builder.setMessage(R.string.unit_info)
-            val inflater = LayoutInflater.from(this)
-            val inflate: View = inflater.inflate(R.layout.dialog_radiobutton, null)
-            val radioGroup: RadioGroup = inflate.findViewById(R.id.radioGroup)
-            val radioButton: RadioButton = inflate.findViewById(R.id.radioMale)
-            val radioButton1: RadioButton = inflate.findViewById(R.id.radioFemale)
-            radioButton.text = "kg,ml"
-            radioButton1.text = "lbs,fl oz"
-            radioGroup.check(sharedPreferences.getInt("unitSelected", R.id.radioMale))
-            radioGroup.setOnCheckedChangeListener { group, checkedId ->
-                when (checkedId) {
-                    R.id.radioMale -> {
-                        putIntSharep("unitSelected", R.id.radioMale)
-                    }
-                    R.id.radioFemale -> {
-                        putIntSharep("unitSelected", R.id.radioFemale)
-                    }
-                }
-            }
-            builder.setPositiveButton(
-                R.string.ok
-            ) { dialog, which ->
-                val selectedId = radioGroup.checkedRadioButtonId
-                if (selectedId == -1) {
-                    Toast.makeText(
-                        this,
-                        R.string.no_found,
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
-                } else {
-                    val radioButton = radioGroup
-                        .findViewById(selectedId) as RadioButton
-                    Toast.makeText(this, radioButton.text, Toast.LENGTH_SHORT).show()
-                    if (radioButton.text == "kg,ml") {
-                        unitTXT.text="kg,ml"
-                        putStringSharep("weighttype","kg")
-                        putStringSharep("goaltype","ml")
-                        putStringSharep("unitTXT","lbs,fl oz")
-                    } else {
-                        editor = sharedPreferences.edit()
-                        editor.putString("weighttype", "lbs")
-                        editor.commit()
-                        unitTXT.text="lbs,fl oz"
-                        putStringSharep("weighttype","lbs")
-                        putStringSharep("unitTXT","lbs,fl oz")
-                    }
-
-                }
-            }.setNegativeButton(
-                R.string.cancel
-            ) { dialog, which ->
-                dialog.cancel()
-            }
-            builder.setView(inflate)
-            val dialog: AlertDialog = builder.create()
-            dialog.show()
+        if (sharedPreferences.getInt("genderSelected", R.id.radioMale) == R.id.radioMale) {
+            genderValueTXT.text = getString(R.string.male)
+        } else {
+            genderValueTXT.text = getString(R.string.female)
         }
-        val adRequest = AdRequest.Builder().build()
-        mAdView.loadAd(adRequest)
-        Handler().postDelayed({
-            appadscd.visibility = View.VISIBLE
-        }, 3000)
+        lanTXT.text = sharedPreferences.getString("lanTXT", "English")!!
+        targetTXT.text = sharedPreferences.getString("targetTXT", "3000ml")!!
+        themesTXT.text = sharedPreferences.getString("themesTXT", getString(R.string.light))!!
+//        unit.setOnClickListener() {
+//            val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
+//            builder.setTitle(R.string.units)
+//            builder.setMessage(R.string.unit_info)
+//            val inflater = LayoutInflater.from(this)
+//            val inflate: View = inflater.inflate(R.layout.dialog_radiobutton, null)
+//            val radioGroup: RadioGroup = inflate.findViewById(R.id.radioGroup)
+//            val radioButton: RadioButton = inflate.findViewById(R.id.radioMale)
+//            val radioButton1: RadioButton = inflate.findViewById(R.id.radioFemale)
+//            radioButton.text = "kg,ml"
+//            radioButton1.text = "lbs,fl oz"
+//            radioGroup.check(sharedPreferences.getInt("unitSelected", R.id.radioMale))
+//            radioGroup.setOnCheckedChangeListener { group, checkedId ->
+//                when (checkedId) {
+//                    R.id.radioMale -> {
+//                        putIntSharep("unitSelected", R.id.radioMale)
+//                    }
+//                    R.id.radioFemale -> {
+//                        putIntSharep("unitSelected", R.id.radioFemale)
+//                    }
+//                }
+//            }
+//            builder.setPositiveButton(
+//                R.string.ok
+//            ) { dialog, which ->
+//                val selectedId = radioGroup.checkedRadioButtonId
+//                if (selectedId == -1) {
+//                    Toast.makeText(
+//                        this,
+//                        R.string.no_found,
+//                        Toast.LENGTH_SHORT
+//                    )
+//                        .show()
+//                } else {
+//                    val radioButton = radioGroup
+//                        .findViewById(selectedId) as RadioButton
+//                    Toast.makeText(this, radioButton.text, Toast.LENGTH_SHORT).show()
+//                    if (radioButton.text == "kg,ml") {
+//                        unitTXT.text = "kg,ml"
+//                        putStringSharep("weighttype", "kg")
+//                        putStringSharep("goaltype", "ml")
+//                        putStringSharep("unitTXT", "lbs,fl oz")
+//                    } else {
+//                        editor = sharedPreferences.edit()
+//                        editor.putString("weighttype", "lbs")
+//                        editor.commit()
+//                        unitTXT.text = "lbs,fl oz"
+//                        putStringSharep("weighttype", "lbs")
+//                        putStringSharep("unitTXT", "lbs,fl oz")
+//                    }
+//
+//                }
+//            }.setNegativeButton(
+//                R.string.cancel
+//            ) { dialog, which ->
+//                dialog.cancel()
+//            }
+//            builder.setView(inflate)
+//            val dialog: AlertDialog = builder.create()
+//            dialog.show()
+//        }
+        if (!sharedPreferences.getBoolean("SmartDrinkINAPP", false)) {
+            MobileAds.initialize(this) {}
+            val networkState = NetworkState()
+
+            if (networkState.isNetworkAvailable(this)) {
+                val adRequest = AdRequest.Builder().build()
+                     mAdView.loadAd(adRequest)
+                    appadscd.visibility = View.VISIBLE
+            }
+        }
         gender.setOnClickListener() {
             val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
             builder.setTitle(R.string.gender)
@@ -158,15 +167,16 @@ class Setting : AppCompatActivity() {
                 when (checkedId) {
                     R.id.radioMale -> {
                         putIntSharep("genderSelected", R.id.radioMale)
-
+                        getGender=getString(R.string.male)
                     }
                     R.id.radioFemale -> {
                         putIntSharep("genderSelected", R.id.radioFemale)
+                        getGender=getString(R.string.male)
                     }
                 }
             }
 
-            builder.setPositiveButton("OK") { dialog, which ->
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
                 val selectedId = radioGroup.checkedRadioButtonId
                 if (selectedId == -1) {
                     Toast.makeText(
@@ -178,10 +188,37 @@ class Setting : AppCompatActivity() {
                 } else {
                     val radioButton = radioGroup
                         .findViewById(selectedId) as RadioButton
-                    genderValueTXT.text=radioButton.text
+                    genderValueTXT.text = radioButton.text
                     putStringSharep("genderValueTXT", radioButton.text.toString())
+                    val dailygoal: Int
+                    val input = weightTXT.text.replace("[\\D]".toRegex(), "").toInt()
+                    if (sharedPreferences.getInt("genderSelected", R.id.radioMale) == R.id.radioMale) {
+                        dailygoal = input * 35
+                        putIntSharep("dailygoal", input * 35)
+                        putIntSharep("suggestedDailyGoal", input * 35)
+                    } else {
+                        dailygoal = input * 32
+                        putIntSharep("dailygoal", input * 32)
+                        putIntSharep("suggestedDailyGoal", input * 32)
+                    }
+                    targetTXT.text = "$dailygoal ml"
+                    putIntSharep("veryActive", (dailygoal / 3.65).toInt())
+                    putIntSharep("mediumActive", (dailygoal / 5.651).toInt())
+                    putIntSharep("littleActive", (dailygoal / 11.001).toInt())
+                    putIntSharep("pcadded", 0)
+                    putIntSharep("weatheadded", 0)
+                    putIntSharep("summersVal", (dailygoal / 3.95).toInt())
+                    putIntSharep("springVal", (dailygoal / 6.10).toInt())
+                    putIntSharep("winterVal", (dailygoal / 11.85).toInt())
+                    putIntSharep("pctext1", R.id.sedentary1)
+                    putIntSharep("pctext2", R.id.sedentary2)
+                    putIntSharep("pcimg", R.id.sedentaryimg)
+                    putIntSharep("weathertext1", R.id.normaltext1)
+                    putIntSharep("weathertext11", R.id.normaltext11)
+                    putIntSharep("weatherimg", R.id.pc3)
+                    putStringSharep("targetTXT", "$dailygoal ml")
                 }
-            }.setNegativeButton("CANCEL") { dialog, which ->
+            }.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
                 dialog.cancel()
             }
             builder.setView(inflate)
@@ -196,19 +233,42 @@ class Setting : AppCompatActivity() {
             val inflate: View = inflater.inflate(R.layout.weight_alertdialog, null)
             val weight_edit: EditText = inflate.findViewById(R.id.weight_take)
             val weight_type: TextView = inflate.findViewById(R.id.weight_type_alert)
-            builder.setPositiveButton("OK") { dialog, which ->
-                val input:Int = weight_edit.text.replace("[\\D]".toRegex(), "").toInt()
-                putIntSharep("dailygoal", input*35)
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
+                val input: Int = weight_edit.text.replace("[\\D]".toRegex(), "").toInt()
+                val dailygoal: Int
+                if (sharedPreferences.getString("genderValueTXT", getString(R.string.male)) == getString(R.string.male)) {
+                    dailygoal = input * 35
+                    putIntSharep("dailygoal", input * 35)
+                    putIntSharep("suggestedDailyGoal", input * 35)
+                } else {
+                    dailygoal = input * 32
+                    putIntSharep("dailygoal", input * 32)
+                    putIntSharep("suggestedDailyGoal", input * 32)
+                }
                 Toast.makeText(
                     this,
                     "Weight :" + input + " " + weight_type.text,
                     Toast.LENGTH_SHORT
                 ).show()
-                weightTXT.text="${input*35}"+ weight_type.text
-                targetTXT.text="${input*35} ml"
-                putStringSharep("targetTXT","${input*35} ml")
-                putStringSharep("weightTXT","${input*35}"+ weight_type.text.toString())
-            }.setNegativeButton("CANCEL") { dialog, which ->
+                weightTXT.text = "$input" + weight_type.text
+                targetTXT.text = "$dailygoal ml"
+                putIntSharep("veryActive", (dailygoal / 3.65).toInt())
+                putIntSharep("mediumActive", (dailygoal / 5.651).toInt())
+                putIntSharep("littleActive", (dailygoal / 11.001).toInt())
+                putIntSharep("pcadded", 0)
+                putIntSharep("weatheadded", 0)
+                putIntSharep("summersVal", (dailygoal / 3.95).toInt())
+                putIntSharep("springVal", (dailygoal / 6.10).toInt())
+                putIntSharep("winterVal", (dailygoal / 11.85).toInt())
+                putIntSharep("pctext1", R.id.sedentary1)
+                putIntSharep("pctext2", R.id.sedentary2)
+                putIntSharep("pcimg", R.id.sedentaryimg)
+                putIntSharep("weathertext1", R.id.normaltext1)
+                putIntSharep("weathertext11", R.id.normaltext11)
+                putIntSharep("weatherimg", R.id.pc3)
+                putStringSharep("targetTXT", "$dailygoal ml")
+                putStringSharep("weightTXT", "$input" + weight_type.text.toString())
+            }.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
                 dialog.cancel()
             }
             builder.setView(inflate)
@@ -216,9 +276,14 @@ class Setting : AppCompatActivity() {
             dialog.show()
         }
         daily_goal.setOnClickListener() {
+            suggestedDailyGoal = sharedPreferences.getInt("suggestedDailyGoal", 2640)
             val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
             builder.setTitle(R.string.daily_goal)
-            builder.setMessage(R.string.daily_goal_info)
+            builder.setMessage(
+                getString(R.string.daily_goal_info) + " (${genderValueTXT.text}) and weight (${weightTXT.text}) " + getString(
+                    R.string.according
+                ) + " $suggestedDailyGoal ml"
+            )
             val inflater = LayoutInflater.from(this)
             val inflate: View = inflater.inflate(R.layout.daily_goal_alert, null)
             val goal_edit: EditText = inflate.findViewById(R.id.daily_goal_take)
@@ -235,7 +300,7 @@ class Setting : AppCompatActivity() {
             pcText.text = getString(
                 sharedPreferences.getInt(
                     "pcselectedString",
-                    R.string.sedentary
+                    R.string.not_active
                 )
             ) + ": +$getpcnum"
             weatherText.text = getString(
@@ -258,7 +323,7 @@ class Setting : AppCompatActivity() {
                 )
             )
             goal_edit.setText(getgoaledit.toString())
-            daily_goalTotal.text = "Total sum: $getgoaledit ${goal_type.text}"
+            daily_goalTotal.text = getString(R.string.total_sum)+"$getgoaledit ${goal_type.text}"
             goal_edit.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                 }
@@ -277,13 +342,13 @@ class Setting : AppCompatActivity() {
                         try {
                             val afterInput: Int = s.replace("[\\D]".toRegex(), "").toInt()
                             val set: Int = afterInput + getpcnum + getweathernum
-                            daily_goalTotal.text = "Total sum: $set ${goal_type.text}"
+                            daily_goalTotal.text = getString(R.string.total_sum)+"$set ${goal_type.text}"
                         } catch (e: Exception) {
                         }
                     }
                 }
             })
-            builder.setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
                 val input: String = goal_edit.text.toString()
                 Toast.makeText(
                     this,
@@ -291,14 +356,14 @@ class Setting : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 )
                     .show()
-                targetTXT.text=input + " " + goal_type.text
-                putStringSharep("targetTXT",input + " " + goal_type.text)
+                targetTXT.text = input + " " + goal_type.text
+                putStringSharep("targetTXT", input + " " + goal_type.text)
                 editor = sharedPreferences.edit()
                 editor.putInt("dailygoal", input.toIntOrNull()!!)
                 editor.commit()
-            }).setNegativeButton("CANCEL", DialogInterface.OnClickListener { dialog, which ->
+            }.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
                 dialog.cancel()
-            })
+            }
             builder.setView(inflate)
             val dialog: AlertDialog = builder.create()
             dialog.show()
@@ -311,8 +376,6 @@ class Setting : AppCompatActivity() {
             builder.setView(inflate)
             radioGroup.check(sharedPreferences.getInt("themeSelected", R.id.radioLight))
             radioGroup.setOnCheckedChangeListener { group, checkedId ->
-                val radioButton = group
-                    .findViewById<View>(checkedId) as RadioButton
                 val theme = when (checkedId) {
                     R.id.radioLight -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                     R.id.radioDark -> AppCompatDelegate.MODE_NIGHT_YES
@@ -320,16 +383,16 @@ class Setting : AppCompatActivity() {
                 }
                 when (checkedId) {
                     R.id.radioLight -> {
-                        putIntSharep("charttextcolor",Color.BLACK)
+                        putIntSharep("charttextcolor", Color.BLACK)
                         putIntSharep("themeSelected", R.id.radioLight)
-                        themesTXT.text=getString(R.string.light)
-                        putStringSharep("themesTXT",getString(R.string.light))
+                        themesTXT.text = getString(R.string.light)
+                        putStringSharep("themesTXT", getString(R.string.light))
                     }
                     R.id.radioDark -> {
-                        putIntSharep("charttextcolor",Color.WHITE)
+                        putIntSharep("charttextcolor", Color.WHITE)
                         putIntSharep("themeSelected", R.id.radioDark)
-                        themesTXT.text=getString(R.string.dark)
-                        putStringSharep("themesTXT",getString(R.string.dark))
+                        themesTXT.text = getString(R.string.dark)
+                        putStringSharep("themesTXT", getString(R.string.dark))
                     }
                 }
                 putIntSharep("theme", theme)
@@ -337,7 +400,7 @@ class Setting : AppCompatActivity() {
                 //onRestart()
                 Log.e("Theme:", "" + theme)
             }
-            builder.setPositiveButton("Set", DialogInterface.OnClickListener { dialog, which ->
+            builder.setPositiveButton(getString(R.string.set)) { dialog, which ->
                 val pd = ProgressDialog.show(
                     this, "",
                     "Loading...", true
@@ -345,7 +408,7 @@ class Setting : AppCompatActivity() {
                 pd.show()
                 onRestart()
                 dialog.dismiss()
-            })
+            }
             val dialog: AlertDialog = builder.create()
             dialog.window?.setBackgroundDrawableResource(R.color.backgroundColour)
             dialog.show()
@@ -361,27 +424,28 @@ class Setting : AppCompatActivity() {
             dialog.show()
             radioGroup.check(sharedPreferences.getInt("languageSelected", R.id.eng_language))
             radioGroup.setOnCheckedChangeListener { group, checkedId ->
-                val radioButton = group
-                    .findViewById<View>(checkedId) as RadioButton
                 when (checkedId) {
                     R.id.eng_language -> {
-                        setLocale(this, "en")
+                        setLocale(R.layout.activity_setting, "en")
                         putIntSharep("languageSelected", R.id.eng_language)
-                        lanTXT.text="English"
-                        putStringSharep("lanTXT","English")
+                        lanTXT.text = "English"
+                        putStringSharep("lanTXT", "English")
+                        onRestart()
                     }
                     R.id.hindi_language
                     -> {
-                        setLocale(this, "hi")
+                        setLocale(R.layout.activity_setting, "hi")
                         putIntSharep("languageSelected", R.id.hindi_language)
-                        lanTXT.text=getString(R.string.hindi)
-                        putStringSharep("lanTXT",getString(R.string.hindi))
+                        lanTXT.text = getString(R.string.hindi)
+                        putStringSharep("lanTXT", getString(R.string.hindi))
+                        onRestart()
                     }
                     R.id.gujarati_language -> {
-                        setLocale(this, "gu")
+                        setLocale(R.layout.activity_setting, "gu")
                         putIntSharep("languageSelected", R.id.gujarati_language)
-                        lanTXT.text=getString(R.string.gujarati)
-                        putStringSharep("lanTXT",getString(R.string.gujarati))
+                        lanTXT.text = getString(R.string.gujarati)
+                        putStringSharep("lanTXT", getString(R.string.gujarati))
+                        onRestart()
                     }
                 }
                 dialog.dismiss()
@@ -395,7 +459,7 @@ class Setting : AppCompatActivity() {
         editor.commit()
     }
     @SuppressLint("NewApi", "CommitPrefEdits")
-    fun setLocale(activity: Activity, languageCode: String?) {
+    fun setLocale(activity: Int, languageCode: String?) {
         val languageToLoad = languageCode // your language
         val locale = Locale(languageToLoad)
         Locale.setDefault(locale)
@@ -405,14 +469,13 @@ class Setting : AppCompatActivity() {
             config,
             baseContext.resources.displayMetrics
         )
-        this.setContentView(R.layout.activity_setting)
-        onRestart()
+        this.setContentView(activity)
         editor = sharedPreferences.edit()
         editor.putString("language", languageToLoad)
         editor.commit()
+
         Log.e("Language:", "" + languageToLoad)
     }
-
 
     override fun onRestart() {
         super.onRestart()

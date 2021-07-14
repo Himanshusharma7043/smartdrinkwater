@@ -20,7 +20,6 @@ import java.util.*
 
 class LogAdapter(
     private var context: Context,
-
     private var log_list: ArrayList<String>,
     private var timelist: ArrayList<String>,
     private var drawable_list: ArrayList<String>
@@ -41,20 +40,18 @@ class LogAdapter(
         val list = log_list[position]
         val time = timeData[position]
         val drawable = drawableList[position]
-       val name:String= when (drawable.toInt()) {
+        val name: String = when (drawable.toInt()) {
             R.drawable.water_glass -> "Water"
-
             R.drawable.tea -> "Tea"
-
             R.drawable.coffee -> "Coffee"
-
             R.drawable.milk -> "Milk"
-
             R.drawable.fruitjuice -> "Fruit juice"
-
             R.drawable.sodecan -> "Soda"
+            R.drawable.beermag, -> "Beer"
+            R.drawable.enerydrink,-> "Energy Drink"
+            R.drawable.lemonade -> "Lemonade"
             else -> "Water"
-       }
+        }
         holder.logName.text = name
         holder.drink_water.text = list
         holder.drink_Water_time.text = time
@@ -63,7 +60,6 @@ class LogAdapter(
             deleteItem(position)
         }
     }
-
     @SuppressLint("SimpleDateFormat", "CommitPrefEdits")
     fun deleteItem(index: Int) {
         try {
@@ -72,10 +68,10 @@ class LogAdapter(
             val date: Date = sdfdate.parse(getdate)!!
             DB = DatabaseHandler(context)
             val mPrefs = context.getSharedPreferences(
-               "DrinkWater", Context.MODE_PRIVATE
+                "DrinkWater", Context.MODE_PRIVATE
             )
-            var totaldrink=mPrefs.getInt("totaldrink", 0)
-            var progrvalue=mPrefs.getFloat("progress", 0f)
+            var totaldrink = mPrefs.getInt("totaldrink", 0)
+            var progrvalue = mPrefs.getFloat("progress", 0f)
             val deleteLog = log_list[index]
             Log.e("TAG", "deleteItem: $deleteLog")
             val delnum: Int = deleteLog.replace("[\\D]".toRegex(), "").toInt()
@@ -90,8 +86,8 @@ class LogAdapter(
             editor = mPrefs.edit()
             editor.putBoolean("deletePerform", true)
             editor.putInt("deleteDrink", delnum)
-            editor.putInt("totaldrink",totaldrink)
-            editor.putFloat("progress",progrvalue)
+            editor.putInt("totaldrink", totaldrink)
+            editor.putFloat("progress", progrvalue)
             editor.apply()
             val putLog: String = convertArrayToString(listData)
             val putTime: String = convertArrayToString(timelist)
@@ -109,11 +105,12 @@ class LogAdapter(
             DB.updateContact(logupdate)
             val intent = Intent("custom-message")
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
-            Log.e("TAG", "listData: $listData" )
+            Log.e("TAG", "listData: $listData")
         } catch (e: Exception) {
-            Log.e("Error", "deleteItem:${e.message} " )
+            Log.e("Error", "deleteItem:${e.message} ")
         }
     }
+
     fun convertArrayToString(array: ArrayList<String>): String {
         val strSeparator = ","
         var str = ""
@@ -126,12 +123,12 @@ class LogAdapter(
         }
         return str
     }
+
     override fun getItemCount(): Int {
         return log_list.size
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
         var drink_water: TextView = itemView.findViewById(R.id.drink_water_ml)
         var logName: TextView = itemView.findViewById(R.id.logName)
         var drink_Water_time: TextView = itemView.findViewById(R.id.drink_water_time)

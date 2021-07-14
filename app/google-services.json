@@ -14,11 +14,27 @@
       },
       "oauth_client": [
         {
+          "client_id": "276227502354-b7urm50r5n46aluf45dsa9tmhqt6hegd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.smart.drink_reminder",
+            "certificate_hash": "618493529dda2adff365053c0b1af9c283d98d6a"
+          }
+        },
+        {
           "client_id": "276227502354-gsnisfjs379brdig5gv3o4j0end1l6pj.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.smart.drink_reminder",
             "certificate_hash": "da97c03b6d0e0bd2adb7c38ef6afdd4f819a7394"
+          }
+        },
+        {
+          "client_id": "276227502354-smhbq7g6u8b0pi9s347tsu57g6ilbl2c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.smart.drink_reminder",
+            "certificate_hash": "54ec622f3890d81b34ab8b58c1458b13a916eaf5"
           }
         },
         {

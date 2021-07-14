@@ -20,7 +20,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -29,37 +31,41 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.DrinkWater">
+        <activity android:name=".WebViewActivity"
+            android:theme="@style/Theme.Design.Light.NoActionBar"/>
+
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
-        <activity android:name="com.smart.drink_reminder.UpgradeActivity"
-            android:theme="@style/Theme.Design.Light.NoActionBar"
-            />
+
         <activity
-            android:name="com.smart.drink_reminder.Statistics"
+            android:name=".UpgradeActivity"
             android:theme="@style/Theme.Design.Light.NoActionBar" />
         <activity
-            android:name="com.smart.drink_reminder.Achievements"
+            android:name=".Statistics"
             android:theme="@style/Theme.Design.Light.NoActionBar" />
         <activity
-            android:name="com.smart.drink_reminder.Reminder"
+            android:name=".Achievements"
             android:theme="@style/Theme.Design.Light.NoActionBar" />
         <activity
-            android:name="com.smart.drink_reminder.Backup"
+            android:name=".Reminder"
+            android:theme="@style/Theme.Design.Light.NoActionBar" />
+        <activity
+            android:name=".Backup"
             android:exported="true"
             android:theme="@style/Theme.Design.Light.NoActionBar">
-            <meta-data
-                android:name="com.google.android.apps.drive.APP_ID"
-                android:value="AIzaSyB0FIe5FIicabVxRc39OpgeVhmYCH_QBr4" />
+<!--            <meta-data-->
+<!--                android:name="com.google.android.apps.drive.APP_ID"-->
+<!--                android:value="" />-->
         </activity>
         <activity
-            android:name="com.smart.drink_reminder.Setting"
+            android:name=".Setting"
             android:theme="@style/Theme.Design.Light.NoActionBar" />
         <activity
-            android:name="com.smart.drink_reminder.Basicinfo"
+            android:name=".Basicinfo"
             android:theme="@style/Theme.Design.Light.NoActionBar" />
         <activity
-            android:name="com.smart.drink_reminder.SplashsScreen"
+            android:name=".SplashsScreen"
             android:theme="@style/Theme.Design.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -68,13 +74,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.smart.drink_reminder.MainActivity"
+            android:name=".MainActivity"
             android:theme="@style/Theme.Design.Light.NoActionBar"
             android:windowSoftInputMode="adjustNothing" />
 
-        <receiver android:name="com.smart.drink_reminder.Services.NotificationReceiver" />
+        <receiver android:name=".Services.NotificationReceiver" />
 
-        <service android:name="com.smart.drink_reminder.Services.PermanentNotification" />
+        <service android:name=".Services.PermanentNotification" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

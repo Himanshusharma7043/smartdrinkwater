@@ -57,7 +57,7 @@ class PermanentNotification : Service() {
         val notification = notificationBuilder
             .setOngoing(true)
             .setChannelId(CHANNEL_ONE_ID)
-            .setContentTitle("It's time to drink water")
+            .setContentTitle("Time to drink")
             .setContentText("$totaldrink/$getinput$getgoaltype")
             .setSmallIcon(R.mipmap.ic_launcher)
             .setLargeIcon(icon)

@@ -41,7 +41,8 @@
             android:orientation="vertical"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/input">
+            app:layout_constraintTop_toBottomOf="@+id/ll_weight"
+            >
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -73,32 +74,58 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/male"
+                <RadioGroup
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_24sdp"
-                    android:background="@drawable/sign_in_up_bg"
-                    android:clickable="true"
-                    android:fontFamily="@font/opensans_light"
-                    android:gravity="center"
-                    android:text="@string/male"
-                    android:textColor="@color/Blue"
-                    android:textStyle="bold" />
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
 
-                <Button
-                    android:id="@+id/female"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_24sdp"
-                    android:layout_marginStart="@dimen/_7sdp"
-                    android:layout_marginLeft="@dimen/_7sdp"
-                    android:background="@drawable/sign_in_up_bg"
-                    android:clickable="false"
-                    android:fontFamily="@font/opensans_light"
-                    android:gravity="center"
-                    android:text="@string/female"
-                    android:textColor="@color/Blue"
-                    android:textStyle="bold" />
+                    android:id="@+id/bi_radioGroup">
+
+                    <RadioButton
+                        android:id="@+id/bi_maleRadio"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/male"
+                        android:textColor="@color/white"
+                        android:checked="true"
+                        android:buttonTint="@color/white"
+                        android:textSize="@dimen/_13sdp" />
+
+                    <RadioButton
+                        android:id="@+id/bi_femaleRadio"
+                        android:layout_width="fill_parent"
+                        android:textColor="@color/white"
+                        android:layout_height="wrap_content"
+                        android:text="@string/female"
+                        android:buttonTint="@color/white"
+                        android:checked="false"
+                        android:textSize="@dimen/_13sdp" />
+                </RadioGroup>
+<!--                <Button-->
+<!--                    android:id="@+id/male"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="@dimen/_24sdp"-->
+<!--                    android:background="@drawable/sign_in_up_bg"-->
+<!--                    android:clickable="true"-->
+<!--                    android:fontFamily="@font/opensans_light"-->
+<!--                    android:gravity="center"-->
+<!--                    android:text="@string/male"-->
+<!--                    android:textColor="@color/Blue"-->
+<!--                    android:textStyle="bold" />-->
+
+<!--                <Button-->
+<!--                    android:id="@+id/female"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="@dimen/_24sdp"-->
+<!--                    android:layout_marginStart="@dimen/_7sdp"-->
+<!--                    android:layout_marginLeft="@dimen/_7sdp"-->
+<!--                    android:background="@drawable/sign_in_up_bg"-->
+<!--                    android:clickable="false"-->
+<!--                    android:fontFamily="@font/opensans_light"-->
+<!--                    android:gravity="center"-->
+<!--                    android:text="@string/female"-->
+<!--                    android:textColor="@color/Blue"-->
+<!--                    android:textStyle="bold" />-->
 
             </LinearLayout>
 
@@ -119,7 +146,8 @@
             android:orientation="vertical"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_gender">
+            app:layout_constraintTop_toBottomOf="@+id/input"
+            >
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -141,7 +169,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_6sdp"
                     android:fontFamily="@font/opensans_light"
-                    android:text="@string/weight"
+                    android:text="@string/yourweight"
                     android:textColor="@color/White"
                     android:textSize="@dimen/_11sdp"
                     android:textStyle="bold" />
@@ -152,7 +180,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="-23dip"
-                android:layout_marginBottom="-23dip"
                 android:orientation="horizontal">
 
                 <NumberPicker
@@ -192,7 +219,7 @@
             android:orientation="vertical"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_weight">
+            app:layout_constraintTop_toBottomOf="@+id/ll_gender">
 
             <LinearLayout
                 android:layout_width="wrap_content"

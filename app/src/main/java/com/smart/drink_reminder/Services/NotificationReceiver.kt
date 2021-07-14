@@ -33,17 +33,17 @@ class NotificationReceiver : BroadcastReceiver() {
         val totaldrink = mPrefs.getInt("totaldrink", 0)
         val getinput = mPrefs.getInt("dailygoal", 3000)
         val getgoaltype = mPrefs.getString("goaltype", "ml")!!
-        if (!mPrefs!!.getBoolean("reminderSwitch", false)) {
-            if (!mPrefs!!.getBoolean("permanent_notification", false)) {
+        if (!mPrefs.getBoolean("reminderSwitch", false)) {
+            if (!mPrefs.getBoolean("permanent_notification", false)) {
                 val mBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
                 val ii = Intent(context, MainActivity::class.java)
                 val pendingIntent =
                     PendingIntent.getActivity(context, 0, ii, PendingIntent.FLAG_UPDATE_CURRENT)
                 val bigText = NotificationCompat.BigTextStyle()
-                bigText.setBigContentTitle("It's time to drink water")
+                bigText.setBigContentTitle("Time to drink")
                 mBuilder.setContentIntent(pendingIntent)
-                mBuilder.setSmallIcon(R.drawable.water_glass)
-                mBuilder.setContentTitle("It's time to drink water")
+                mBuilder.setSmallIcon(R.mipmap.ic_launcher)
+                mBuilder.setContentTitle("Time to drink")
                 // mBuilder.setWhen(time)
                 mBuilder.setContentText("$totaldrink/$getinput$getgoaltype")
                 mBuilder.setStyle(bigText)

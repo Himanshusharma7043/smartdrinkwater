@@ -6,7 +6,7 @@
 
     <group android:id="@+id/grp1" >
         <item
-            android:id="@+id/home"
+            android:id="@+id/drawer_home"
             android:icon="@drawable/home_icon"
             android:title="@string/home" />
         <item

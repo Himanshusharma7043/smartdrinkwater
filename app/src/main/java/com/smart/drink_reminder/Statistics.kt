@@ -6,7 +6,9 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -25,7 +27,11 @@ import com.github.mikephil.charting.components.XAxis.XAxisPosition
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.smart.drink_reminder.Database.DatabaseHandler
+import com.smart.drink_reminder.Services.NetworkState
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -55,6 +61,7 @@ class Statistics : AppCompatActivity() {
     lateinit var totalChain: TextView
     lateinit var spinner: Spinner
     lateinit var mPrefs: SharedPreferences
+    lateinit var mAdView: AdView
     var xaxisList: List<String> = java.util.ArrayList()
     var getspin: String? = null
     val c1 = Calendar.getInstance()
@@ -66,7 +73,8 @@ class Statistics : AppCompatActivity() {
     val monthFormat = SimpleDateFormat("MMM yyyy")
     val yearFormat = SimpleDateFormat("yyyy")
     val newDate = Calendar.getInstance()
-    var spinerdata = arrayOf("Weekly stats", "Monthly stats", "Yearly stats", "Lifetime Stats")
+    var spinerdata = arrayOf("Weekly report", "Monthly report", "Yearly report", "Lifetime report")
+//    var spinerdata = arrayOf(getString(R.string.weeklyreport), getString(R.string.monthlyreport), getString(R.string.yearlyreport), getString(R.string.lifetimereprot))
     var yearStats = arrayOf(
         "JAN",
         "FEB",
@@ -109,12 +117,17 @@ class Statistics : AppCompatActivity() {
     var milkLogTotal = 0f
     var fruitLogTotal = 0f
     var sodaLogTotal = 0f
+    var beerLogTotal = 0f
+    var energyLogTotal = 0f
+    var lemonadeLogTotal = 0f
     @SuppressLint("SimpleDateFormat")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mPrefs = getSharedPreferences(
             MyPREFERENCES, Context.MODE_PRIVATE
         )
+        val getlag = mPrefs.getString("language", "en")
+        setLocale(R.layout.activity_main, getlag)
         setContentView(R.layout.activity_statistics)
         DB = DatabaseHandler(this)
         for (i in 1..30) {
@@ -124,7 +137,7 @@ class Statistics : AppCompatActivity() {
                 monthstats.add(" ")
             }
         }
-        Log.e("TAG", "monthstats:$monthstats " )
+        Log.e("TAG", "monthstats:$monthstats ")
         barChart = findViewById(R.id.idBarChart)
         pieChart = findViewById(R.id.idpiechart)
         rightnav = findViewById(R.id.date_right)
@@ -135,7 +148,8 @@ class Statistics : AppCompatActivity() {
         averageVolumeValues = findViewById(R.id.averageVolumeValues)
         averageCompletionValues = findViewById(R.id.averageCompletionValues)
         drinkFrequencyValues = findViewById(R.id.drinkFrequencyValues)
-
+        val appadscd: LinearLayout = findViewById(R.id.stateAdsCV)
+        mAdView = findViewById(R.id.sAdsView)
         sunIMG = findViewById(R.id.sunIMG)
         monIMG = findViewById(R.id.monIMG)
         tueIMG = findViewById(R.id.tueIMG)
@@ -164,13 +178,24 @@ class Statistics : AppCompatActivity() {
         tempcalleft.time = c1.time
         c1.set(Calendar.DAY_OF_WEEK, 7)
         tempcal.time = c1.time
-        Log.e("TAG", "goalAchieve: "+mPrefs.getInt("goalAchieve",0) )
-        Log.e("TAG", "activeDays: "+mPrefs.getInt("activeDays",1) )
+        Log.e("TAG", "goalAchieve: " + mPrefs.getInt("goalAchieve", 0))
+        Log.e("TAG", "activeDays: " + mPrefs.getInt("activeDays", 1))
 
-        averageCompletionText.text=(mPrefs.getInt("goalAchieve",0)/mPrefs.getInt("activeDays",1)).toString()
-        averagePercent.text=(mPrefs.getInt("grandPercent",0)/mPrefs.getInt("activeDays",1)).toString()
-        drinkTapAvgText.text=(mPrefs.getInt("totalTAP",0)/mPrefs.getInt("activeDays",1)).toString()
-
+        averageCompletionText.text =
+            (mPrefs.getInt("goalAchieve", 0) / mPrefs.getInt("activeDays", 1)).toString()
+        averagePercent.text =
+            (mPrefs.getInt("grandPercent", 0) / mPrefs.getInt("activeDays", 1)).toString()
+        drinkTapAvgText.text =
+            (mPrefs.getInt("totalTAP", 0) / mPrefs.getInt("activeDays", 1)).toString()
+        if (!mPrefs.getBoolean("SmartDrinkINAPP", false)) {
+            MobileAds.initialize(this) {}
+            val networkState = NetworkState()
+            if (networkState.isNetworkAvailable(this)) {
+                val adRequest = AdRequest.Builder().build()
+                mAdView.loadAd(adRequest)
+                appadscd.visibility = View.VISIBLE
+             }
+        }
         datePickertext.setOnClickListener() {
             val StartTime = DatePickerDialog(
                 this,
@@ -238,7 +263,7 @@ class Statistics : AppCompatActivity() {
                 id: Long
             ) {
                 getspin = parent?.selectedItem.toString()
-                if (getspin.equals("Weekly stats")) {
+                if (getspin.equals("Weekly report")) {
                     setTimeVisiblity(true)
                     setaxis(7, weekStats.toList())
                     c1.set(Calendar.DAY_OF_WEEK, 1).toString()
@@ -249,16 +274,16 @@ class Statistics : AppCompatActivity() {
                     currentStats = "week"
                     val getdate: Long = getmilis(sdfdate.format(c1.time))
                     setweek(getdate)
-                } else if (getspin.equals("Monthly stats")) {
+                } else if (getspin.equals("Monthly report")) {
                     setTimeVisiblity(true)
-                    Log.e("TAG", "monthstats: "+monthstats.size)
+                    Log.e("TAG", "monthstats: " + monthstats.size)
                     setaxis(30, monthstats)
                     currentStats = "month"
                     datePickertext.text = (monthFormat.format(newDate.time))
                     val num = newDate.getActualMaximum(Calendar.DAY_OF_MONTH)
                     val getdate: Long = getmilis(sdfdate.format(newDate.time))
                     setmonth(getdate, num)
-                } else if (getspin.equals("Yearly stats")) {
+                } else if (getspin.equals("Yearly report")) {
                     setTimeVisiblity(true)
                     currentStats = "year"
                     setaxis(12, yearStats.toList())
@@ -266,7 +291,7 @@ class Statistics : AppCompatActivity() {
                     val getdate: Long = getmilis(sdfdate.format(newDate.time))
                     setyear(getdate)
 
-                } else if (getspin.equals("Lifetime Stats")) {
+                } else if (getspin.equals("Lifetime report")) {
                     setTimeVisiblity(false)
                     xaxisList = listOf()
                     currentStats = "lifetime"
@@ -371,17 +396,17 @@ class Statistics : AppCompatActivity() {
 
     private fun setchaindata() {
         DB = DatabaseHandler(this)
-        val listMil= ArrayList<Long>()
-        val chainData= ArrayList<Float>()
+        val listMil = ArrayList<Long>()
+        val chainData = ArrayList<Float>()
         listMil.clear()
         chainData.clear()
         val calendar = Calendar.getInstance()
         val getdate: Long = getmilis(sdfdate.format(calendar.time))
         val weekCal = Calendar.getInstance()
-        weekCal.timeInMillis=getdate
+        weekCal.timeInMillis = getdate
         for (i in 1..7) {
             weekCal.set(Calendar.DAY_OF_WEEK, i).toString()
-            Log.e("TAG", "Date: "+weekformat.format(weekCal.time) )
+            Log.e("TAG", "Date: " + weekformat.format(weekCal.time))
             calendar.time = weekCal.time
             listMil.add(calendar.timeInMillis)
         }
@@ -407,52 +432,52 @@ class Statistics : AppCompatActivity() {
             Log.e("TAG", "setchaindata: chainData[0]")
             sunIMG.setImageResource(R.drawable.check)
             totalCount++
-        }else{
+        } else {
             sunIMG.setImageResource(R.drawable.cancel)
         }
         if (chainData[1] == 100f) {
             Log.e("TAG", "setchaindata: chainData[1]")
             monIMG.setImageResource(R.drawable.check)
             totalCount++
-        }else{
+        } else {
             monIMG.setImageResource(R.drawable.cancel)
         }
         if (chainData[2] == 100f) {
             Log.e("TAG", "setchaindata: chainData[2]")
             tueIMG.setImageResource(R.drawable.check)
             totalCount++
-        }else{
+        } else {
             tueIMG.setImageResource(R.drawable.cancel)
         }
         if (chainData[3] == 100f) {
             Log.e("TAG", "setchaindata: chainData[3]")
             wedIMG.setImageResource(R.drawable.check)
-        }else{
+        } else {
             wedIMG.setImageResource(R.drawable.cancel)
         }
         if (chainData[4] == 100f) {
             Log.e("TAG", "setchaindata: chainData[4]")
             thuIMG.setImageResource(R.drawable.check)
             totalCount++
-        }else{
+        } else {
             thuIMG.setImageResource(R.drawable.cancel)
         }
         if (chainData[5] == 100f) {
             Log.e("TAG", "setchaindata: chainData[5]")
             friIMG.setImageResource(R.drawable.check)
             totalCount++
-        }else{
+        } else {
             friIMG.setImageResource(R.drawable.cancel)
         }
         if (chainData[6] == 100f) {
             Log.e("TAG", "setchaindata: chainData[6]")
             satIMG.setImageResource(R.drawable.check)
             totalCount++
-        }else{
+        } else {
             satIMG.setImageResource(R.drawable.cancel)
         }
         totalIMG.text = totalCount.toString()
-        totalChain.text= totalCount.toString()
+        totalChain.text = totalCount.toString()
     }
 
     private fun setpiechart() {
@@ -497,7 +522,27 @@ class Statistics : AppCompatActivity() {
             piechartvalue.add(sodaLogTotal)
             total += sodaLogTotal.toInt()
         }
-        if (waterLogTotal == 0f && teaLogTotal == 0f && coffeeLogTotal == 0f && milkLogTotal == 0f && fruitLogTotal == 0f && sodaLogTotal == 0f) {
+        if (mPrefs.getBoolean("PURCHASE", false)) {
+            if (beerLogTotal != 0f) {
+                pieLableName.add("Beer")
+                colorList.add(Color.rgb(183, 27, 92))
+                piechartvalue.add(beerLogTotal)
+                total += beerLogTotal.toInt()
+            }
+            if (energyLogTotal != 0f) {
+                pieLableName.add("Energy Drink")
+                colorList.add(Color.rgb(193, 37, 99))
+                piechartvalue.add(energyLogTotal)
+                total += energyLogTotal.toInt()
+            }
+            if (lemonadeLogTotal != 0f) {
+                pieLableName.add("Lemonade")
+                colorList.add(Color.rgb(122, 73, 56))
+                piechartvalue.add(lemonadeLogTotal)
+                total += lemonadeLogTotal.toInt()
+            }
+        }
+        if (waterLogTotal == 0f && teaLogTotal == 0f && coffeeLogTotal == 0f && milkLogTotal == 0f && fruitLogTotal == 0f && sodaLogTotal == 0f && beerLogTotal == 0f && energyLogTotal == 0f && lemonadeLogTotal == 0f) {
             noOfEmp.add(PieEntry(100f, 0))
         } else {
             noOfEmp.clear()
@@ -518,20 +563,21 @@ class Statistics : AppCompatActivity() {
 
         pieChart.data = data
         val legend: Legend = pieChart.legend
-        legend.textColor=mPrefs.getInt("charttextcolor", Color.BLACK)
+        legend.textColor = mPrefs.getInt("charttextcolor", Color.BLACK)
         val entries = ArrayList<LegendEntry>()
-        if (waterLogTotal == 0f && teaLogTotal == 0f && coffeeLogTotal == 0f && milkLogTotal == 0f && fruitLogTotal == 0f && sodaLogTotal == 0f) {
+        if (waterLogTotal == 0f && teaLogTotal == 0f && coffeeLogTotal == 0f && milkLogTotal == 0f && fruitLogTotal == 0f && sodaLogTotal == 0f && beerLogTotal == 0f && energyLogTotal == 0f && lemonadeLogTotal == 0f) {
             dataSet.setColors(Color.GRAY)
             dataSet.valueTextColor = Color.TRANSPARENT
             legend.isEnabled = false
-            pieChart.centerText = "Total" + "\n0"
+            pieChart.centerText = getString(R.string.total) + "\n0"
             pieChart.setCenterTextColor(mPrefs.getInt("charttextcolor", Color.BLACK))
         } else {
+            pieChart.setCenterTextColor(mPrefs.getInt("charttextcolor", Color.BLACK))
             if (total >= 1000f) {
                 //  val set=().toFloat()
-                pieChart.centerText = "Total:\n ${total / 1000} L"
+                pieChart.centerText = getString(R.string.total)+"\n ${total / 1000} L"
             } else {
-                pieChart.centerText = "Total:\n$total ml"
+                pieChart.centerText = getString(R.string.total)+"\n$total ml"
             }
             legend.isEnabled = true
             for (i in 0 until pieLableName.size) {
@@ -647,6 +693,15 @@ class Statistics : AppCompatActivity() {
                         R.drawable.sodecan -> {
                             sodaLogTotal += getLogval[k].replace("[\\D]".toRegex(), "").toInt()
                         }
+                        R.drawable.beermag -> {
+                            beerLogTotal += getLogval[k].replace("[\\D]".toRegex(), "").toInt()
+                        }
+                        R.drawable.enerydrink -> {
+                            energyLogTotal += getLogval[k].replace("[\\D]".toRegex(), "").toInt()
+                        }
+                        R.drawable.lemonade -> {
+                            lemonadeLogTotal += getLogval[k].replace("[\\D]".toRegex(), "").toInt()
+                        }
                         else -> {
                             Log.e("TAG", "setweek:null ")
                         }
@@ -683,7 +738,7 @@ class Statistics : AppCompatActivity() {
         barChart.invalidate()
         barChart.animateY(2000)
         barChart.notifyDataSetChanged()
-       setpiechart()
+        setpiechart()
     }
 
     private fun setZero() {
@@ -693,6 +748,9 @@ class Statistics : AppCompatActivity() {
         milkLogTotal = 0f
         fruitLogTotal = 0f
         sodaLogTotal = 0f
+        beerLogTotal = 0f
+        energyLogTotal = 0f
+        lemonadeLogTotal = 0f
     }
 
     private fun setmonth(mili: Long, max: Int) {
@@ -738,6 +796,15 @@ class Statistics : AppCompatActivity() {
                         }
                         R.drawable.sodecan -> {
                             sodaLogTotal += getLogval[k].replace("[\\D]".toRegex(), "").toInt()
+                        }
+                        R.drawable.beermag -> {
+                            beerLogTotal += getLogval[k].replace("[\\D]".toRegex(), "").toInt()
+                        }
+                        R.drawable.enerydrink -> {
+                            energyLogTotal += getLogval[k].replace("[\\D]".toRegex(), "").toInt()
+                        }
+                        R.drawable.lemonade -> {
+                            lemonadeLogTotal += getLogval[k].replace("[\\D]".toRegex(), "").toInt()
                         }
                         else -> {
                             Log.e("TAG", "setweek:null ")
@@ -820,6 +887,17 @@ class Statistics : AppCompatActivity() {
                             }
                             R.drawable.sodecan -> {
                                 sodaLogTotal += getLogval[k].replace("[\\D]".toRegex(), "").toInt()
+                            }
+                            R.drawable.beermag -> {
+                                beerLogTotal += getLogval[k].replace("[\\D]".toRegex(), "").toInt()
+                            }
+                            R.drawable.enerydrink -> {
+                                energyLogTotal += getLogval[k].replace("[\\D]".toRegex(), "")
+                                    .toInt()
+                            }
+                            R.drawable.lemonade -> {
+                                lemonadeLogTotal += getLogval[k].replace("[\\D]".toRegex(), "")
+                                    .toInt()
                             }
                             else -> {
                                 Log.e("TAG", "setweek:null ")
@@ -923,6 +1001,18 @@ class Statistics : AppCompatActivity() {
                                     sodaLogTotal += getLogval[k].replace("[\\D]".toRegex(), "")
                                         .toInt()
                                 }
+                                R.drawable.beermag -> {
+                                    beerLogTotal += getLogval[k].replace("[\\D]".toRegex(), "")
+                                        .toInt()
+                                }
+                                R.drawable.enerydrink -> {
+                                    energyLogTotal += getLogval[k].replace("[\\D]".toRegex(), "")
+                                        .toInt()
+                                }
+                                R.drawable.lemonade -> {
+                                    lemonadeLogTotal += getLogval[k].replace("[\\D]".toRegex(), "")
+                                        .toInt()
+                                }
                                 else -> {
                                     Log.e("TAG", "setweek:null ")
                                 }
@@ -979,6 +1069,25 @@ class Statistics : AppCompatActivity() {
             }
         }
         return words
+    }
+    @SuppressLint("NewApi", "CommitPrefEdits")
+    fun setLocale(activity: Int, languageCode: String?) {
+        val languageToLoad = languageCode // your language
+        val locale = Locale(languageToLoad!!)
+        Locale.setDefault(locale)
+        val config = Configuration()
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            config.setLocale(locale)
+//            baseContext.createConfigurationContext(config)
+//        } else {
+            config.locale = locale
+            baseContext.resources.updateConfiguration(
+                config,
+                baseContext.resources.displayMetrics
+            )
+//        }
+        this.setContentView(activity)
+
     }
 }
 

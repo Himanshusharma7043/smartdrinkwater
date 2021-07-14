@@ -1,13 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="google_drive_key"></string>
+
     //testing Ads ID
-    <string name="drink_AdsAPPID">ca-app-pub-3940256099942544~3347511713</string>
-    <string name="drink_banner">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="drink_interstitial">ca-app-pub-3940256099942544/1033173712</string>
+<!--    <string name="drink_AdsAPPID">ca-app-pub-3940256099942544~3347511713</string>-->
+<!--    <string name="drink_banner">ca-app-pub-3940256099942544/6300978111</string>-->
+<!--    <string name="drink_interstitial">ca-app-pub-3940256099942544/1033173712</string>-->
     //Release Ads ID
-    <!--    <string name="drink_AdsAPPID">ca-app-pub-3940256099942544~3347511713</string>-->
-    <!--    <string name="drink_banner">ca-app-pub-3940256099942544/6300978111</string>-->
-    <!--    <string name="drink_interstitial">ca-app-pub-3940256099942544/1033173712</string>-->
+        <string name="drink_AdsAPPID">ca-app-pub-7139778855873237~2206970446</string>
+        <string name="drink_banner">ca-app-pub-7139778855873237/9952764370</string>
+        <string name="drink_interstitial">ca-app-pub-7139778855873237/4115658920</string>
 
     <string name="app_name">Smart Drink Reminder</string>
     <string name="sdp">SmartDrinkReminder</string>
@@ -16,11 +16,13 @@
     <string name="close">Hello blank fragment</string>
     <string name="level">Level</string>
     <string name="droplet">Droplet</string>
-    <string name="input">Input your information to customize your hydration plan</string>
+    <string name="input">Set your information to calculate and customize your daily drink plan</string>
     <string name="apply">APPLY</string>
     <string name="gender">Gender</string>
     <string name="number_picker_formatter">%02d</string>
     <string name="male"> Male  </string>
+    <string name="male_hi">पुरुष</string>
+    <string name="male_gu">પુરુષ</string>
     <string name="female">  Female </string>
     <string name="wake_up">Wake up &amp;  sleep time </string>
     <string name="policynote">By clicking apply you agree with </string>
@@ -62,10 +64,10 @@
     <string name="hindi">हिंदी</string>
     <string name="gujarati">ગુજરાતી</string>
     <string name="cups">Cups</string>
-    <string name="gender_info">Gender is important for automatic daily goal calculation:</string>
+    <string name="gender_info">Gender is important for automatic daily goal determine:</string>
     <string name="selectlanguage">Select language</string>
-    <string name="daily_goal_info">Your recommended daily goal, based on your gender and weight is 2112ml.</string>
-    <string name="weight_info">Weight is used to determine your dialy goal automaticlly.Update your weight:</string>
+    <string name="daily_goal_info">Your recommended daily goal, based on your gender </string>
+    <string name="weight_info">Weight is used to calculate your daily goal ,Update your weight:</string>
     <string name="no_found">No answer has been selected</string>
     <string name="unit_info">Choose between metric and imperial unit for water logging:</string>
     <string name="ok">OK</string>
@@ -74,9 +76,9 @@
     <string name="help">Help</string>
     <string name="contact_us">Contact us</string>
     <string name="share">Share us</string>
-    <string name="reminder_interval">Reminder interval</string>
+    <string name="reminder_interval">Smart reminder interval</string>
     <string name="further_reminder">Further reminder</string>
-    <string name="manage_notification">Manage notification</string>
+    <string name="manage_notification">Notification Setting</string>
     <string name="Stillremindwhen">Still remind when your goal is achieved</string>
     <string name="permanent_notification">Permanent notification</string>
     <string name="sound">Sound</string>
@@ -143,6 +145,32 @@
     <string name="medium_active">Medium active</string>
     <string name="little_active">Little active</string>
     <string name="not_active">Not active</string>
+    <string name="Summer">Summer</string>
+    <string name="spring">Spring</string>
+    <string name="winter">Winter</string>
+    <string name="yourweight">Your weight(kg)</string>
+    <string name="according">according to that your daily goal is</string>
+    <string name="total_sum">Total sum:</string>
+    <string name="weeklyreport">Weekly report</string>
+    <string name="monthlyreport">"Monthly report "</string>
+    <string name="yearlyreport">"Yearly report "</string>
+    <string name="lifetimereprot">Lifetime Report</string>
+    <string name="reminder_off">Reminder off</string>
+    <string name="intake_by_beverages">Intake by beverages</string>
+    <string name="smart_drink_reminder_rank">Smart drink reminder rank :</string>
+    <string name="achieveDailygoal">Achieve Daily goal</string>
+    <string name="makethreecustom">Make Three Custom drinking cups</string>
+    <string name="shareapp">Share app</string>
+    <string name="fivesucc">Five Successfully days in row</string>
+    <string name="monthlyaver">Monthly average above 2150ml</string>
+    <string name="drinkfour">Drink 4 and more cups for 30 Days</string>
+    <string name="timesSuccessfully">5 Times 10 Successfully days in a row</string>
+    <string name="daysaverage">90 Days average above 2150ml</string>
+    <string name="drinksix">Drink 6 or more cups a days for 90 days</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="total">Total:</string>
+    <string name="set">Set</string>
+    <string name="save">Save</string>
     <dimen name="selected_text_size">40dp</dimen>
     <dimen name="text_size">25dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>

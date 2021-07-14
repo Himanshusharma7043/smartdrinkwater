@@ -12,35 +12,37 @@
         android:layout_height="match_parent"
         android:layout_margin="@dimen/_10sdp"
         android:orientation="vertical">
+
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/upgrade_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="@dimen/_10sdp"
-            >
+            app:layout_constraintTop_toTopOf="parent">
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/logoIMG"
                 android:layout_width="@dimen/_35sdp"
                 android:layout_height="@dimen/_35sdp"
                 android:background="@drawable/cardview_bg"
                 android:src="@drawable/achivement_water_icon"
-                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:fontFamily="@font/opensans_bold"
                 android:text="Pro Upgrade"
                 android:textColor="@color/White"
                 android:textSize="@dimen/_17sdp"
-                android:layout_marginLeft="@dimen/_10sdp"
-                android:fontFamily="@font/opensans_bold"
-                app:layout_constraintLeft_toRightOf="@+id/logoIMG"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintLeft_toRightOf="@+id/logoIMG"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
             <ImageView
@@ -48,116 +50,154 @@
                 android:layout_width="@dimen/_30sdp"
                 android:layout_height="@dimen/_24sdp"
                 android:src="@drawable/close"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="@dimen/_200sdp"
-            android:layout_height="@dimen/_200sdp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/amount"
-            android:layout_marginRight="@dimen/_12sdp"
-            android:background="@drawable/upgrade__circle_bg"
-            android:layout_marginBottom="@dimen/_50sdp"
-            android:layout_marginEnd="@dimen/_12sdp">
-           <ImageView
-               android:layout_width="@dimen/_54sdp"
-               android:layout_height="@dimen/_104sdp"
-               android:src="@drawable/water_glass"
-               android:layout_marginTop="@dimen/_20sdp"
-               android:layout_marginLeft="@dimen/_20sdp"
-               app:layout_constraintLeft_toLeftOf="parent"
-               app:layout_constraintRight_toRightOf="parent"
-               app:layout_constraintTop_toTopOf="parent"
-               app:layout_constraintBottom_toBottomOf="parent"
-               android:layout_marginStart="@dimen/_20sdp" />
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+        <!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+        <!--            android:layout_width="@dimen/_200sdp"-->
+        <!--            android:layout_height="@dimen/_200sdp"-->
+        <!--            app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--            app:layout_constraintRight_toRightOf="parent"-->
+        <!--            app:layout_constraintBottom_toTopOf="@+id/amount"-->
+        <!--            android:layout_marginRight="@dimen/_12sdp"-->
+        <!--            android:background="@drawable/upgrade__circle_bg"-->
+        <!--            android:layout_marginBottom="@dimen/_50sdp"-->
+        <!--            android:layout_marginEnd="@dimen/_12sdp">-->
+        <!--           <ImageView-->
+        <!--               android:layout_width="@dimen/_54sdp"-->
+        <!--               android:layout_height="@dimen/_104sdp"-->
+        <!--               android:src="@drawable/water_glass"-->
+        <!--               android:layout_marginTop="@dimen/_20sdp"-->
+        <!--               android:layout_marginLeft="@dimen/_20sdp"-->
+        <!--               app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--               app:layout_constraintRight_toRightOf="parent"-->
+        <!--               app:layout_constraintTop_toTopOf="parent"-->
+        <!--               app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--               android:layout_marginStart="@dimen/_20sdp" />-->
+        <!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/_50sdp"
+            android:layout_marginBottom="@dimen/_7sdp"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            app:layout_constraintBottom_toTopOf="@+id/adsFreeLL"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/upgrade_toolbar"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <TextView
+            android:id="@+id/productAmountTXT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="110.00"
+            android:textColor="@color/Black"
+            android:textSize="@dimen/_28sdp"
+            app:layout_constraintBottom_toTopOf="@+id/premiumBTN"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/amount"
+            android:id="@+id/adsFreeLL"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/drinkLL"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginBottom="@dimen/_60sdp"
-            app:layout_constraintBottom_toTopOf="@+id/premiumBTN">
+            app:layout_constraintRight_toRightOf="parent">
+
             <ImageView
-                android:id="@+id/rupeeIMG"
-                android:layout_width="@dimen/_28sdp"
-                android:layout_height="@dimen/_28sdp"
-                android:src="@drawable/indianrupeesymbol"
-                app:layout_constraintTop_toTopOf="parent"
+                android:id="@+id/dot2"
+                android:layout_width="@dimen/_10sdp"
+                android:layout_height="@dimen/_10sdp"
+                android:src="@drawable/dot_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"/>
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="#2E2E2E" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginLeft="@dimen/_20sdp"
+                android:text="Ads Free"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/_28sdp"
-                android:text="180.00"
-                app:layout_constraintLeft_toRightOf="@+id/rupeeIMG"
+                android:textSize="@dimen/_13sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/dot2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/drinkLL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_15sdp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/productAmountTXT"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <ImageView
+                android:id="@+id/dot1"
+                android:layout_width="@dimen/_10sdp"
+                android:layout_height="@dimen/_10sdp"
+                android:src="@drawable/dot_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+
+                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:tint="#2E2E2E" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginLeft="@dimen/_20sdp"
+                android:text="Get three drinks"
+                android:textColor="@color/Black"
+                android:textSize="@dimen/_13sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/dot1"
+                app:layout_constraintTop_toTopOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/premiumBTN"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_45sdp"
-            app:theme="@style/Theme.MaterialComponents"
-            android:gravity="center"
-            android:textAllCaps="true"
-            app:backgroundTint="#EBFA951A"
-            app:icon="@drawable/crown"
+            android:layout_marginLeft="@dimen/_7sdp"
+            android:layout_marginTop="@dimen/_7sdp"
+            android:layout_marginRight="@dimen/_7sdp"
+            android:layout_marginBottom="@dimen/_20sdp"
             android:fontFamily="@font/opensans_bold"
+            android:gravity="center"
             android:text="Upgrade"
+            android:textAllCaps="true"
+            android:textColor="@color/White"
             android:textSize="@dimen/_13sdp"
+            app:backgroundTint="#EBFA951A"
+            app:cornerRadius="@dimen/_12sdp"
+            app:icon="@drawable/crown"
             app:iconGravity="textStart"
             app:iconPadding="@dimen/_10sdp"
             app:iconTint="@color/Gold"
-            android:textColor="@color/White"
-            app:cornerRadius="@dimen/_12sdp"
-            android:layout_marginBottom="@dimen/_20sdp"
-            android:layout_marginTop="@dimen/_7sdp"
-            android:layout_marginLeft="@dimen/_7sdp"
-            android:layout_marginRight="@dimen/_7sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--            android:id="@+id/restorePurchaseBTN"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="horizontal"-->
-<!--            app:layout_constraintLeft_toLeftOf="parent"-->
-<!--            app:layout_constraintRight_toRightOf="parent"-->
-<!--            android:layout_marginBottom="@dimen/_10sdp"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent">-->
-<!--            <ImageView-->
-<!--                android:id="@+id/clockIMG"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:src="@drawable/restore_vector"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintLeft_toLeftOf="parent"-->
+            app:layout_constraintStart_toStartOf="parent"
+            app:theme="@style/Theme.MaterialComponents" />
 
-<!--                app:tint="@color/textColourlight" />-->
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:textColor="@color/textColourlight"-->
-<!--                android:textSize="@dimen/_10sdp"-->
-<!--                android:text="Restore Purchase"-->
-<!--                android:layout_marginLeft="@dimen/_7sdp"-->
-<!--                app:layout_constraintLeft_toRightOf="@+id/clockIMG"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                android:layout_marginStart="@dimen/_7sdp" />-->
-<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

@@ -6,30 +6,27 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.TimePickerDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.media.RingtoneManager
-import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.*
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.appcompat.widget.Toolbar
-import androidx.cardview.widget.CardView
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
+import com.smart.drink_reminder.Services.NetworkState
 import com.smart.drink_reminder.Services.NotificationReceiver
 import com.smart.drink_reminder.Services.PermanentNotification
 import java.util.*
@@ -72,7 +69,8 @@ class Reminder : AppCompatActivity() {
         val getTheme =
             mPrefs.getInt("theme", AppCompatDelegate.MODE_NIGHT_NO)
         AppCompatDelegate.setDefaultNightMode(getTheme)
-
+        val getlag = mPrefs.getString("language", "en")
+        setLocale(R.layout.activity_main, getlag)
         setContentView(R.layout.activity_reminder)
         index = mPrefs.getInt("soundtype", 0)
         wakesleepText = findViewById(R.id.reminder_wakeupText)
@@ -85,7 +83,7 @@ class Reminder : AppCompatActivity() {
         soundText = findViewById(R.id.soundText)
         soundtypText = findViewById(R.id.soundTypeText)
         vibrationText = findViewById(R.id.vibrationText)
-        val appadscd: CardView = findViewById(R.id.appadscd)
+        val appadscd: LinearLayout = findViewById(R.id.appAdscd_rem)
 
 
         toolbar = findViewById(R.id.reminder_toolbar)
@@ -124,12 +122,17 @@ class Reminder : AppCompatActivity() {
         sleeptime.setOnClickListener() {
             puttime(sleeptime)
         }
+        if (!mPrefs.getBoolean("SmartDrinkINAPP",false)) {
+        MobileAds.initialize(this) {}
         mAdView = findViewById(R.id.madView)
-        val adRequest = AdRequest.Builder().build()
-        mAdView.loadAd(adRequest)
-        Handler().postDelayed({
-            appadscd.visibility=View.VISIBLE
-        }, 3000)
+            val networkState= NetworkState()
+            if (networkState.isNetworkAvailable(this)) {
+                val adRequest = AdRequest.Builder().build()
+                mAdView.loadAd(adRequest)
+                    appadscd.visibility = View.VISIBLE
+
+            }
+        }
         intervalTime.setOnClickListener() {
             var mmzero= false
             var hrzero= false
@@ -167,7 +170,7 @@ class Reminder : AppCompatActivity() {
                 }
                 mmzero = newVal == 0
             }
-            builder.setPositiveButton("OK") { dialog, which ->
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
                 val hours: Int = Integer.parseInt(hrpicker.value.toString())
                 val i: Int = Integer.parseInt(mpicker.value.toString())
                 val minutes: Int = Integer.parseInt(pickerVals[i])
@@ -192,7 +195,7 @@ class Reminder : AppCompatActivity() {
                 Log.e("intervalTime", "" + mPrefs.getInt("intervalTime", 0))
                 dialog.cancel()
 
-            }.setNegativeButton("CANCEL") { dialog, which ->
+            }.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
                 dialog.cancel()
             }
             builder.setView(inflate)
@@ -245,38 +248,38 @@ class Reminder : AppCompatActivity() {
                 }
             }
 
-            builder.setPositiveButton("Ok") { dialog, which ->
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
                 when (radioText) {
                     "Water" -> {
                         soundType.text = "Water"
-                        setPreferencesSound("soundtype", R.raw.waterglass, "Water")
+                        setPreferencesSound( R.raw.waterglass, "Water")
                         setPreferencesTime("channelID", "channelid_1")
                     }
 
                     "Dew Drop" -> {
                         soundType.text = "Dew Drop"
-                        setPreferencesSound("soundtype", R.raw.waterdrop, "Dew Drop")
+                        setPreferencesSound( R.raw.waterdrop, "Dew Drop")
                         setPreferencesTime("channelID", "channelid_2")
                     }
 
                     "Bubbles"
                     -> {
                         soundType.text = "Bubbles"
-                        setPreferencesSound("soundtype", R.raw.bubble, "Bubbles")
+                        setPreferencesSound( R.raw.bubble, "Bubbles")
                         setPreferencesTime("channelID", "channelid_3")
                     }
 
                     "System default" -> {
                         soundType.text = "System Default"
-                        setPreferencesSound("soundtype", 3, "System Default")
+                        setPreferencesSound( 3, "System Default")
                         setPreferencesTime("channelID", "channelid_4")
                     }
                 }
                 Toast.makeText(this, "" + radioText, Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
-            }.setNegativeButton("CANCEL", DialogInterface.OnClickListener { dialog, which ->
+            }.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
                 dialog.dismiss()
-            })
+            }
             val dialog: AlertDialog = builder.create()
             dialog.show()
 
@@ -337,9 +340,9 @@ class Reminder : AppCompatActivity() {
         sendnotification()
     }
 
-    private fun setPreferencesSound(s: String, s1: Int, s3: String) {
+    private fun setPreferencesSound( s1: Int, s3: String) {
         val editor = sharedpreferences!!.edit()
-        editor.putInt(s, s1)
+        editor.putInt("soundtype", s1)
         editor.putString("soundName", s3)
         editor.apply()
     }
@@ -543,6 +546,25 @@ class Reminder : AppCompatActivity() {
                 )
             }
         }
+
+    }
+    @SuppressLint("NewApi", "CommitPrefEdits")
+    fun setLocale(activity: Int, languageCode: String?) {
+        val languageToLoad = languageCode // your language
+        val locale = Locale(languageToLoad!!)
+        Locale.setDefault(locale)
+        val config = Configuration()
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            config.setLocale(locale)
+//            baseContext.createConfigurationContext(config)
+//        } else {
+            config.locale = locale
+            baseContext.resources.updateConfiguration(
+                config,
+                baseContext.resources.displayMetrics
+            )
+//        }
+        this.setContentView(activity)
 
     }
 }

@@ -97,11 +97,11 @@
                                 android:src="@drawable/achivement_water_icon" />
 
                             <TextView
-                                android:id="@+id/textView"
+                                android:id="@+id/achievement_level"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/opensans_bold"
-                                android:text="Water Student"
+                                android:text="Level 1"
                                 android:textColor="@color/textColour"
                                 android:textSize="@dimen/_10sdp"
                                 android:textStyle="bold" />
@@ -162,20 +162,14 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/appadscd"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_6sdp"
-                app:cardBackgroundColor="@color/cardviewcolour"
-                app:cardElevation="@dimen/_7sdp"
-                android:visibility="gone">
+
 
                 <LinearLayout
-                    android:id="@+id/adsll"
+                    android:id="@+id/appadscd"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/_4sdp"
+                    android:layout_margin="@dimen/_6sdp"
+                    android:visibility="gone"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -187,21 +181,22 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="7dp"
-                        android:layout_marginBottom="5dp"
-                        ads:adSize="BANNER"
+                        android:layout_marginTop="@dimen/_7sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        ads:adSize="MEDIUM_RECTANGLE"
                         ads:adUnitId="@string/drink_banner" />
+
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/setting_weight"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_60sdp"
-                android:layout_marginBottom="@dimen/_3sdp"
-                android:layout_marginTop="@dimen/_10sdp"
                 android:layout_marginLeft="@dimen/_6sdp"
-                app:cardBackgroundColor="@color/cardviewcolour"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:layout_marginRight="@dimen/_6sdp"
+                android:layout_marginBottom="@dimen/_3sdp"
+                app:cardBackgroundColor="@color/cardviewcolour"
                 app:cardElevation="@dimen/_7sdp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -209,14 +204,14 @@
                     android:layout_height="match_parent">
 
                     <ImageView
-                        android:id="@+id/weighticon"
+                        android:id="@+id/rankIMG"
                         android:layout_width="@dimen/_30sdp"
                         android:layout_height="@dimen/_30sdp"
-                        android:src="@drawable/gold_trophy"
+                        android:src="@drawable/thirdrank"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toRightOf="@+id/view"
                         app:layout_constraintTop_toTopOf="parent"
-                        />
+                        app:layout_constraintVertical_bias="0.512" />
 
                     <LinearLayout
                         android:id="@+id/view"
@@ -233,16 +228,17 @@
                             android:layout_marginStart="@dimen/_16sdp"
                             android:layout_marginEnd="@dimen/_16sdp"
                             android:fontFamily="@font/opensans_semibold"
-                            android:text="Smart drink reminder rank :"
+                            android:text="@string/smart_drink_reminder_rank"
                             android:textColor="@color/textColour"
-                            android:textStyle="bold"
-                            android:textSize="@dimen/_13sdp"/>
+                            android:textSize="@dimen/_13sdp"
+                            android:textStyle="bold" />
 
 
                     </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
+
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -266,27 +262,33 @@
                         android:textSize="@dimen/_13sdp"
                         android:textStyle="bold" />
 
-                    <GridLayout
-                        android:id="@+id/gridLayout"
+                    <!--                    <GridLayout-->
+                    <!--                        android:id="@+id/gridLayout"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:alignmentMode="alignMargins"-->
+                    <!--                        android:columnCount="3"-->
+                    <!--                        android:columnOrderPreserved="false"-->
+                    <!--                        android:layout_marginEnd="@dimen/_7sdp"-->
+                    <!--                        android:padding="14dp"-->
+                    <!--                        android:rowCount="3"-->
+                    <!--                        android:layout_marginRight="@dimen/_7sdp">-->
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:alignmentMode="alignMargins"
-                        android:columnCount="3"
-                        android:columnOrderPreserved="false"
-                        android:padding="14dp"
-                        android:rowCount="3">
-
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:weightSum="3">
 
                         <LinearLayout
                             android:id="@+id/strike"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_rowWeight="1"
-                            android:layout_columnWeight="1"
                             android:layout_gravity="center_horizontal|center_vertical"
                             android:layout_marginLeft="@dimen/_10sdp"
                             android:layout_marginRight="@dimen/_10sdp"
-                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical">
 
@@ -295,7 +297,7 @@
                                 android:layout_width="@dimen/_45sdp"
                                 android:layout_height="@dimen/_45sdp"
                                 android:layout_gravity="center_horizontal"
-                                android:layout_margin="@dimen/_4sdp"
+                                android:layout_marginTop="@dimen/_4sdp"
                                 android:alpha="0.3"
                                 android:src="@drawable/mountainflag" />
 
@@ -305,19 +307,17 @@
                                 android:fontFamily="@font/opensans_light"
                                 android:text="Start up"
                                 android:textColor="@color/textColour"
-                                android:textSize="@dimen/_10sdp" />
+                                android:textSize="@dimen/_9sdp" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/cupmaker"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_rowWeight="1"
-                            android:layout_columnWeight="1"
                             android:layout_gravity="center_horizontal|center_vertical"
                             android:layout_marginLeft="@dimen/_10sdp"
                             android:layout_marginRight="@dimen/_10sdp"
-                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical"
                             tools:targetApi="lollipop">
@@ -327,8 +327,9 @@
                                 android:layout_width="@dimen/_45sdp"
                                 android:layout_height="@dimen/_45sdp"
                                 android:layout_gravity="center_horizontal"
-                                android:layout_margin="@dimen/_4sdp"
+                                android:layout_marginTop="@dimen/_4sdp"
                                 android:alpha="0.3"
+
                                 android:src="@drawable/cupmaker" />
 
                             <TextView
@@ -337,19 +338,17 @@
                                 android:fontFamily="@font/opensans_light"
                                 android:text="Cup maker"
                                 android:textColor="@color/textColour"
-                                android:textSize="@dimen/_10sdp" />
+                                android:textSize="@dimen/_9sdp" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/sharell"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_rowWeight="1"
-                            android:layout_columnWeight="1"
                             android:layout_gravity="center_horizontal|center_vertical"
                             android:layout_marginLeft="@dimen/_10sdp"
                             android:layout_marginRight="@dimen/_10sdp"
-                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical"
                             tools:targetApi="lollipop">
@@ -359,7 +358,7 @@
                                 android:layout_width="@dimen/_45sdp"
                                 android:layout_height="@dimen/_45sdp"
                                 android:layout_gravity="center_horizontal"
-                                android:layout_margin="@dimen/_4sdp"
+                                android:layout_marginTop="@dimen/_4sdp"
                                 android:alpha="0.3"
                                 android:src="@drawable/share" />
 
@@ -369,20 +368,25 @@
                                 android:fontFamily="@font/opensans_light"
                                 android:text="Share App"
                                 android:textColor="@color/textColour"
-                                android:textSize="@dimen/_10sdp" />
+                                android:textSize="@dimen/_9sdp" />
                         </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:weightSum="3">
 
                         <LinearLayout
                             android:id="@+id/highfive"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_rowWeight="1"
-                            android:layout_columnWeight="1"
                             android:layout_gravity="center_horizontal|center_vertical"
                             android:layout_marginLeft="@dimen/_10sdp"
                             android:layout_marginRight="@dimen/_10sdp"
-
-                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical"
                             tools:targetApi="lollipop">
@@ -392,29 +396,28 @@
                                 android:layout_width="@dimen/_45sdp"
                                 android:layout_height="@dimen/_45sdp"
                                 android:layout_gravity="center_horizontal"
-                                android:layout_margin="@dimen/_4sdp"
+                                android:layout_marginTop="@dimen/_4sdp"
                                 android:alpha="0.3"
                                 android:src="@drawable/highfive" />
 
                             <TextView
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
+                                android:gravity="center"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/opensans_light"
                                 android:text="Supper moment"
                                 android:textColor="@color/textColour"
-                                android:textSize="@dimen/_10sdp" />
+                                android:textSize="@dimen/_9sdp" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/monthlyboss"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_rowWeight="1"
-                            android:layout_columnWeight="1"
                             android:layout_gravity="center_horizontal|center_vertical"
                             android:layout_marginLeft="@dimen/_10sdp"
                             android:layout_marginRight="@dimen/_10sdp"
-                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical"
                             tools:targetApi="lollipop">
@@ -424,29 +427,28 @@
                                 android:layout_width="@dimen/_45sdp"
                                 android:layout_height="@dimen/_45sdp"
                                 android:layout_gravity="center_horizontal"
-                                android:layout_margin="@dimen/_4sdp"
+                                android:layout_marginTop="@dimen/_4sdp"
                                 android:alpha="0.3"
                                 android:src="@drawable/monthlyboss" />
 
                             <TextView
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
+                                android:gravity="center"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/opensans_light"
                                 android:text="King of month"
                                 android:textColor="@color/textColour"
-                                android:textSize="@dimen/_10sdp" />
+                                android:textSize="@dimen/_9sdp" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/devotion"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_rowWeight="1"
-                            android:layout_columnWeight="1"
                             android:layout_gravity="center_horizontal|center_vertical"
                             android:layout_marginLeft="@dimen/_10sdp"
                             android:layout_marginRight="@dimen/_10sdp"
-                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical"
                             tools:targetApi="lollipop">
@@ -456,7 +458,7 @@
                                 android:layout_width="@dimen/_45sdp"
                                 android:layout_height="@dimen/_45sdp"
                                 android:layout_gravity="center_horizontal"
-                                android:layout_margin="@dimen/_4sdp"
+                                android:layout_marginTop="@dimen/_4sdp"
                                 android:alpha="0.3"
                                 android:src="@drawable/devotion" />
 
@@ -466,19 +468,28 @@
                                 android:fontFamily="@font/opensans_light"
                                 android:text="Loyalty"
                                 android:textColor="@color/textColour"
-                                android:textSize="@dimen/_10sdp" />
+                                android:textSize="@dimen/_9sdp" />
                         </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_10sdp"
+                        android:weightSum="3">
 
                         <LinearLayout
                             android:id="@+id/chainmaster"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_rowWeight="1"
                             android:layout_columnWeight="1"
                             android:layout_gravity="center_horizontal|center_vertical"
                             android:layout_marginLeft="@dimen/_10sdp"
                             android:layout_marginRight="@dimen/_10sdp"
-                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical"
                             tools:targetApi="lollipop">
@@ -488,29 +499,30 @@
                                 android:layout_width="@dimen/_45sdp"
                                 android:layout_height="@dimen/_45sdp"
                                 android:layout_gravity="center_horizontal"
-                                android:layout_margin="@dimen/_4sdp"
+                                android:layout_marginTop="@dimen/_4sdp"
                                 android:alpha="0.3"
                                 android:src="@drawable/chainmaster" />
 
                             <TextView
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
+                                android:gravity="center"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/opensans_light"
                                 android:text="Ring master"
                                 android:textColor="@color/textColour"
-                                android:textSize="@dimen/_10sdp" />
+                                android:textSize="@dimen/_9sdp" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/waterlord"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_rowWeight="1"
                             android:layout_columnWeight="1"
                             android:layout_gravity="center_horizontal|center_vertical"
                             android:layout_marginLeft="@dimen/_10sdp"
                             android:layout_marginRight="@dimen/_10sdp"
-                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical"
                             tools:targetApi="lollipop">
@@ -520,7 +532,7 @@
                                 android:layout_width="@dimen/_45sdp"
                                 android:layout_height="@dimen/_45sdp"
                                 android:layout_gravity="center_horizontal"
-                                android:layout_margin="@dimen/_4sdp"
+                                android:layout_marginTop="@dimen/_4sdp"
                                 android:alpha="0.3"
                                 android:src="@drawable/waterlord" />
 
@@ -530,20 +542,19 @@
                                 android:fontFamily="@font/opensans_light"
                                 android:text="Water power"
                                 android:textColor="@color/textColour"
-                                android:textSize="@dimen/_10sdp" />
+                                android:textSize="@dimen/_9sdp" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/aquahero"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_row="0"
                             android:layout_rowWeight="1"
                             android:layout_columnWeight="1"
                             android:layout_gravity="center_horizontal|center_vertical"
                             android:layout_marginLeft="@dimen/_10sdp"
                             android:layout_marginRight="@dimen/_10sdp"
-                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical"
                             tools:targetApi="lollipop">
@@ -553,7 +564,7 @@
                                 android:layout_width="@dimen/_45sdp"
                                 android:layout_height="@dimen/_45sdp"
                                 android:layout_gravity="center_horizontal"
-                                android:layout_margin="@dimen/_4sdp"
+                                android:layout_marginTop="@dimen/_4sdp"
                                 android:alpha="0.3"
                                 android:src="@drawable/aquahero" />
 
@@ -563,11 +574,12 @@
                                 android:fontFamily="@font/opensans_light"
                                 android:text="Water king"
                                 android:textColor="@color/textColour"
-                                android:textSize="@dimen/_10sdp" />
+                                android:textSize="@dimen/_9sdp" />
                         </LinearLayout>
+                    </LinearLayout>
 
 
-                    </GridLayout>
+                    <!--                    </GridLayout>-->
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

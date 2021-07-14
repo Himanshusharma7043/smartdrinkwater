@@ -5,32 +5,27 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.GridLayout
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
-import androidx.cardview.widget.CardView
-import com.github.florent37.viewtooltip.ViewTooltip
-import com.github.florent37.viewtooltip.ViewTooltip.TooltipView
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.smart.drink_reminder.Database.DatabaseHandler
+import com.smart.drink_reminder.Services.NetworkState
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
-class Achievements : AppCompatActivity(), View.OnClickListener {
+class Achievements : AppCompatActivity() {
     lateinit var toolbar: Toolbar
     lateinit var mAdView: AdView
     lateinit var strike: LinearLayout
@@ -50,14 +45,15 @@ class Achievements : AppCompatActivity(), View.OnClickListener {
     lateinit var aquaHeroIMG: CircleImageView
     lateinit var chainmaster: LinearLayout
     lateinit var waterlord: LinearLayout
-    lateinit var gridLayout: GridLayout
     lateinit var aquahero: LinearLayout
     lateinit var mPrefs: SharedPreferences
     lateinit var editor: SharedPreferences.Editor
     lateinit var DB: DatabaseHandler
     lateinit var goalAchieveTEXT:TextView
     lateinit var totalGoalTEXT:TextView
+    lateinit var level:TextView
     lateinit var progressbar:ProgressBar
+    lateinit var rankIMG:ImageView
     @SuppressLint("SimpleDateFormat")
     val sdfdate = SimpleDateFormat("yyyy-MM-dd")
     val MyPREFERENCES = "DrinkWater"
@@ -71,13 +67,15 @@ class Achievements : AppCompatActivity(), View.OnClickListener {
         val getTheme =
             mPrefs.getInt("theme", AppCompatDelegate.MODE_NIGHT_NO)
         AppCompatDelegate.setDefaultNightMode(getTheme)
+        val getlag = mPrefs.getString("language", "en")
+        setLocale(R.layout.activity_main, getlag)
         setContentView(R.layout.activity_achievements)
         DB = DatabaseHandler(this)
         strike = findViewById(R.id.strike)
         cupmaker = findViewById(R.id.cupmaker)
         share = findViewById(R.id.sharell)
         highfive = findViewById(R.id.highfive)
-        gridLayout = findViewById(R.id.gridLayout)
+//        gridLayout = findViewById(R.id.gridLayout)
         monthlyboss = findViewById(R.id.monthlyboss)
         devotion = findViewById(R.id.devotion)
         chainmaster = findViewById(R.id.chainmaster)
@@ -96,14 +94,16 @@ class Achievements : AppCompatActivity(), View.OnClickListener {
         progressbar=findViewById(R.id.achievementProgressBar)
         goalAchieveTEXT=findViewById(R.id.goalAchieve)
         totalGoalTEXT=findViewById(R.id.achievementTotalGoal)
+        rankIMG=findViewById(R.id.rankIMG)
+        level=findViewById(R.id.achievement_level)
         progressbar.progress=20
-        val appadscd: CardView = findViewById(R.id.appadscd)
+        val appadscd: LinearLayout = findViewById(R.id.appadscd)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         mAdView = findViewById(R.id.madView)
-        val adRequest = AdRequest.Builder().build()
-        mAdView.loadAd(adRequest)
+        level.text=mPrefs.getString("level","Level 1")
+
         val setprogress=mPrefs.getInt("achievementPB",0)
 
         ObjectAnimator.ofInt(progressbar, "progress", setprogress)
@@ -111,9 +111,17 @@ class Achievements : AppCompatActivity(), View.OnClickListener {
             .start()
         goalAchieveTEXT.text=mPrefs.getInt("goalAchieve",0).toString()
         totalGoalTEXT.text=mPrefs.getInt("achievementTotalGoal",5000).toString()
-        Handler().postDelayed({
-            appadscd.visibility = View.VISIBLE
-        }, 3000)
+
+        if (!mPrefs.getBoolean("SmartDrinkINAPP",false)){
+            MobileAds.initialize(this) {}
+            val networkState= NetworkState()
+            if (networkState.isNetworkAvailable(this)) {
+                val adRequest = AdRequest.Builder().build()
+                mAdView.loadAd(adRequest)
+                appadscd.visibility = View.VISIBLE
+             }
+        }
+
         ObjectAnimator.ofInt(progressbar, "progress", mPrefs.getInt("achievementPB",0))
             .setDuration(500)
             .start()
@@ -127,15 +135,22 @@ class Achievements : AppCompatActivity(), View.OnClickListener {
         checkImageVis(aquaHeroIMG,"sixDayscupCountTask")
         checkImageVis(chainMasterIMG,"sevendaysrowTask")
 //        checkAchievements()
-        strike.setOnClickListener(this)
-        cupmaker.setOnClickListener(this)
-        share.setOnClickListener(this)
-        highfive.setOnClickListener(this)
-        monthlyboss.setOnClickListener(this)
-        devotion.setOnClickListener(this)
-        chainmaster.setOnClickListener(this)
-        waterlord.setOnClickListener(this)
-        aquahero.setOnClickListener(this)
+//        strike.setOnClickListener(this)
+//        cupmaker.setOnClickListener(this)
+//        share.setOnClickListener(this)
+//        highfive.setOnClickListener(this)
+//        monthlyboss.setOnClickListener(this)
+//        devotion.setOnClickListener(this)
+//        chainmaster.setOnClickListener(this)
+//        waterlord.setOnClickListener(this)
+//        aquahero.setOnClickListener(this)
+        if (mPrefs.getInt("totalAchieve",0) in 0..3){
+            rankIMG.setImageResource(R.drawable.thirdrank)
+        }else if(mPrefs.getInt("totalAchieve",0) in 3..6){
+            rankIMG.setImageResource(R.drawable.secondrank)
+        }else if(mPrefs.getInt("totalAchieve",0)>=9){
+            rankIMG.setImageResource(R.drawable.gold_trophy)
+        }
     }
 
     private fun checkImageVis(img: CircleImageView?, name: String) {
@@ -162,63 +177,71 @@ class Achievements : AppCompatActivity(), View.OnClickListener {
     }
     @SuppressLint("SimpleDateFormat")
 
-    fun convertStringToArray(str: String): ArrayList<String> {
-        val strSeparator = ","
-        val words = ArrayList<String>()
-        for (w in str.trim(' ').split(strSeparator)) {
-            if (w.isNotEmpty()) {
-                words.add(w)
-            }
-        }
-        return words
-    }
-    @SuppressLint("SimpleDateFormat")
 
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.strike -> {
-                setTooltip(strike, "Achieve Daily goal")//complete
-            }
-            R.id.cupmaker -> {
-                setTooltip(cupmaker, "Make Three Custom drinking cups")
-            }
-            R.id.sharell -> {
-                setTooltip(share, "Share App")//complete
-            }
-            R.id.highfive -> {
-                setTooltip(highfive, "Five Successfully days in row")//complete
-            }
-            R.id.monthlyboss -> {
-                setTooltip(monthlyboss, "Monthly average above 2150ml")//complete
-            }
-            R.id.devotion -> {
-                setTooltip(devotion, "Drink 4 and more cups for 30 Days")//complete
-            }
-            R.id.chainmaster -> {
-                setTooltip(chainmaster, "5 Times 10 Successfully days in a row")
-            }
-            R.id.waterlord -> {
-                setTooltip(waterlord, "90 Days average above 2150ml")//complete
-            }
-            R.id.aquahero -> {
-                setTooltip(aquahero, "Drink 6 or more cups a days for 90 days")//complete
-            }
-        }
-    }
 
-    private fun setTooltip(layout: LinearLayout, name: String) {
-        val viewTooltip: TooltipView = ViewTooltip
-            .on(layout)
-            .color(Color.BLUE)
-            .textColor(Color.WHITE)
-            .autoHide(true, 1000)
-            .distanceWithView(0)
-            .arrowHeight(15)
-            .arrowWidth(15)
-            .padding(20, 20, 20, 20)
-            .position(ViewTooltip.Position.BOTTOM)
-            .text(name)
-            .show()
+//    override fun onClick(v: View?) {
+//        when (v?.id) {
+//            R.id.strike -> {
+//                setTooltip(strike, getString(R.string.achieveDailygoal))//complete
+//            }
+//            R.id.cupmaker -> {
+//                setTooltip(cupmaker, getString(R.string.makethreecustom))
+//            }
+//            R.id.sharell -> {
+//                setTooltip(share, getString(R.string.shareapp))//complete
+//            }
+//            R.id.highfive -> {
+//                setTooltip(highfive, getString(R.string.fivesucc))//complete
+//            }
+//            R.id.monthlyboss -> {
+//                setTooltip(monthlyboss,  getString(R.string.monthlyaver))//complete
+//            }
+//            R.id.devotion -> {
+//                setTooltip(devotion,  getString(R.string.drinkfour))//complete
+//            }
+//            R.id.chainmaster -> {
+//                setTooltip(chainmaster,  getString(R.string.timesSuccessfully))
+//            }
+//            R.id.waterlord -> {
+//                setTooltip(waterlord,  getString(R.string.daysaverage))//complete
+//            }
+//            R.id.aquahero -> {
+//                setTooltip(aquahero,  getString(R.string.drinksix))//complete
+//            }
+//        }
+//    }
+
+//    private fun setTooltip(layout: LinearLayout, name: String) {
+//        val viewTooltip: TooltipView = ViewTooltip
+//            .on(layout)
+//            .color(Color.BLUE)
+//            .textColor(Color.WHITE)
+//            .autoHide(true, 1000)
+//            .distanceWithView(0)
+//            .arrowHeight(15)
+//            .arrowWidth(15)
+//            .padding(20, 20, 20, 20)
+//            .position(ViewTooltip.Position.BOTTOM)
+//            .text(name)
+//            .show()
+//    }
+    fun setLocale(activity: Int, languageCode: String?) {
+        val languageToLoad = languageCode // your language
+        val locale = Locale(languageToLoad!!)
+        Locale.setDefault(locale)
+        val config = Configuration()
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            config.setLocale(locale)
+//            baseContext.createConfigurationContext(config)
+//        } else {
+            config.locale = locale
+            baseContext.resources.updateConfiguration(
+                config,
+                baseContext.resources.displayMetrics
+            )
+//        }
+        this.setContentView(activity)
+
     }
 
 }
