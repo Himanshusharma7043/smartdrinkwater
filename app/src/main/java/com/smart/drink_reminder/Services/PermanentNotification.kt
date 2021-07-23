@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
 import android.os.IBinder
+import android.os.VibrationEffect
 import android.os.Vibrator
 import androidx.annotation.Nullable
 import androidx.annotation.RequiresApi
@@ -18,9 +19,9 @@ import com.smart.drink_reminder.R
 
 class PermanentNotification : Service() {
 
-    override fun onCreate() {
-        super.onCreate()
-    }
+//    override fun onCreate() {
+//        super.onCreate()
+//    }
 
     lateinit var mPrefs: SharedPreferences
 
@@ -35,8 +36,9 @@ class PermanentNotification : Service() {
         val setprogress: Int = mPrefs.getFloat("progress", 0f).toInt()
         val CHANNEL_ONE_ID = "CHANNELP"
         val CHANNEL_ONE_NAME = "Drink water"
-        var notificationChannel: NotificationChannel? = null
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel: NotificationChannel?
             notificationChannel = NotificationChannel(
                 CHANNEL_ONE_ID,
                 CHANNEL_ONE_NAME, IMPORTANCE_HIGH
@@ -45,14 +47,11 @@ class PermanentNotification : Service() {
             notificationChannel.lightColor = Color.RED
             notificationChannel.setShowBadge(true)
             notificationChannel.setSound(null,null)
-
             notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(notificationChannel)
         }
-
         val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
-
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ONE_ID)
         val notification = notificationBuilder
             .setOngoing(true)
@@ -65,10 +64,13 @@ class PermanentNotification : Service() {
             .setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
             .setProgress(100, setprogress, false)
             .setSound(null)
-
             .build()
         val v: Vibrator = this.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        v.vibrate(500)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            v.vibrate(500)
+        }
         notification.flags = Notification.FLAG_ONGOING_EVENT
         notification.flags = notification.flags or Notification.FLAG_NO_CLEAR
         val notificationIntent = Intent(applicationContext, MainActivity::class.java)

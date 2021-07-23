@@ -23,7 +23,7 @@
                 android:layout_margin="@dimen/_2sdp"
                 android:textAlignment="textStart"
                 android:layout_gravity="start"
-                android:text="@string/water"
+                android:text="Water"
                 android:buttonTint="@color/textColour"
                 android:textColor="@color/textColour"
                 android:textSize="@dimen/_16sdp" />

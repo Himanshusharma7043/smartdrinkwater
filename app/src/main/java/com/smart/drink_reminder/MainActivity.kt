@@ -12,7 +12,6 @@ import android.database.Cursor
 import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.media.RingtoneManager
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -877,7 +876,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     "pcselectedString",
                     R.string.not_active
                 )
-            ) + ": +$getpcnum"
+            ) +": +$getpcnum"
             weatherText.text = getString(
                 mPrefs.getInt(
                     "weatherselectedString",
@@ -992,7 +991,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         updateProgressBar(num)
                     }
                 }
-                if (progrvalue == 100f) {
+                if (progrvalue >= 100f) {
                     var rowCount = 0
                     if (!mPrefs.getBoolean("Fivedaysrow", false)) {
                         if (mPrefs.getBoolean("oneTime", true)) {
@@ -1008,7 +1007,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                                 calendar.time = weekCal.time
                                 weekMili.add(calendar.timeInMillis)
                             }
-
                             for (i in 0..4) {
                                 if (DB.checkIfRecordExist(weekMili[i])) {
                                     val getOldRecord = DB.getonevalue(weekMili[i])
@@ -1068,6 +1066,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             drinkSize.text = "100ml"
             putBooleanShareP("firstTIME", false)
         }
+        updatereminderText()
     }
 
     private fun createRewardDialog(image: Int, name: String) {
@@ -1454,8 +1453,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun updatereminderText() {
         if (totaldrink >= mPrefs.getInt("dailygoal", 3000)) {
+            Log.e("TAG", " If:updatereminderText: ", )
             remindTime.text = mPrefs.getString("wake_up_time", "8:00 AM")
         } else {
+            Log.e("TAG", " Else:updatereminderText: ", )
             val nextremindertime: Long = mPrefs.getLong(
                 "lastdrinktime",
                 1621600680000
@@ -1658,11 +1659,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 startActivity(Intent.createChooser(email, "Choose an Email client :"))
             }
             R.id.share -> {
-                val intent = Intent(Intent.ACTION_SEND)
-                val shareBody = "Share app :https://heaveninfotech.com/ "
-                intent.type = "text/plain"
-                intent.putExtra(Intent.EXTRA_TEXT, shareBody)
-                startActivity(Intent.createChooser(intent, "Share App :"))
+                val ishare = Intent(Intent.ACTION_SEND)
+                ishare.type = "text/plain"
+                ishare.putExtra(
+                    Intent.EXTRA_TEXT,
+                    getString(R.string.app_name) + " - http://play.google.com/store/apps/details?id=" + packageName
+                )
+                startActivity(ishare)
                 putBooleanShareP("share", true)
             }
 //            R.id.backup -> {

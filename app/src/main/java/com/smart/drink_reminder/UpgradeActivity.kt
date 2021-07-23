@@ -16,13 +16,10 @@ import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
 import com.android.billingclient.api.*
 import com.android.billingclient.api.BillingClient.BillingResponseCode
-import com.android.billingclient.api.BillingClient.SkuType
 import com.android.billingclient.api.BillingClient.SkuType.INAPP
 import com.smart.drink_reminder.Services.Security
 import com.smart.drink_reminder.Slider.SliderAdapter
 import com.smart.drink_reminder.Slider.SliderData
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.util.*
 
@@ -35,6 +32,7 @@ class UpgradeActivity : AppCompatActivity(), PurchasesUpdatedListener {
     private var billingClient: BillingClient?=null
     lateinit var purchaseButton: Button
     lateinit var productAmountTXT: TextView
+    lateinit var purchaseDesc: TextView
     private var viewPager: ViewPager? = null
     private var sliderAdapter: SliderAdapter? = null
     val sliderDataArrayList: MutableList<SliderData> = ArrayList<SliderData>()
@@ -51,6 +49,7 @@ class UpgradeActivity : AppCompatActivity(), PurchasesUpdatedListener {
         )
         val closeBTN: ImageView = findViewById(R.id.closeUpgrade)
         purchaseButton = findViewById(R.id.premiumBTN)
+        purchaseDesc = findViewById(R.id.purchaseDesc)
         productAmountTXT = findViewById(R.id.productAmountTXT)
         viewPager = findViewById(R.id.viewpager)
         closeBTN.setOnClickListener() {
@@ -203,8 +202,13 @@ private fun loadText(){
         if (billingResult.responseCode == BillingResponseCode.OK) {
             if (skuDetailsList != null && skuDetailsList.size > 0) {
                // textView.setText(skuDetailsList[0].price)
-                Log.e("TAG", "Price: "+skuDetailsList[0].description )
+//                Log.e("TAG", "Price: "+skuDetailsList[0].description )
                 productAmountTXT.text=skuDetailsList[0].price
+                purchaseDesc.text=skuDetailsList[0].description.replace("\\.\\s?".toRegex(), "\\.\n")
+
+                Log.e("TAG", "Desc: ${purchaseDesc.text}")
+
+
             } else {
                 //try to add item/product id "purchase" inside managed product in google play console
                 Log.e(
@@ -276,7 +280,7 @@ private fun loadText(){
                 // else purchase is valid
                 //if item is purchased and not acknowledged
                 if (!purchase.isAcknowledged) {
-                    Log.e("TAG", "isAcknowledged:false ", )
+                    Log.e("TAG", "isAcknowledged:false ")
                     val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
                         .setPurchaseToken(purchase.purchaseToken)
                         .build()
@@ -288,7 +292,7 @@ private fun loadText(){
                 } else {
                     // Grant entitlement to the user on item purchase
                     // restart activity
-                    Log.e("TAG", "isAcknowledged:true ", )
+                    Log.e("TAG", "isAcknowledged:true ")
                     if (!getPurchaseValueFromPref()) {
                         savePurchaseValueToPref(true)
                         Toast.makeText(this, "Item Purchased", Toast.LENGTH_SHORT)

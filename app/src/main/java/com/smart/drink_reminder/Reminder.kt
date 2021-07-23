@@ -51,12 +51,13 @@ class Reminder : AppCompatActivity() {
     lateinit var soundType: TextView
     var notificationManager: NotificationManager? = null
     var sharedpreferences: SharedPreferences? = null
+    lateinit var editor: SharedPreferences.Editor
     val MyPREFERENCES = "DrinkWater"
     lateinit var furtherReminder: SwitchCompat
     lateinit var permanent_notification: SwitchCompat
     lateinit var sound: SwitchCompat
     lateinit var vibration: SwitchCompat
-    lateinit var radioText: String
+     var radioText: String="Water"
     var index: Int? = null
     var reminderCheck: Boolean = true
 
@@ -203,17 +204,20 @@ class Reminder : AppCompatActivity() {
             dialog.show()
         }
         soundType.setOnClickListener() {
+            val soundSelectID=mPrefs.getInt("soundSelectID", R.id.waterSound)
             val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
             builder.setTitle(R.string.NotificationSound)
             val inflater = LayoutInflater.from(this)
             val inflate: View = inflater.inflate(R.layout.sound_type, null)
-            val radioGroup: RadioGroup = inflate.findViewById(R.id.soundType)
+            val radioGroup: RadioGroup? = inflate.findViewById(R.id.soundType)
             builder.setView(inflate)
-            (radioGroup.getChildAt(index!!) as RadioButton).isChecked = true
-            radioGroup.setOnCheckedChangeListener { group, checkedId ->
+//            (radioGroup.getChildAt(index!!) as RadioButton).isChecked = true
+            radioGroup?.check(soundSelectID)
+            radioGroup?.setOnCheckedChangeListener { group, checkedId ->
                 val radioButton = group
                     .findViewById<View>(checkedId) as RadioButton
                 radioText = radioButton.text.toString()
+                Log.e("TAG", "radioText:$radioText " )
                 when (checkedId) {
                     R.id.waterSound -> {
                         val mp: MediaPlayer = MediaPlayer.create(this, R.raw.waterglass)
@@ -252,11 +256,13 @@ class Reminder : AppCompatActivity() {
                 when (radioText) {
                     "Water" -> {
                         soundType.text = "Water"
+                        putIntSharep("soundSelectID", R.id.waterSound)
                         setPreferencesSound( R.raw.waterglass, "Water")
                         setPreferencesTime("channelID", "channelid_1")
                     }
 
                     "Dew Drop" -> {
+                        putIntSharep("soundSelectID", R.id.dewDropSound)
                         soundType.text = "Dew Drop"
                         setPreferencesSound( R.raw.waterdrop, "Dew Drop")
                         setPreferencesTime("channelID", "channelid_2")
@@ -264,12 +270,15 @@ class Reminder : AppCompatActivity() {
 
                     "Bubbles"
                     -> {
+                        putIntSharep("soundSelectID", R.id.bubblesSound)
+
                         soundType.text = "Bubbles"
                         setPreferencesSound( R.raw.bubble, "Bubbles")
                         setPreferencesTime("channelID", "channelid_3")
                     }
 
                     "System default" -> {
+                        putIntSharep("soundSelectID", R.id.systemDefault)
                         soundType.text = "System Default"
                         setPreferencesSound( 3, "System Default")
                         setPreferencesTime("channelID", "channelid_4")
@@ -304,7 +313,6 @@ class Reminder : AppCompatActivity() {
             } else {
                 setPreferencesSwitch("permanent_notification", false)
                 Toast.makeText(this, "OFF", Toast.LENGTH_SHORT).show()
-                //addPermanentnotification(this,"CHANNEL_P",true)
                 NotificationManagerCompat.from(this).cancel("CHANNEL_P", 0)
                 notificationManager!!.cancelAll()
                 stopService()
@@ -566,5 +574,11 @@ class Reminder : AppCompatActivity() {
 //        }
         this.setContentView(activity)
 
+    }
+    @SuppressLint("CommitPrefEdits")
+    private fun putIntSharep(name: String, values: Int) {
+        editor = sharedpreferences!!.edit()
+        editor.putInt(name, values)
+        editor.commit()
     }
 }

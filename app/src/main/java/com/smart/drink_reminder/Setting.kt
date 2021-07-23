@@ -3,6 +3,7 @@ package com.smart.drink_reminder
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
@@ -414,42 +415,50 @@ class Setting : AppCompatActivity() {
             dialog.show()
         }
         language_select.setOnClickListener() {
+            var lanTxt="English"
+            var lanCode="en"
+            var lanID=R.id.eng_language
             val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
             builder.setTitle(R.string.selectlanguage)
             val inflater = LayoutInflater.from(this)
             val inflate: View = inflater.inflate(R.layout.language_select, null)
             val radioGroup: RadioGroup = inflate.findViewById(R.id.language_group)
             builder.setView(inflate)
-            val dialog: AlertDialog = builder.create()
-            dialog.show()
+
             radioGroup.check(sharedPreferences.getInt("languageSelected", R.id.eng_language))
             radioGroup.setOnCheckedChangeListener { group, checkedId ->
                 when (checkedId) {
                     R.id.eng_language -> {
-                        setLocale(R.layout.activity_setting, "en")
-                        putIntSharep("languageSelected", R.id.eng_language)
-                        lanTXT.text = "English"
-                        putStringSharep("lanTXT", "English")
-                        onRestart()
+                        lanTxt="English"
+                        lanCode="en"
+                        lanID=R.id.eng_language
+
                     }
                     R.id.hindi_language
                     -> {
-                        setLocale(R.layout.activity_setting, "hi")
-                        putIntSharep("languageSelected", R.id.hindi_language)
-                        lanTXT.text = getString(R.string.hindi)
-                        putStringSharep("lanTXT", getString(R.string.hindi))
-                        onRestart()
+                        lanTxt=getString(R.string.hindi)
+                        lanCode="hi"
+                        lanID=R.id.hindi_language
+
                     }
                     R.id.gujarati_language -> {
-                        setLocale(R.layout.activity_setting, "gu")
-                        putIntSharep("languageSelected", R.id.gujarati_language)
-                        lanTXT.text = getString(R.string.gujarati)
-                        putStringSharep("lanTXT", getString(R.string.gujarati))
-                        onRestart()
+                        lanTxt=getString(R.string.gujarati)
+                        lanCode="gu"
+                        lanID=R.id.gujarati_language
                     }
                 }
-                dialog.dismiss()
             }
+            builder.setPositiveButton(getString(R.string.set)) { dialog, which ->
+                setLocale(R.layout.activity_setting, lanCode)
+                putIntSharep("languageSelected",lanID)
+                lanTXT.text = lanTxt
+                putStringSharep("lanTXT", lanTxt)
+                onRestart()
+            }.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
+                dialog.cancel()
+            }
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
         }
     }
     @SuppressLint("CommitPrefEdits")
@@ -480,7 +489,7 @@ class Setting : AppCompatActivity() {
     override fun onRestart() {
         super.onRestart()
         finish()
-        startActivity(Intent(this, Setting::class.java))
+        startActivity(Intent(this, MainActivity::class.java))
     }
 
     override fun onStart() {

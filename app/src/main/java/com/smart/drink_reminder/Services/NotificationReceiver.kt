@@ -9,6 +9,7 @@ import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
+import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -44,13 +45,11 @@ class NotificationReceiver : BroadcastReceiver() {
                 mBuilder.setContentIntent(pendingIntent)
                 mBuilder.setSmallIcon(R.mipmap.ic_launcher)
                 mBuilder.setContentTitle("Time to drink")
-                // mBuilder.setWhen(time)
                 mBuilder.setContentText("$totaldrink/$getinput$getgoaltype")
                 mBuilder.setStyle(bigText)
                 mBuilder.setLights(R.color.Blue, 300, 1000)
                 mBuilder.setProgress(100, setprogress, false)
                 if (mPrefs.getBoolean("sound", true)) {
-
                     if (mPrefs.getInt("soundtype", 1) == 3) {
                         Log.e("call", "soundtype=3")
                         mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
@@ -73,7 +72,11 @@ class NotificationReceiver : BroadcastReceiver() {
                 }
                 if (mPrefs.getBoolean("vibration", true)) {
                     val v: Vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                    v.vibrate(500)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+                    } else {
+                        v.vibrate(500)
+                    }
                     mBuilder.setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
                     Log.e("vibration", "true")
                 }
@@ -82,15 +85,12 @@ class NotificationReceiver : BroadcastReceiver() {
                 val mNotificationManager: NotificationManager =
                     context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
                     val channel = NotificationChannel(
                         CHANNEL_ID,
                         "DrinkWater",
                         NotificationManager.IMPORTANCE_HIGH
                     )
-
                     if (mPrefs.getBoolean("sound", true)) {
-
                         if (mPrefs.getBoolean("sound", true)) {
                             if (mPrefs.getInt("soundtype", 1) == 3) {
                                 val audioAttributes = AudioAttributes.Builder()
@@ -128,9 +128,9 @@ class NotificationReceiver : BroadcastReceiver() {
                     }
                     mNotificationManager.createNotificationChannel(channel)
                     mBuilder.setChannelId(CHANNEL_ID)
+                }else{
+                    mNotificationManager.notify(0, mBuilder.build())
                 }
-
-                mNotificationManager.notify(0, mBuilder.build())
                 Log.e("Call", "AlarmReceiver")
             }
         }
