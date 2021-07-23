@@ -1,13 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     //testing Ads ID
-<!--    <string name="drink_AdsAPPID">ca-app-pub-3940256099942544~3347511713</string>-->
-<!--    <string name="drink_banner">ca-app-pub-3940256099942544/6300978111</string>-->
-<!--    <string name="drink_interstitial">ca-app-pub-3940256099942544/1033173712</string>-->
+    <string name="drink_AdsAPPID">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="drink_banner">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="drink_interstitial">ca-app-pub-3940256099942544/1033173712</string>
     //Release Ads ID
-        <string name="drink_AdsAPPID">ca-app-pub-7139778855873237~2206970446</string>
+       <!-- <string name="drink_AdsAPPID">ca-app-pub-7139778855873237~2206970446</string>
         <string name="drink_banner">ca-app-pub-7139778855873237/9952764370</string>
-        <string name="drink_interstitial">ca-app-pub-7139778855873237/4115658920</string>
+        <string name="drink_interstitial">ca-app-pub-7139778855873237/4115658920</string>-->
 
     <string name="app_name">Smart Drink Reminder</string>
     <string name="sdp">SmartDrinkReminder</string>
