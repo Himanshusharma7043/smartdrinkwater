@@ -147,7 +147,6 @@ class Setting : AppCompatActivity() {
 //            dialog.show()
 //        }
         if (!sharedPreferences.getBoolean("SmartDrinkINAPP", false)) {
-            MobileAds.initialize(this) {}
             val networkState = NetworkState()
 
             if (networkState.isNetworkAvailable(this)) {
@@ -519,6 +518,19 @@ class Setting : AppCompatActivity() {
             else -> return false
         }
 
+    }
+    override fun onPause() {
+        if (mAdView!=null) {
+            mAdView.pause();
+        }
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+        super.onDestroy();
     }
     @SuppressLint("CommitPrefEdits")
     private fun putStringSharep(name: String, values: String) {

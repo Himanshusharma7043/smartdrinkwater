@@ -66,5 +66,7 @@
         <item name="android:textColorPrimary">@color/White</item>
         <item name="colorControlNormal">@color/White</item>
     </style>
-
+    <style name="progressBarWhite" parent="@style/Theme.AppCompat">
+        <item name="colorAccent">@color/white</item>
+    </style>
 </resources>

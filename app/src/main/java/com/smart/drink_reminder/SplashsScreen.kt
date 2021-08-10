@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import com.google.android.gms.ads.MobileAds
 
 class SplashsScreen : AppCompatActivity() {
     private val mPref = "DrinkWater"
@@ -17,6 +18,7 @@ class SplashsScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splashs_screen)
+        MobileAds.initialize(this) {}
         val mPrefs = getSharedPreferences(
             mPref, Context.MODE_PRIVATE)
         editor = mPrefs.edit()

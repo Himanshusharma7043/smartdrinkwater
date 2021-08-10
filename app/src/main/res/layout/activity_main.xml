@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="#5F9CBE"
-            android:elevation="10dp"
+            android:elevation="@dimen/_7sdp"
             android:minHeight="?attr/actionBarSize"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,16 +42,6 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-<!--                    <TextView-->
-<!--                        android:id="@+id/level"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:fontFamily="@font/raleway_light"-->
-<!--                        android:gravity="center"-->
-<!--                        android:text="Level 1"-->
-<!--                        android:textColor="@color/white"-->
-<!--                        android:textSize="@dimen/_12sdp" />-->
-
                     <TextView
                         android:id="@+id/droplet"
                         android:layout_width="wrap_content"
@@ -64,29 +54,20 @@
 
                 </LinearLayout>
 
-<!--                <ImageButton-->
-<!--                    android:id="@+id/reminderButton"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginEnd="@dimen/_10sdp"-->
-<!--                    android:layout_marginRight="@dimen/_10sdp"-->
-<!--                    android:background="@android:color/transparent"-->
-<!--                    android:src="@drawable/vd_vectorr"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintRight_toRightOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
-
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.appcompat.widget.Toolbar>
-        <View android:id="@+id/emiter_top_left"
-            android:layout_gravity="top|left"
-            android:layout_marginTop="-20dp"
+
+        <View
+            android:id="@+id/emiter_top_left"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_gravity="top|left"
+            android:layout_marginTop="-20dp"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ScrollView
             android:id="@+id/scrollView1"
             android:layout_width="match_parent"
@@ -169,14 +150,14 @@
                             android:id="@+id/waterMeasures"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_3sdp"
+                            android:layout_marginLeft="@dimen/_3sdp"
                             android:textColor="@color/White"
                             android:textSize="@dimen/_20sdp"
-                            android:layout_marginLeft="@dimen/_3sdp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toRightOf="@+id/waterinput"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:text="ml"
-                            android:layout_marginStart="@dimen/_3sdp" />
+                            tools:text="ml" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -239,64 +220,73 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_10sdp"
                         app:layout_constraintBottom_toBottomOf="@+id/progress_bar"
                         app:layout_constraintEnd_toEndOf="@+id/progress_bar"
                         app:layout_constraintStart_toStartOf="@+id/progress_bar"
-                        app:layout_constraintTop_toTopOf="@+id/progress_bar"
-                        android:layout_marginBottom="@dimen/_10sdp">
+                        app:layout_constraintTop_toTopOf="@+id/progress_bar">
 
-                        <ImageView
-                            android:id="@+id/dropImage"
-                            android:layout_width="@dimen/_70sdp"
-                            android:layout_height="@dimen/_75sdp"
-                            android:src="@drawable/logo_waterdrop"
-                            app:layout_constraintBottom_toBottomOf="parent"
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/cl_drop"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent">
 
-                        <ImageView
-                            android:id="@+id/addNew"
-                            android:layout_width="@dimen/_20sdp"
-                            android:layout_height="@dimen/_20sdp"
-                            android:layout_marginTop="@dimen/_14sdp"
-                            android:src="@drawable/add_withdrop"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:clickable="true"
-                            android:contentDescription="@string/todo"
-                            android:focusable="true"
-                            app:layout_constraintBottom_toBottomOf="parent"
+                            <ImageView
+                                android:id="@+id/dropImage"
+                                android:layout_width="@dimen/_70sdp"
+                                android:layout_height="@dimen/_105sdp"
+                                android:src="@drawable/logo_waterdrop"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageView
+                                android:id="@+id/addNew"
+                                android:layout_width="@dimen/_30sdp"
+                                android:layout_height="@dimen/_25sdp"
+                                android:layout_marginTop="@dimen/_14sdp"
+                                android:background="?android:attr/selectableItemBackground"
+                                android:clickable="true"
+                                android:contentDescription="@string/todo"
+                                android:focusable="true"
+                                android:src="@drawable/add_withdrop"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <TextView
+                            android:id="@+id/task_TXT"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:fontFamily="@font/opensans_light"
+                            android:text="@string/task"
+                            android:textColor="@color/White"
+                            android:textSize="@dimen/_12sdp"
+                            android:textStyle="bold"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-                    <TextView
-                        android:id="@+id/task_TXT"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/task"
-                        android:fontFamily="@font/opensans_light"
-                        android:textColor="@color/White"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:textSize="@dimen/_12sdp"
-                        android:textStyle="bold"
-                        app:layout_constraintTop_toBottomOf="@+id/dropImage"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
-                        />
+                            app:layout_constraintTop_toBottomOf="@+id/cl_drop" />
+
                         <TextView
                             android:id="@+id/level"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/_5sdp"
                             android:fontFamily="@font/raleway_light"
                             android:gravity="center"
                             android:text="Level 1"
                             android:textColor="@color/White"
                             android:textSize="@dimen/_12sdp"
-                            android:layout_marginBottom="@dimen/_5sdp"
                             android:textStyle="bold"
-                            app:layout_constraintTop_toBottomOf="@+id/task_TXT"
                             app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintRight_toRightOf="parent"/>
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/task_TXT" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -307,19 +297,20 @@
                     android:layout_margin="@dimen/_6sdp"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
                     android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/progress_bar">
-                    <com.google.android.gms.ads.AdView
-                        xmlns:ads="http://schemas.android.com/apk/res-auto"
+
+                    <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
                         android:id="@+id/madView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_centerHorizontal="true"
                         android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
                         ads:adSize="BANNER"
-                        ads:adUnitId="@string/drink_banner"/>
+                        ads:adUnitId="@string/drink_banner" />
                 </LinearLayout>
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/waterChoise"
                     android:layout_width="match_parent"
@@ -332,24 +323,23 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
+                        android:background="@android:color/transparent"
                         android:fadingEdge="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toLeftOf="@+id/mid_button"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:np_dividerColor="@android:color/transparent"
                         app:np_formatter="@string/number_picker_formatter"
                         app:np_height="@dimen/_150sdp"
                         app:np_itemSpacing="-0dip"
-                        android:background="@android:color/transparent"
                         app:np_selectedTextColor="@color/White"
                         app:np_selectedTextSize="@dimen/_12sdp"
                         app:np_textColor="#A1FFFFFF"
                         app:np_textSize="@dimen/_8sdp"
                         app:np_wheelItemCount="7"
                         app:np_width="@dimen/_45sdp"
-                        app:np_wrapSelectorWheel="false"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintRight_toLeftOf="@+id/mid_button"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        />
+                        app:np_wrapSelectorWheel="false" />
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/mid_button"
@@ -362,9 +352,9 @@
                         android:drawablePadding="@dimen/_5sdp"
                         android:focusable="true"
                         android:fontFamily="@font/opensans_light"
-                        android:paddingRight="@dimen/_13sdp"
                         android:paddingLeft="@dimen/_13sdp"
                         android:paddingTop="@dimen/_7sdp"
+                        android:paddingRight="@dimen/_13sdp"
                         android:paddingBottom="@dimen/_7sdp"
                         android:text="100ml"
                         android:textColor="@color/Blue"
@@ -374,6 +364,7 @@
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
@@ -396,8 +387,8 @@
                                 android:clickable="true"
                                 android:contentDescription="@string/todo"
                                 android:focusable="true"
-                                android:src="@drawable/circle_drop_down"
                                 android:rotation="180"
+                                android:src="@drawable/circle_drop_down"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintRight_toRightOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
@@ -464,14 +455,14 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:background="@color/cardViewColour">
+                            android:background="@color/cardViewColour"
+                            android:orientation="vertical">
+
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_margin="@dimen/_10sdp"
-                                android:background="#00000029"
-                                >
+                                android:background="#00000029">
 
                                 <TextView
                                     android:id="@+id/reminder_Text"
@@ -548,8 +539,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/_7sdp"
-                        app:cardElevation="@dimen/_7sdp"
                         app:cardCornerRadius="@dimen/_15sdp"
+                        app:cardElevation="@dimen/_7sdp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/main_activity_reminder">
@@ -573,8 +564,8 @@
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/log_rv"
                                 android:layout_width="match_parent"
-                                android:layout_marginTop="@dimen/_10sdp"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_10sdp"
                                 android:scrollbars="vertical"
                                 app:layout_constraintTop_toBottomOf="@+id/water_log_text" />
 
@@ -599,49 +590,50 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
+        android:scrollbars="vertical"
         android:theme="@style/NavigationView"
+        app:elevation="@dimen/_13sdp"
         app:headerLayout="@layout/drawer_image"
         app:itemIconTint="@color/DarkGray"
         app:itemTextColor="@color/textColour"
-        android:scrollbars="vertical"
-        app:elevation="@dimen/_13sdp"
         app:menu="@menu/navigation_drawer">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/upgradeBTN"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_35sdp"
             android:layout_gravity="bottom"
             android:layout_marginBottom="@dimen/_5sdp"
-            android:orientation="vertical"
             android:background="@drawable/ribbon_shape"
-            >
+            android:orientation="vertical">
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_7sdp"
+                android:layout_marginRight="@dimen/_7sdp"
+                android:background="@android:color/transparent"
                 android:src="@drawable/crown"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/upgraderibbon"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginRight="@dimen/_7sdp"
-                app:tint="@color/White"
-                android:background="@android:color/transparent"
-                android:layout_marginEnd="@dimen/_7sdp" />
+                app:tint="@color/White" />
 
             <TextView
                 android:id="@+id/upgraderibbon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textAllCaps="true"
-                android:text="Upgrade"
-                android:textSize="@dimen/_11sdp"
                 android:background="@android:color/transparent"
-                android:textColor="@color/Black"
                 android:fontFamily="@font/opensans_bold"
-                app:layout_constraintTop_toTopOf="parent"
+                android:gravity="center"
+                android:text="Upgrade"
+                android:textAllCaps="true"
+                android:textColor="@color/Black"
+                android:textSize="@dimen/_11sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"/>
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>

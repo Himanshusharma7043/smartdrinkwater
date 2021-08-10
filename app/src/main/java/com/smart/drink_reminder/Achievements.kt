@@ -113,7 +113,6 @@ class Achievements : AppCompatActivity() {
         totalGoalTEXT.text=mPrefs.getInt("achievementTotalGoal",5000).toString()
 
         if (!mPrefs.getBoolean("SmartDrinkINAPP",false)){
-            MobileAds.initialize(this) {}
             val networkState= NetworkState()
             if (networkState.isNetworkAvailable(this)) {
                 val adRequest = AdRequest.Builder().build()
@@ -163,6 +162,20 @@ class Achievements : AppCompatActivity() {
             img.borderColor=Color.RED
             img.borderWidth=4
         }
+    }
+
+    override fun onPause() {
+        if (mAdView!=null) {
+            mAdView.pause();
+        }
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+        super.onDestroy();
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

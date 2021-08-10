@@ -124,7 +124,6 @@ class Reminder : AppCompatActivity() {
             puttime(sleeptime)
         }
         if (!mPrefs.getBoolean("SmartDrinkINAPP",false)) {
-        MobileAds.initialize(this) {}
         mAdView = findViewById(R.id.madView)
             val networkState= NetworkState()
             if (networkState.isNetworkAvailable(this)) {
@@ -574,6 +573,19 @@ class Reminder : AppCompatActivity() {
 //        }
         this.setContentView(activity)
 
+    }
+    override fun onPause() {
+        if (mAdView!=null) {
+            mAdView.pause();
+        }
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+        super.onDestroy();
     }
     @SuppressLint("CommitPrefEdits")
     private fun putIntSharep(name: String, values: Int) {

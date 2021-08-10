@@ -1,26 +1,29 @@
 package com.smart.drink_reminder
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
-import android.widget.Button
-import android.widget.NumberPicker
-import android.widget.RadioGroup
-import android.widget.TextView
-import androidx.annotation.RequiresApi
+import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.ads.*
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.smart.drink_reminder.Database.DatabaseHandler
+import com.smart.drink_reminder.Services.NetworkState
 import java.text.SimpleDateFormat
 import java.util.*
 
-class Basicinfo : AppCompatActivity() {
+class Basicinfo : AppCompatActivity(), View.OnClickListener {
     //    lateinit var male: Button
 //    lateinit var female: Button
+    lateinit var apply: Button
     private lateinit var number: NumberPicker
     lateinit var weight: NumberPicker
     lateinit var radioGroup: RadioGroup
@@ -29,6 +32,7 @@ class Basicinfo : AppCompatActivity() {
     lateinit var editor: SharedPreferences.Editor
     lateinit var wakeup_time_picker: TextView
     lateinit var sleep_time_picker: TextView
+    lateinit var basic_PB: ProgressBar
     val MyPREFERENCES = "DrinkWater"
     var gender: String = "male"
     var id: Int = 1
@@ -38,15 +42,22 @@ class Basicinfo : AppCompatActivity() {
     var selectedWeight: Int? = null
     var dailygoal: Int? = null
     var weight_type: Int? = null
-    @RequiresApi(Build.VERSION_CODES.Q)
-    @SuppressLint("DefaultLocale", "CommitPrefEdits", "SimpleDateFormat")
+    var interstitial: InterstitialAd? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_basicinfo)
+        init()
+
+    }
+    @SuppressLint("CommitPrefEdits")
+    private fun init() {
+
         DB = DatabaseHandler(this)
         sharedPreferences = this.getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE)
         editor = sharedPreferences.edit()
-        val apply: Button = findViewById(R.id.basic_apply)
+        apply = findViewById(R.id.basic_apply)
+        basic_PB = findViewById(R.id.basic_PB)
+        loadAd()
         pickerVals = arrayOf("100ml", "200ml", "300ml")
 //        male = findViewById(R.id.male)
 //        female = findViewById(R.id.female)
@@ -56,12 +67,8 @@ class Basicinfo : AppCompatActivity() {
         sleep_time_picker = findViewById(R.id.sleep_time_picker)
         radioGroup = findViewById(R.id.bi_radioGroup)
         radioGroup.check(R.id.bi_maleRadio)
-        wakeup_time_picker.setOnClickListener {
-            puttime(wakeup_time_picker)
-        }
-        sleep_time_picker.setOnClickListener {
-            puttime(sleep_time_picker)
-        }
+        wakeup_time_picker.setOnClickListener(this)
+        sleep_time_picker.setOnClickListener(this)
         pickerVals = arrayOf("kg", "lbs")
         weight.displayedValues = pickerVals
         weight.maxValue = 1
@@ -72,10 +79,11 @@ class Basicinfo : AppCompatActivity() {
         number.wrapSelectorWheel = true
         radioGroup.check(R.id.bi_maleRadio)
         putIntSharep("genderSelected", R.id.radioMale)
+
         radioGroup.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
                 R.id.bi_maleRadio -> {
-                    gender =getString(R.string.male)
+                    gender = getString(R.string.male)
                     putIntSharep("genderSelected", R.id.radioMale)
                 }
                 R.id.bi_femaleRadio -> {
@@ -111,59 +119,82 @@ class Basicinfo : AppCompatActivity() {
 //            male.setBackgroundColor(resources.getColor(R.color.blur))
 //            female.setBackgroundColor(Color.WHITE)
 //        }
-        apply.setOnClickListener {
-            editor = sharedPreferences.edit()
-            editor.putBoolean("apply", true)
-            editor.commit()
-            weight_number = number.value.toString()
-            weight_type = weight.value
-            val type: String = pickerVals[weight_type!!]
-            selectedWeight = number.value
-            if (sharedPreferences.getInt("genderSelected", R.id.radioMale) == R.id.radioMale) {
-                dailygoal = selectedWeight!! * 35
-                putIntSharep("suggestedDailyGoal", selectedWeight!! * 35)
-                putdataPreferences("targetTXT", "${selectedWeight!! * 35}ml")
-                putIntSharep("dailygoal", number.value * 35)
-                Log.e("TAG", "onCreate:male")
-                putdataPreferences("gender", "Male")
-                putdataPreferences("genderValueTXT", "Male")
-            } else {
-                dailygoal = selectedWeight!! * 32
-                putIntSharep("suggestedDailyGoal", selectedWeight!! * 32)
-                putdataPreferences("targetTXT", "${selectedWeight!! * 32}ml")
-                putIntSharep("dailygoal", number.value * 32)
-                Log.e("TAG", "onCreate:female " )
-                putdataPreferences("gender", "Female")
-                putdataPreferences("genderValueTXT", "Female")
-            }
+        apply.setOnClickListener(this)
+    }
 
-            putdataPreferences("weightTXT", "${number.value}kg")
-            putdataPreferences("weight_type", type)
-            putdataPreferences("weight_number", weight_number!!)
-            putdataPreferences("wake_up_time", wakeup_time_picker.text as String)
-            putdataPreferences("sleep_time", sleep_time_picker.text as String)
-            putdataPreferences("watervalues", "100ml,200ml, 300ml")
-            val sdfdate = SimpleDateFormat("yyyy-MM-dd")
-            val getdate: String = sdfdate.format(Date())
-            val date: Date = sdfdate.parse(getdate)!!
-            val calendar = Calendar.getInstance()
-            val getdatee: Long = getmilis(sdfdate.format(calendar.time))
+    private fun loadAd() {
+        val networkState = NetworkState()
+        if (networkState.isNetworkAvailable(this)) {
+
+            InterstitialAd.load(
+                this,
+                resources.getString(R.string.drink_interstitial),
+                AdRequest.Builder().build(),
+                object : InterstitialAdLoadCallback() {
+                    override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                        Log.e("TAG", "onAdLoaded: ")
+                        //Toast.makeText(applicationContext,"onAdLoaded",Toast.LENGTH_SHORT).show()
+                        interstitial = interstitialAd
+                        basic_PB.visibility=View.GONE
+                        apply.visibility=View.VISIBLE
+                    }
+
+                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                        super.onAdFailedToLoad(loadAdError)
+                        Log.e("Call", "onAdFailedToLoad")
+                        interstitial = null;
+                    }
+                })
+        } else {
+            Log.e("TAG", "Internet not connected: ")
+            basic_PB.visibility=View.GONE
+            apply.visibility=View.VISIBLE
+        }
+
+    }
+
+    @SuppressLint("CommitPrefEdits")
+    private fun showAds() {
+        val networkState = NetworkState()
+        if (networkState.isNetworkAvailable(this)) {
+            if (interstitial != null) {
+                interstitial!!.show(this@Basicinfo)
+                interstitial!!.fullScreenContentCallback =
+                    object : FullScreenContentCallback() {
+                        @SuppressLint("CommitPrefEdits")
+                        override fun onAdDismissedFullScreenContent() {
+                            // Called when fullscreen content is dismissed.
+                            Log.e("TAG", "The ad was dismissed.")
+                            //Toast.makeText(applicationContext,"Main Screen Loaded",Toast.LENGTH_SHORT).show()
+                            editor = sharedPreferences.edit()
+                            editor.putBoolean("apply", true)
+                            editor.commit()
+                            startActivity(Intent(applicationContext, MainActivity::class.java))
+                        }
+                        override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                            // Called when fullscreen content failed to show.
+                            Log.e("TAG", "The ad failed to show.")
+                        }
+
+                        override fun onAdShowedFullScreenContent() {
+                            // Called when fullscreen content is shown.
+                            // Make sure to set your reference to null so you don't
+                            // show it a second time.
+                            //mInterstitialAd = null;
+                            Log.e("TAG", "The ad was shown.")
+                        }
+                    }
+            }else{
+                editor = sharedPreferences.edit()
+                editor.putBoolean("apply", true)
+                editor.commit()
+                startActivity(Intent(applicationContext, MainActivity::class.java))
+            }
+        } else {
             editor = sharedPreferences.edit()
             editor.putBoolean("apply", true)
-            editor.putLong("lastdate", date.time)
-            editor.putBoolean("firstTIME", true)
-            editor.putLong("startedDate", getdatee)
-            editor.putInt("veryActive", (dailygoal!! / 3.65).toInt())
-            editor.putInt("mediumActive", (dailygoal!! / 5.651).toInt())
-            editor.putInt("littleActive", (dailygoal!! / 11.001).toInt())
-            editor.putInt("summersVal", (dailygoal!! / 3.95).toInt())
-            editor.putInt("springVal", (dailygoal!! / 6.10).toInt())
-            editor.putInt("winterVal", (dailygoal!! / 11.85).toInt())
-            editor.putInt("totalAchieve", 0)
             editor.commit()
             startActivity(Intent(this, MainActivity::class.java))
-            weight_number = null
-            weight_type = 0
         }
 
     }
@@ -173,7 +204,6 @@ class Basicinfo : AppCompatActivity() {
         editor.putInt(name, values)
         editor.commit()
     }
-
     @SuppressLint("SimpleDateFormat")
     private fun getmilis(date: String): Long {
         val timeInMilliseconds: Long
@@ -213,6 +243,68 @@ class Basicinfo : AppCompatActivity() {
         )
         timePickerDialog.show()
         Log.e("select_time", "" + select_time)
+    }
+
+    override fun onClick(v: View?) {
+        if (v == wakeup_time_picker) {
+            puttime(wakeup_time_picker)
+        } else if (v == wakeup_time_picker) {
+            puttime(sleep_time_picker)
+        } else if (v == apply) {
+            applyClick()
+        }
+    }
+
+    @SuppressLint("CommitPrefEdits", "SimpleDateFormat")
+    private fun applyClick() {
+        weight_number = number.value.toString()
+        weight_type = weight.value
+        val type: String = pickerVals[weight_type!!]
+        selectedWeight = number.value
+        if (sharedPreferences.getInt("genderSelected", R.id.radioMale) == R.id.radioMale) {
+            dailygoal = selectedWeight!! * 35
+            putIntSharep("suggestedDailyGoal", selectedWeight!! * 35)
+            putdataPreferences("targetTXT", "${selectedWeight!! * 35}ml")
+            putIntSharep("dailygoal", number.value * 35)
+            Log.e("TAG", "onCreate:male")
+            putdataPreferences("gender", "Male")
+            putdataPreferences("genderValueTXT", "Male")
+        } else {
+            dailygoal = selectedWeight!! * 32
+            putIntSharep("suggestedDailyGoal", selectedWeight!! * 32)
+            putdataPreferences("targetTXT", "${selectedWeight!! * 32}ml")
+            putIntSharep("dailygoal", number.value * 32)
+            Log.e("TAG", "onCreate:female ")
+            putdataPreferences("gender", "Female")
+            putdataPreferences("genderValueTXT", "Female")
+        }
+        putdataPreferences("weightTXT", "${number.value}kg")
+        putdataPreferences("weight_type", type)
+        putdataPreferences("weight_number", weight_number!!)
+        putdataPreferences("wake_up_time", wakeup_time_picker.text as String)
+        putdataPreferences("sleep_time", sleep_time_picker.text as String)
+        putdataPreferences("watervalues", "100ml,200ml, 300ml")
+        val sdfdate = SimpleDateFormat("yyyy-MM-dd")
+        val getdate: String = sdfdate.format(Date())
+        val date: Date = sdfdate.parse(getdate)!!
+        val calendar = Calendar.getInstance()
+        val getdatee: Long = getmilis(sdfdate.format(calendar.time))
+        editor = sharedPreferences.edit()
+        //  editor.putBoolean("apply", true)
+        editor.putLong("lastdate", date.time)
+        editor.putBoolean("firstTIME", true)
+        editor.putLong("startedDate", getdatee)
+        editor.putInt("veryActive", (dailygoal!! / 3.65).toInt())
+        editor.putInt("mediumActive", (dailygoal!! / 5.651).toInt())
+        editor.putInt("littleActive", (dailygoal!! / 11.001).toInt())
+        editor.putInt("summersVal", (dailygoal!! / 3.95).toInt())
+        editor.putInt("springVal", (dailygoal!! / 6.10).toInt())
+        editor.putInt("winterVal", (dailygoal!! / 11.85).toInt())
+        editor.putInt("totalAchieve", 0)
+        editor.commit()
+        weight_number = null
+        weight_type = 0
+        showAds()
     }
 
 }

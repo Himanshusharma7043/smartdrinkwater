@@ -51,7 +51,6 @@ class WebViewActivity : AppCompatActivity() {
         webView.scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
         webView.loadUrl(intent.getStringExtra("webUrl")!!)
         if (!mPrefs.getBoolean("SmartDrinkINAPP", false)) {
-            MobileAds.initialize(this) {}
             val networkState = NetworkState()
             if (networkState.isNetworkAvailable(this)) {
                 val adRequest = AdRequest.Builder().build()
@@ -83,6 +82,18 @@ class WebViewActivity : AppCompatActivity() {
             }
             else -> return false
         }
+    }
+    override fun onPause() {
+        if (mAdView!=null) {
+            mAdView.pause();
+        }
+        super.onPause()
+    }
 
+    override fun onDestroy() {
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+        super.onDestroy();
     }
 }

@@ -188,7 +188,6 @@ class Statistics : AppCompatActivity() {
         drinkTapAvgText.text =
             (mPrefs.getInt("totalTAP", 0) / mPrefs.getInt("activeDays", 1)).toString()
         if (!mPrefs.getBoolean("SmartDrinkINAPP", false)) {
-            MobileAds.initialize(this) {}
             val networkState = NetworkState()
             if (networkState.isNetworkAvailable(this)) {
                 val adRequest = AdRequest.Builder().build()
@@ -1088,6 +1087,19 @@ class Statistics : AppCompatActivity() {
 //        }
         this.setContentView(activity)
 
+    }
+    override fun onPause() {
+        if (mAdView!=null) {
+            mAdView.pause();
+        }
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+        super.onDestroy();
     }
 }
 

@@ -322,7 +322,14 @@
                 android:text="@string/apply"
                 android:textColor="@color/Blue"
                 android:textStyle="bold"
+                android:visibility="gone"
                 tools:targetApi="lollipop" />
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/basic_PB"
+                android:theme="@style/progressBarWhite"
+                android:visibility="visible"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"

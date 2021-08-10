@@ -1032,7 +1032,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 updateAchievementPB()
             }
         }
-        MobileAds.initialize(this) {}
         val adsLayout: LinearLayout = findViewById(R.id.adsll)
         mAdView = findViewById(R.id.madView)
 
@@ -1825,6 +1824,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
     }
+    override fun onPause() {
+        if (mAdView!=null) {
+            mAdView.pause();
+        }
+        super.onPause()
+    }
 
+    override fun onDestroy() {
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+        super.onDestroy();
+    }
 }
 
