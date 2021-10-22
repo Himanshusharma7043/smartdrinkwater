@@ -27,9 +27,6 @@ import com.github.mikephil.charting.components.XAxis.XAxisPosition
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
 import com.smart.drink_reminder.Database.DatabaseHandler
 import com.smart.drink_reminder.Services.NetworkState
 import java.text.SimpleDateFormat
@@ -61,7 +58,6 @@ class Statistics : AppCompatActivity() {
     lateinit var totalChain: TextView
     lateinit var spinner: Spinner
     lateinit var mPrefs: SharedPreferences
-    lateinit var mAdView: AdView
     var xaxisList: List<String> = java.util.ArrayList()
     var getspin: String? = null
     val c1 = Calendar.getInstance()
@@ -148,8 +144,6 @@ class Statistics : AppCompatActivity() {
         averageVolumeValues = findViewById(R.id.averageVolumeValues)
         averageCompletionValues = findViewById(R.id.averageCompletionValues)
         drinkFrequencyValues = findViewById(R.id.drinkFrequencyValues)
-        val appadscd: LinearLayout = findViewById(R.id.stateAdsCV)
-        mAdView = findViewById(R.id.sAdsView)
         sunIMG = findViewById(R.id.sunIMG)
         monIMG = findViewById(R.id.monIMG)
         tueIMG = findViewById(R.id.tueIMG)
@@ -187,14 +181,7 @@ class Statistics : AppCompatActivity() {
             (mPrefs.getInt("grandPercent", 0) / mPrefs.getInt("activeDays", 1)).toString()
         drinkTapAvgText.text =
             (mPrefs.getInt("totalTAP", 0) / mPrefs.getInt("activeDays", 1)).toString()
-        if (!mPrefs.getBoolean("SmartDrinkINAPP", false)) {
-            val networkState = NetworkState()
-            if (networkState.isNetworkAvailable(this)) {
-                val adRequest = AdRequest.Builder().build()
-                mAdView.loadAd(adRequest)
-                appadscd.visibility = View.VISIBLE
-             }
-        }
+
         datePickertext.setOnClickListener() {
             val StartTime = DatePickerDialog(
                 this,
@@ -1088,18 +1075,6 @@ class Statistics : AppCompatActivity() {
         this.setContentView(activity)
 
     }
-    override fun onPause() {
-        if (mAdView!=null) {
-            mAdView.pause();
-        }
-        super.onPause()
-    }
 
-    override fun onDestroy() {
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
-        super.onDestroy();
-    }
 }
 

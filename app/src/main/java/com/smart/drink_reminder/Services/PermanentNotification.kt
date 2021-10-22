@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.IBinder
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
 import androidx.annotation.Nullable
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -27,60 +28,67 @@ class PermanentNotification : Service() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        mPrefs = this.getSharedPreferences(
-            "DrinkWater", Context.MODE_PRIVATE
-        )
-        val totaldrink = mPrefs.getInt("totaldrink", 0)
-        val getinput = mPrefs.getInt("dailygoal", 3000)
-        val getgoaltype = mPrefs.getString("goaltype", "ml")!!
-        val setprogress: Int = mPrefs.getFloat("progress", 0f).toInt()
-        val CHANNEL_ONE_ID = "CHANNELP"
-        val CHANNEL_ONE_NAME = "Drink water"
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationChannel: NotificationChannel?
-            notificationChannel = NotificationChannel(
-                CHANNEL_ONE_ID,
-                CHANNEL_ONE_NAME, IMPORTANCE_HIGH
+        try {
+            mPrefs = this.getSharedPreferences(
+                "DrinkWater", Context.MODE_PRIVATE
             )
-            notificationChannel.enableLights(true)
-            notificationChannel.lightColor = Color.RED
-            notificationChannel.setShowBadge(true)
-            notificationChannel.setSound(null,null)
-            notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-            val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            manager.createNotificationChannel(notificationChannel)
-        }
-        val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
-        val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ONE_ID)
-        val notification = notificationBuilder
-            .setOngoing(true)
-            .setChannelId(CHANNEL_ONE_ID)
-            .setContentTitle("Time to drink")
-            .setContentText("$totaldrink/$getinput$getgoaltype")
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setLargeIcon(icon)
-            .setAutoCancel(false)
-            .setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
-            .setProgress(100, setprogress, false)
-            .setSound(null)
-            .build()
-        val v: Vibrator = this.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
-        } else {
-            v.vibrate(500)
-        }
-        notification.flags = Notification.FLAG_ONGOING_EVENT
-        notification.flags = notification.flags or Notification.FLAG_NO_CLEAR
-        val notificationIntent = Intent(applicationContext, MainActivity::class.java)
-        notification.flags = Notification.FLAG_ONGOING_EVENT
-        notification.contentIntent =
-            PendingIntent.getActivity(applicationContext, 0, notificationIntent, 0)
 
-        startForeground(101, notification)
+            val totaldrink = mPrefs.getInt("totaldrink", 0)
+            val getinput = mPrefs.getInt("dailygoal", 3000)
+            val getgoaltype = mPrefs.getString("goaltype", "ml")!!
+            val setprogress: Int = mPrefs.getFloat("progress", 0f).toInt()
+            val CHANNEL_ONE_ID = "CHANNELP"
+            val CHANNEL_ONE_NAME = "Drink water"
 
-        return START_STICKY
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val notificationChannel: NotificationChannel?
+                notificationChannel = NotificationChannel(
+                    CHANNEL_ONE_ID,
+                    CHANNEL_ONE_NAME, IMPORTANCE_HIGH
+                )
+                notificationChannel.enableLights(true)
+                notificationChannel.lightColor = Color.RED
+                notificationChannel.setShowBadge(true)
+                notificationChannel.setSound(null,null)
+                notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+                manager.createNotificationChannel(notificationChannel)
+            }
+            val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
+            val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ONE_ID)
+            val notification = notificationBuilder
+                .setOngoing(true)
+                .setChannelId(CHANNEL_ONE_ID)
+                .setContentTitle("Time to drink")
+                .setContentText("$totaldrink/$getinput$getgoaltype")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon(icon)
+                .setAutoCancel(false)
+                .setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
+                .setProgress(100, setprogress, false)
+                .setSound(null)
+                .build()
+            val v: Vibrator = this.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+            } else {
+                v.vibrate(500)
+            }
+            notification.flags = Notification.FLAG_ONGOING_EVENT
+            notification.flags = notification.flags or Notification.FLAG_NO_CLEAR
+            val notificationIntent = Intent(this, MainActivity::class.java)
+            notification.flags = Notification.FLAG_ONGOING_EVENT
+            notification.contentIntent =
+                PendingIntent.getActivity(this, 0, notificationIntent, 0)
+
+            startForeground(101, notification)
+
+
+        } catch (e: Exception) {
+            Log.e("TAG", "ERROR  onStartCommand: "+e.message )
+        }finally {
+            return START_STICKY
+        }
     }
 
 

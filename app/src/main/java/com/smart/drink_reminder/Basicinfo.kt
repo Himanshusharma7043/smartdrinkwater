@@ -12,9 +12,6 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.ads.*
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.smart.drink_reminder.Database.DatabaseHandler
 import com.smart.drink_reminder.Services.NetworkState
 import java.text.SimpleDateFormat
@@ -42,7 +39,6 @@ class Basicinfo : AppCompatActivity(), View.OnClickListener {
     var selectedWeight: Int? = null
     var dailygoal: Int? = null
     var weight_type: Int? = null
-    var interstitial: InterstitialAd? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_basicinfo)
@@ -56,8 +52,7 @@ class Basicinfo : AppCompatActivity(), View.OnClickListener {
         sharedPreferences = this.getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE)
         editor = sharedPreferences.edit()
         apply = findViewById(R.id.basic_apply)
-        basic_PB = findViewById(R.id.basic_PB)
-        loadAd()
+
         pickerVals = arrayOf("100ml", "200ml", "300ml")
 //        male = findViewById(R.id.male)
 //        female = findViewById(R.id.female)
@@ -92,112 +87,10 @@ class Basicinfo : AppCompatActivity(), View.OnClickListener {
                 }
             }
         }
-//        weight.setOnValueChangedListener { picker, oldVal, newVal ->
-//            if (newVal == 0) {
-//                number.maxValue = 300
-//                number.value=65
-//                number.minValue = 10
-//                number.wrapSelectorWheel = true
-//            } else {
-//                number.maxValue = 661
-//                number.minValue = 22
-//                number.value=65
-//                number.wrapSelectorWheel = true
-//            }
-//        }
-        //    weight_type = weight.value
-//        male.performClick()
-//        female.setBackgroundColor(resources.getColor(R.color.blur))
-//        male.setBackgroundColor(Color.WHITE)
-//        male.setOnClickListener {
-//            gender = "male"
-//            female.setBackgroundColor(resources.getColor(R.color.blur))
-//            male.setBackgroundColor(Color.WHITE)
-//        }
-//        female.setOnClickListener {
-//            gender = "female"
-//            male.setBackgroundColor(resources.getColor(R.color.blur))
-//            female.setBackgroundColor(Color.WHITE)
-//        }
+
         apply.setOnClickListener(this)
     }
 
-    private fun loadAd() {
-        val networkState = NetworkState()
-        if (networkState.isNetworkAvailable(this)) {
-
-            InterstitialAd.load(
-                this,
-                resources.getString(R.string.drink_interstitial),
-                AdRequest.Builder().build(),
-                object : InterstitialAdLoadCallback() {
-                    override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                        Log.e("TAG", "onAdLoaded: ")
-                        //Toast.makeText(applicationContext,"onAdLoaded",Toast.LENGTH_SHORT).show()
-                        interstitial = interstitialAd
-                        basic_PB.visibility=View.GONE
-                        apply.visibility=View.VISIBLE
-                    }
-
-                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                        super.onAdFailedToLoad(loadAdError)
-                        Log.e("Call", "onAdFailedToLoad")
-                        interstitial = null;
-                    }
-                })
-        } else {
-            Log.e("TAG", "Internet not connected: ")
-            basic_PB.visibility=View.GONE
-            apply.visibility=View.VISIBLE
-        }
-
-    }
-
-    @SuppressLint("CommitPrefEdits")
-    private fun showAds() {
-        val networkState = NetworkState()
-        if (networkState.isNetworkAvailable(this)) {
-            if (interstitial != null) {
-                interstitial!!.show(this@Basicinfo)
-                interstitial!!.fullScreenContentCallback =
-                    object : FullScreenContentCallback() {
-                        @SuppressLint("CommitPrefEdits")
-                        override fun onAdDismissedFullScreenContent() {
-                            // Called when fullscreen content is dismissed.
-                            Log.e("TAG", "The ad was dismissed.")
-                            //Toast.makeText(applicationContext,"Main Screen Loaded",Toast.LENGTH_SHORT).show()
-                            editor = sharedPreferences.edit()
-                            editor.putBoolean("apply", true)
-                            editor.commit()
-                            startActivity(Intent(applicationContext, MainActivity::class.java))
-                        }
-                        override fun onAdFailedToShowFullScreenContent(adError: AdError) {
-                            // Called when fullscreen content failed to show.
-                            Log.e("TAG", "The ad failed to show.")
-                        }
-
-                        override fun onAdShowedFullScreenContent() {
-                            // Called when fullscreen content is shown.
-                            // Make sure to set your reference to null so you don't
-                            // show it a second time.
-                            //mInterstitialAd = null;
-                            Log.e("TAG", "The ad was shown.")
-                        }
-                    }
-            }else{
-                editor = sharedPreferences.edit()
-                editor.putBoolean("apply", true)
-                editor.commit()
-                startActivity(Intent(applicationContext, MainActivity::class.java))
-            }
-        } else {
-            editor = sharedPreferences.edit()
-            editor.putBoolean("apply", true)
-            editor.commit()
-            startActivity(Intent(this, MainActivity::class.java))
-        }
-
-    }
     @SuppressLint("CommitPrefEdits")
     private fun putIntSharep(name: String, values: Int) {
         editor = sharedPreferences.edit()
@@ -304,7 +197,10 @@ class Basicinfo : AppCompatActivity(), View.OnClickListener {
         editor.commit()
         weight_number = null
         weight_type = 0
-        showAds()
+        editor = sharedPreferences.edit()
+        editor.putBoolean("apply", true)
+        editor.commit()
+        startActivity(Intent(applicationContext, MainActivity::class.java))
     }
 
 }

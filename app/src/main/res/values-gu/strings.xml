@@ -9,7 +9,6 @@
     <string name="drink_banner">ca-app-pub-7139778855873237/9952764370</string>
     <string name="drink_interstitial">ca-app-pub-7139778855873237/4115658920</string>
 
-
     <string name="sdp">SmartDrinkReminder</string>
     <string name="app_name" >Smart Drink Reminder</string>
     <string name="stay_healthy" >STAY HEALTHY</string>
@@ -82,7 +81,7 @@
     <string name="help_center">Help Center</string>
     <string name="minutes">મિનિટ</string>
     <string name="every">દરેક</string>
-    <string name="setinterval">તમારા રીમાઇન્ડર અંતરાલ સેટ કરો</string>
+    <string name="setinterval">તમારા રીમાઇન્ડર અંતરાલ સેટ કરો (hh:mm)</string>
     <string name="bubbles">Bubbles</string>
     <string name="NotificationSound">સૂચના અવાજ</string>
     <string name="total_intake">કુલ સેવન</string>
@@ -154,6 +153,8 @@
     <string name="total">કુલ:</string>
     <string name="set">સુયોજિત કરવું</string>
     <string name="save">સાચવવું</string>
+    <string name="ratingHint_text">If you love using Smart Drink Reminder, kindly click here and Rate us with a 5 star Review. Your small contribution extremely helpful for us.</string>
+
     <dimen name="selected_text_size">40dp</dimen>
     <dimen name="text_size">25dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>

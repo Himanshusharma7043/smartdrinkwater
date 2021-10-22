@@ -8,7 +8,6 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Typeface
-import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -16,9 +15,6 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
 import com.smart.drink_reminder.Database.DatabaseHandler
 import com.smart.drink_reminder.Services.NetworkState
 import de.hdodenhof.circleimageview.CircleImageView
@@ -27,7 +23,6 @@ import java.util.*
 
 class Achievements : AppCompatActivity() {
     lateinit var toolbar: Toolbar
-    lateinit var mAdView: AdView
     lateinit var strike: LinearLayout
     lateinit var cupmaker: LinearLayout
     lateinit var share: LinearLayout
@@ -97,11 +92,9 @@ class Achievements : AppCompatActivity() {
         rankIMG=findViewById(R.id.rankIMG)
         level=findViewById(R.id.achievement_level)
         progressbar.progress=20
-        val appadscd: LinearLayout = findViewById(R.id.appadscd)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        mAdView = findViewById(R.id.madView)
         level.text=mPrefs.getString("level","Level 1")
 
         val setprogress=mPrefs.getInt("achievementPB",0)
@@ -112,14 +105,7 @@ class Achievements : AppCompatActivity() {
         goalAchieveTEXT.text=mPrefs.getInt("goalAchieve",0).toString()
         totalGoalTEXT.text=mPrefs.getInt("achievementTotalGoal",5000).toString()
 
-        if (!mPrefs.getBoolean("SmartDrinkINAPP",false)){
-            val networkState= NetworkState()
-            if (networkState.isNetworkAvailable(this)) {
-                val adRequest = AdRequest.Builder().build()
-                mAdView.loadAd(adRequest)
-                appadscd.visibility = View.VISIBLE
-             }
-        }
+
 
         ObjectAnimator.ofInt(progressbar, "progress", mPrefs.getInt("achievementPB",0))
             .setDuration(500)
@@ -164,19 +150,7 @@ class Achievements : AppCompatActivity() {
         }
     }
 
-    override fun onPause() {
-        if (mAdView!=null) {
-            mAdView.pause();
-        }
-        super.onPause()
-    }
 
-    override fun onDestroy() {
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
-        super.onDestroy();
-    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

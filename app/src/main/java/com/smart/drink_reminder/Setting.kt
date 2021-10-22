@@ -22,15 +22,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
-import com.smart.drink_reminder.Services.NetworkState
 import java.util.*
 
 @Suppress("DEPRECATION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class Setting : AppCompatActivity() {
-    lateinit var mAdView: AdView
+
     lateinit var sharedPreferences: SharedPreferences
     lateinit var editor: SharedPreferences.Editor
     lateinit var unitTXT: TextView
@@ -57,7 +53,7 @@ class Setting : AppCompatActivity() {
         suggestedDailyGoal = sharedPreferences.getInt("suggestedDailyGoal", 2640)
         val getlag = sharedPreferences.getString("language", "en")
         setLocale(R.layout.activity_setting, getlag)
-        mAdView = findViewById(R.id.madView)
+
         unitTXT = findViewById(R.id.setting_unitTXT)
         weightTXT = findViewById(R.id.setting_weightTXT)
         genderValueTXT = findViewById(R.id.setting_gender_value)
@@ -68,7 +64,7 @@ class Setting : AppCompatActivity() {
         val weight: CardView = findViewById(R.id.setting_weight)
         val gender: CardView = findViewById(R.id.setting_gender)
         val daily_goal: CardView = findViewById(R.id.setting_daily_goal)
-        val appadscd: LinearLayout = findViewById(R.id.setting_ads)
+
         val language_select: CardView = findViewById(R.id.setting_language)
         val themes: CardView = findViewById(R.id.setting_theme)
         toolbar = findViewById(R.id.setting_toolbar)
@@ -85,76 +81,7 @@ class Setting : AppCompatActivity() {
         lanTXT.text = sharedPreferences.getString("lanTXT", "English")!!
         targetTXT.text = sharedPreferences.getString("targetTXT", "3000ml")!!
         themesTXT.text = sharedPreferences.getString("themesTXT", getString(R.string.light))!!
-//        unit.setOnClickListener() {
-//            val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
-//            builder.setTitle(R.string.units)
-//            builder.setMessage(R.string.unit_info)
-//            val inflater = LayoutInflater.from(this)
-//            val inflate: View = inflater.inflate(R.layout.dialog_radiobutton, null)
-//            val radioGroup: RadioGroup = inflate.findViewById(R.id.radioGroup)
-//            val radioButton: RadioButton = inflate.findViewById(R.id.radioMale)
-//            val radioButton1: RadioButton = inflate.findViewById(R.id.radioFemale)
-//            radioButton.text = "kg,ml"
-//            radioButton1.text = "lbs,fl oz"
-//            radioGroup.check(sharedPreferences.getInt("unitSelected", R.id.radioMale))
-//            radioGroup.setOnCheckedChangeListener { group, checkedId ->
-//                when (checkedId) {
-//                    R.id.radioMale -> {
-//                        putIntSharep("unitSelected", R.id.radioMale)
-//                    }
-//                    R.id.radioFemale -> {
-//                        putIntSharep("unitSelected", R.id.radioFemale)
-//                    }
-//                }
-//            }
-//            builder.setPositiveButton(
-//                R.string.ok
-//            ) { dialog, which ->
-//                val selectedId = radioGroup.checkedRadioButtonId
-//                if (selectedId == -1) {
-//                    Toast.makeText(
-//                        this,
-//                        R.string.no_found,
-//                        Toast.LENGTH_SHORT
-//                    )
-//                        .show()
-//                } else {
-//                    val radioButton = radioGroup
-//                        .findViewById(selectedId) as RadioButton
-//                    Toast.makeText(this, radioButton.text, Toast.LENGTH_SHORT).show()
-//                    if (radioButton.text == "kg,ml") {
-//                        unitTXT.text = "kg,ml"
-//                        putStringSharep("weighttype", "kg")
-//                        putStringSharep("goaltype", "ml")
-//                        putStringSharep("unitTXT", "lbs,fl oz")
-//                    } else {
-//                        editor = sharedPreferences.edit()
-//                        editor.putString("weighttype", "lbs")
-//                        editor.commit()
-//                        unitTXT.text = "lbs,fl oz"
-//                        putStringSharep("weighttype", "lbs")
-//                        putStringSharep("unitTXT", "lbs,fl oz")
-//                    }
-//
-//                }
-//            }.setNegativeButton(
-//                R.string.cancel
-//            ) { dialog, which ->
-//                dialog.cancel()
-//            }
-//            builder.setView(inflate)
-//            val dialog: AlertDialog = builder.create()
-//            dialog.show()
-//        }
-        if (!sharedPreferences.getBoolean("SmartDrinkINAPP", false)) {
-            val networkState = NetworkState()
 
-            if (networkState.isNetworkAvailable(this)) {
-                val adRequest = AdRequest.Builder().build()
-                     mAdView.loadAd(adRequest)
-                    appadscd.visibility = View.VISIBLE
-            }
-        }
         gender.setOnClickListener() {
             val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
             builder.setTitle(R.string.gender)
@@ -518,19 +445,6 @@ class Setting : AppCompatActivity() {
             else -> return false
         }
 
-    }
-    override fun onPause() {
-        if (mAdView!=null) {
-            mAdView.pause();
-        }
-        super.onPause()
-    }
-
-    override fun onDestroy() {
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
-        super.onDestroy();
     }
     @SuppressLint("CommitPrefEdits")
     private fun putStringSharep(name: String, values: String) {

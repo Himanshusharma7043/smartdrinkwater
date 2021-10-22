@@ -1,13 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     //testing Ads ID
-<!--    <string name="drink_AdsAPPID">ca-app-pub-3940256099942544~3347511713</string>-->
-<!--    <string name="drink_banner">ca-app-pub-3940256099942544/6300978111</string>-->
-<!--    <string name="drink_interstitial">ca-app-pub-3940256099942544/1033173712</string>-->
+<!--        <string name="drink_AdsAPPID">ca-app-pub-3940256099942544~3347511713</string>-->
+<!--        <string name="drink_banner">ca-app-pub-3940256099942544/6300978111</string>-->
+<!--        <string name="drink_interstitial">ca-app-pub-3940256099942544/1033173712</string>-->
     //Release Ads ID
-        <string name="drink_AdsAPPID">ca-app-pub-7139778855873237~2206970446</string>
-        <string name="drink_banner">ca-app-pub-7139778855873237/9952764370</string>
-        <string name="drink_interstitial">ca-app-pub-7139778855873237/4115658920</string>
+    <string name="drink_AdsAPPID">ca-app-pub-7139778855873237~2206970446</string>
+    <string name="drink_banner">ca-app-pub-7139778855873237/9952764370</string>
+    <string name="drink_interstitial">ca-app-pub-7139778855873237/4115658920</string>
 
     <string name="app_name">Smart Drink Reminder</string>
     <string name="sdp">SmartDrinkReminder</string>
@@ -89,7 +89,7 @@
     <string name="help_center">Help Center</string>
     <string name="minutes">minutes</string>
     <string name="every">Every</string>
-    <string name="setinterval">Set your reminder interval</string>
+    <string name="setinterval">Set your reminder interval (hh:mm)</string>
     <string name="dew_drop">Dew Drop</string>
     <string name="bubbles">Bubbles</string>
     <string name="system_default">System default</string>
@@ -171,6 +171,9 @@
     <string name="total">Total:</string>
     <string name="set">Set</string>
     <string name="save">Save</string>
+    <string name="ratingHint_text">If you love using Smart Drink Reminder, kindly click here and Rate us with a 5 star Review. Your small contribution extremely helpful for us.</string>
+
+
     <dimen name="selected_text_size">40dp</dimen>
     <dimen name="text_size">25dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>

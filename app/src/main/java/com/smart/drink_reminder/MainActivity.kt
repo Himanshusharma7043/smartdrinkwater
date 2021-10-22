@@ -12,6 +12,7 @@ import android.database.Cursor
 import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -33,9 +34,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.*
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.plattysoft.leonids.ParticleSystem
@@ -53,7 +54,8 @@ import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 @SuppressLint("SetTextI18n", "CommitPrefEdits")
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
+    View.OnClickListener {
     lateinit var drawerLayout: DrawerLayout
     lateinit var toolbar: Toolbar
     private var progrvalue: Float = 0f
@@ -95,11 +97,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var waterDrinked: TextView
     lateinit var waterinput: TextView
     lateinit var waterMeasures: TextView
+    lateinit var ratingHintTXT: TextView
+    lateinit var hintExtraHeight: TextView
     lateinit var slash: TextView
     lateinit var cardView: CardView
     lateinit var navigationView: NavigationView
     lateinit var getgoaltype: String
     lateinit var getdrinktype: String
+    lateinit var ratingHintCancel: ImageView
+    lateinit var ratingHint: ConstraintLayout
     var getdrinkimg: Int = 0
     var getdrinktextcolor: Int = 0
     var getlastdate: Long = 0
@@ -128,12 +134,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         R.drawable.enerydrink,
         R.drawable.lemonade
     )
+    var interstitial: InterstitialAd? = null
+    var cupAdapter: CupAdapter? = null
     @SuppressLint(
         "ResourceAsColor", "SetTextI18n", "CommitPrefEdits",
         "UseCompatLoadingForDrawables", "SdCardPath"
     )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        try {
+            init()
+        } catch (e: Exception) {
+            Log.e("TAG", " Error onCreate: " + e.message)
+        }
+    }
+    @SuppressLint("ResourceAsColor")
+    private fun init() {
         mPrefs = getSharedPreferences(
             MyPREFERENCES, Context.MODE_PRIVATE
         )
@@ -141,7 +157,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             mPrefs.getInt("theme", AppCompatDelegate.MODE_NIGHT_NO)
         AppCompatDelegate.setDefaultNightMode(getTheme)
         getval = mPrefs.getInt("getval", 1)
-        Log.e("TAG", "In-app product: " + mPrefs.getBoolean("SmartDrinkINAPP", false))
         getdrinktype = mPrefs.getString("drinktype", "Water")!!
         getdrinkimg = mPrefs.getInt("drinkimg", R.drawable.water_glass)
         getdrinktextcolor = mPrefs.getInt("drinktextcolour", R.color.Blue)
@@ -166,9 +181,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val getlag = mPrefs.getString("language", "en")
         setLocale(R.layout.activity_main, getlag)
         setContentView(R.layout.activity_main)
-        editor = mPrefs.edit()
-        editor.putBoolean("apply", true)
-        editor.commit()
+        putBooleanShareP("apply", true)
         DB = DatabaseHandler(this)
         toolbar = findViewById(R.id.toolbar)
         upgradeBTN = findViewById(R.id.upgradeBTN)
@@ -180,15 +193,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         plusWater = findViewById(R.id.plusWater)
         minusWater = findViewById(R.id.minusWater)
         drinkSize = findViewById(R.id.drinkSize)
-        drinkSize.text = mPrefs.getString("mid_button_text", "100ml")!!
+
         edit_reminder_time = findViewById(R.id.edit_reminder_time)
         weather = findViewById(R.id.weather)
         drawerLayout = findViewById(R.id.drawer_layout)
         mid_button = findViewById(R.id.mid_button)
-        mid_button.text = mPrefs.getString("mid_button_text", "100ml")!!
+
         waterDrinked = findViewById(R.id.waterDrinked)
         waterinput = findViewById(R.id.waterinput)
-        waterinput.text = mPrefs.getInt("dailygoal", 3000).toString()
+
         waterMeasures = findViewById(R.id.waterMeasures)
         waterIndicator = findViewById(R.id.waterindicator)
         slash = findViewById(R.id.slash)
@@ -201,19 +214,39 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         reminder_Text = findViewById(R.id.reminder_Text)
         remindTime = findViewById(R.id.next_reminder)
         levelTEXT = findViewById(R.id.level)
+        ratingHintTXT = findViewById(R.id.ratingHintTXT)
+        ratingHintCancel = findViewById(R.id.ratingHintCancel)
+        ratingHint = findViewById(R.id.ratingHint)
+        hintExtraHeight = findViewById(R.id.hintExtraHeight)
+        ratingHint.setOnClickListener(this)
+        ratingHintTXT.setOnClickListener(this)
+        ratingHintCancel.setOnClickListener(this)
+        upgradeBTN.setOnClickListener(this)
+        physicalActivity.setOnClickListener(this)
+        weather.setOnClickListener(this)
+        reminderCardView.setOnClickListener(this)
+        plusWater.setOnClickListener(this)
+        minusWater.setOnClickListener(this)
+        addNew.setOnClickListener(this)
+        waterIndicator.setOnClickListener(this)
+        mid_button.setOnClickListener(this)
+
+        drinkSize.text = mPrefs.getString("mid_button_text", "100ml")!!
+        mid_button.text = mPrefs.getString("mid_button_text", "100ml")!!
+        waterinput.text = mPrefs.getInt("dailygoal", 3000).toString()
         levelTEXT.text = mPrefs.getString("level", "Level 1")
-        if(mPrefs.getBoolean("SmartDrinkINAPP",false)){
-            upgradeBTN.visibility=View.GONE
-        }else{
-            upgradeBTN.visibility=View.VISIBLE
+
+        if (mPrefs.getBoolean("SmartDrinkINAPP", false)) {
+            upgradeBTN.visibility = View.GONE
+
+        } else {
+            upgradeBTN.visibility = View.VISIBLE
         }
-        upgradeBTN.setOnClickListener() {
-            startActivity(
-                Intent(
-                    this,
-                    UpgradeActivity::class.java
-                )
-            )
+        if (mPrefs.getBoolean("ratingHint", false)) {
+            ratingHint.visibility = View.GONE
+            hintExtraHeight.visibility = View.GONE
+        } else {
+            ratingHint.visibility = View.VISIBLE
         }
         if (mPrefs.getBoolean("reminderSwitch", true)) {
             remindStatus.text = getString(R.string.next_reminder)
@@ -244,341 +277,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
         toggle.drawerArrowDrawable.color = ContextCompat.getColor(this, R.color.White)
         Objects.requireNonNull(supportActionBar)?.setDisplayHomeAsUpEnabled(true)
-
         navigationView.setNavigationItemSelectedListener(this)
         navigationView.menu.findItem(R.id.space).isEnabled = false
         physicalActivity.setImageResource(mPrefs.getInt("pcselectedDrawable", R.drawable.human))
         weather.setImageResource(mPrefs.getInt("weatherselectedDrawable", R.drawable.cloudy))
-        physicalActivity.setOnClickListener() {
-            var pcselectedDrawable = mPrefs.getInt("pcselectedDrawable", R.drawable.human)
-            var pctext1 = mPrefs.getInt("pctext1", R.id.sedentary1)
-            var pctext2 = mPrefs.getInt("pctext2", R.id.sedentary2)
-            var pcimg = mPrefs.getInt("pcimg", R.id.sedentaryimg)
-            var pcadded = mPrefs.getInt("pcadded", 0)
-            var pcselectedString = 0
-            val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
-            builder.setTitle(R.string.Physical_activity)
-            val inflater = LayoutInflater.from(this)
-            val inflate: View = inflater.inflate(R.layout.physicalactivity, null)
-            val veryActiveCL: ConstraintLayout = inflate.findViewById(R.id.veryActiveCL)
-            val moderateActiveCL: ConstraintLayout = inflate.findViewById(R.id.moderateActiveCL)
-            val lightlyActiveCL: ConstraintLayout = inflate.findViewById(R.id.lightlyActiveCL)
-            val sedentaryCL: ConstraintLayout = inflate.findViewById(R.id.sedentaryCL)
-            val very_activeimg: ImageView = inflate.findViewById(R.id.very_activeimg)
-            val moderateactiveimg: ImageView = inflate.findViewById(R.id.moderateactiveimg)
-            val lightlyactiveimg: ImageView = inflate.findViewById(R.id.lightlyactiveimg)
-            val sedentaryimg: ImageView = inflate.findViewById(R.id.sedentaryimg)
-            val very_activetext1: TextView = inflate.findViewById(R.id.very_activetext1)
-            val very_activetext2: TextView = inflate.findViewById(R.id.very_activetext2)
-            val moderate_active1: TextView = inflate.findViewById(R.id.moderate_active1)
-            val moderate_active2: TextView = inflate.findViewById(R.id.moderate_active2)
-            val lightlyactive1: TextView = inflate.findViewById(R.id.lightlyactive1)
-            val lightlyactive2: TextView = inflate.findViewById(R.id.lightlyactive2)
-            val sedentary1: TextView = inflate.findViewById(R.id.sedentary1)
-            val sedentary2: TextView = inflate.findViewById(R.id.sedentary2)
-            very_activetext2.text = "+${mPrefs.getInt("veryActive", 650)}" + " ml"
-            moderate_active2.text = "+${mPrefs.getInt("mediumActive", 450)}" + " ml"
-            lightlyactive2.text = "+${mPrefs.getInt("littleActive", 220)}" + " ml"
-
-            when (pctext1) {
-                very_activetext1.id -> {
-                    preselected(very_activetext1, very_activetext2, very_activeimg)
-                }
-                moderate_active1.id -> {
-                    preselected(moderate_active1, moderate_active2, moderateactiveimg)
-                }
-                lightlyactive1.id -> {
-                    preselected(lightlyactive1, lightlyactive2, lightlyactiveimg)
-                }
-                sedentary1.id -> {
-                    preselected(sedentary1, sedentary2, sedentaryimg)
-                }
-            }
-            veryActiveCL.setOnClickListener() {
-                setselected(very_activeimg, sedentaryimg, moderateactiveimg, lightlyactiveimg)
-                setselectedtext(
-                    very_activetext1,
-                    moderate_active1,
-                    lightlyactive1,
-                    sedentary1,
-                    very_activetext2,
-                    moderate_active2,
-                    lightlyactive2,
-                    sedentary2
-                )
-                pcselectedDrawable = R.drawable.gym
-                pctext1 = very_activetext1.id
-                pctext2 = very_activetext2.id
-                pcimg = very_activeimg.id
-                pcadded = mPrefs.getInt("veryActive", 650)
-
-                pcselectedString = R.string.very_active
-            }
-            moderateActiveCL.setOnClickListener() {
-                setselected(moderateactiveimg, sedentaryimg, very_activeimg, lightlyactiveimg)
-                setselectedtext(
-                    moderate_active1,
-                    very_activetext1,
-                    lightlyactive1,
-                    sedentary1,
-                    moderate_active2,
-                    very_activetext2,
-                    lightlyactive2,
-                    sedentary2
-                )
-                pcselectedDrawable = R.drawable.moderateactive
-                pctext1 = moderate_active1.id
-                pctext2 = moderate_active2.id
-                pcimg = moderateactiveimg.id
-                pcadded = mPrefs.getInt("mediumActive", 450)
-                pcselectedString = R.string.medium_active
-            }
-            lightlyActiveCL.setOnClickListener() {
-                setselected(lightlyactiveimg, moderateactiveimg, very_activeimg, sedentaryimg)
-                setselectedtext(
-                    lightlyactive1,
-                    moderate_active1,
-                    very_activetext1,
-                    sedentary1,
-                    lightlyactive2,
-                    moderate_active2,
-                    very_activetext2,
-                    sedentary2
-                )
-                pcselectedDrawable = R.drawable.lightlyactive
-                pctext1 = lightlyactive1.id
-                pctext2 = lightlyactive2.id
-                pcimg = lightlyactiveimg.id
-                pcadded = mPrefs.getInt("littleActive", 220)
-                pcselectedString = R.string.little_active
-            }
-            sedentaryCL.setOnClickListener() {
-                setselected(sedentaryimg, moderateactiveimg, very_activeimg, lightlyactiveimg)
-                setselectedtext(
-                    sedentary1,
-                    moderate_active1,
-                    lightlyactive1,
-                    very_activetext1,
-                    sedentary2,
-                    moderate_active2,
-                    lightlyactive2,
-                    very_activetext2
-                )
-                pcselectedDrawable = R.drawable.human
-                pctext1 = sedentary1.id
-                pctext2 = sedentary2.id
-                pcimg = sedentaryimg.id
-                pcadded = 0
-                pcselectedString = R.string.not_active
-            }
-            builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
-                val lastadded: Int = mPrefs.getInt("pcadded", 0)
-                var getdrinked: Int = mPrefs.getInt("dailygoal", 3000)
-                Log.e("before getdrinked", "" + getdrinked)
-                Log.e("before pcadded", "" + lastadded)
-
-                if (pctext2 == very_activetext2.id) {
-                    getdrinked -= lastadded
-                    getdrinked += pcadded
-                    Log.e("Call", "very_activetext2")
-                } else if (pctext2 == moderate_active2.id) {
-                    getdrinked -= lastadded
-                    getdrinked += pcadded
-                    Log.e("Call", "moderate_active2")
-
-                } else if (pctext2 == lightlyactive2.id) {
-                    getdrinked -= lastadded
-                    getdrinked += pcadded
-                    Log.e("Call", "lightlyactive2")
-
-                } else if (pctext2 == sedentary2.id) {
-                    getdrinked -= lastadded
-                    getdrinked += pcadded
-                    Log.e("Call", "sedentary2")
-                }
-                animateTextView(mPrefs.getInt("dailygoal", 3000), getdrinked, waterinput)
-                Log.e("After getdrinked", "" + getdrinked)
-                putIntSharep("pcselectedDrawable", pcselectedDrawable)
-                putIntSharep("pctext1", pctext1)
-                putIntSharep("pctext2", pctext2)
-                putIntSharep("pcimg", pcimg)
-                putIntSharep("pcadded", pcadded)
-                putIntSharep("pcselectedString", pcselectedString)
-                putIntSharep("dailygoal", getdrinked)
-                physicalActivity.setImageResource(pcselectedDrawable)
-                Log.e("pcadded", "" + mPrefs.getInt("pcadded", 0))
-                dialog.cancel()
-            }.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
-                dialog.cancel()
-            }
-            builder.setView(inflate)
-            val dialog: AlertDialog = builder.create()
-            dialog.show()
-        }
-        weather.setOnClickListener() {
-            var weatherselectedDrawable =
-                mPrefs.getInt("weatherselectedDrawable", R.drawable.cloudy)
-            var weathertext1 = mPrefs.getInt("weathertext1", R.id.normaltext1)
-            var weathertext11 = mPrefs.getInt("weathertext11", R.id.normaltext11)
-            var weatherimg = mPrefs.getInt("weatherimg", R.id.pc3)
-            var weatheadded = mPrefs.getInt("weatheadded", 0)
-            var weatherselectedString = 0
-            val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
-            builder.setTitle(R.string.Physical_activity)
-            val inflater = LayoutInflater.from(this)
-            val inflate: View = inflater.inflate(R.layout.custom_weather, null)
-            //  val weatherSwtich: SwitchCompat = inflate.findViewById(R.id.weatherSwtich)
-            val hotCL: ConstraintLayout = inflate.findViewById(R.id.hotCL)
-            val warmCL: ConstraintLayout = inflate.findViewById(R.id.warmCL)
-            val normalCL: ConstraintLayout = inflate.findViewById(R.id.normalCL)
-            val coldCL: ConstraintLayout = inflate.findViewById(R.id.coldCL)
-            val hotweatherimg: ImageView = inflate.findViewById(R.id.cw1)
-            val coldweatherimg: ImageView = inflate.findViewById(R.id.pc4)
-            val warmweatherimg: ImageView = inflate.findViewById(R.id.pc2)
-            val normalweatherimg: ImageView = inflate.findViewById(R.id.pc3)
-            val hottext1: TextView = inflate.findViewById(R.id.hottext1)
-            val hottext11: TextView = inflate.findViewById(R.id.hottext11)
-            val warmtext1: TextView = inflate.findViewById(R.id.warmtext1)
-            val warmtext11: TextView = inflate.findViewById(R.id.warmtext11)
-            val normaltext1: TextView = inflate.findViewById(R.id.normaltext1)
-            val normaltext11: TextView = inflate.findViewById(R.id.normaltext11)
-            val coldtext1: TextView = inflate.findViewById(R.id.coldtext1)
-            val coldtext11: TextView = inflate.findViewById(R.id.coldtext11)
-            hottext11.text = "+${mPrefs.getInt("summersVal", 530)}" + " ml"
-            warmtext11.text = "+${mPrefs.getInt("springVal", 325)}" + " ml"
-            coldtext11.text = "+${mPrefs.getInt("winterVal", 210)}" + " ml"
-            when (weathertext1) {
-                hottext1.id -> {
-                    preselected(hottext1, hottext11, hotweatherimg)
-                }
-                warmtext1.id -> {
-                    preselected(warmtext1, warmtext11, warmweatherimg)
-                }
-                normaltext1.id -> {
-                    preselected(normaltext1, normaltext11, normalweatherimg)
-                }
-                coldtext1.id -> {
-                    preselected(coldtext1, coldtext11, coldweatherimg)
-                }
-            }
-
-            hotCL.setOnClickListener() {
-                setselected(hotweatherimg, coldweatherimg, warmweatherimg, normalweatherimg)
-                setselectedtext(
-                    hottext1,
-                    warmtext1,
-                    normaltext1,
-                    coldtext1,
-                    hottext11,
-                    warmtext11,
-                    normaltext11,
-                    coldtext11
-                )
-                weatherselectedDrawable = R.drawable.sun
-                weathertext1 = hottext1.id
-                weathertext11 = hottext11.id
-                weatherimg = hotweatherimg.id
-                weatheadded = mPrefs.getInt("summersVal", 530)
-                weatherselectedString = R.string.Summer
-            }
-            warmCL.setOnClickListener() {
-                setselected(warmweatherimg, coldweatherimg, hotweatherimg, normalweatherimg)
-                setselectedtext(
-                    warmtext1,
-                    hottext1,
-                    normaltext1,
-                    coldtext1,
-                    warmtext11,
-                    hottext11,
-                    normaltext11,
-                    coldtext11
-                )
-                weatherselectedDrawable = R.drawable.warm
-                weathertext1 = warmtext1.id
-                weathertext11 = warmtext11.id
-                weatherimg = warmweatherimg.id
-                weatheadded = mPrefs.getInt("springVal", 325)
-                weatherselectedString = R.string.spring
-            }
-            normalCL.setOnClickListener() {
-                setselected(normalweatherimg, warmweatherimg, hotweatherimg, coldweatherimg)
-                setselectedtext(
-                    normaltext1,
-                    warmtext1,
-                    hottext1,
-                    coldtext1,
-                    normaltext11,
-                    warmtext11,
-                    hottext11,
-                    coldtext11
-                )
-                weatherselectedDrawable = R.drawable.cloudy
-                weathertext1 = normaltext1.id
-                weathertext11 = normaltext11.id
-                weatherimg = normalweatherimg.id
-                weatheadded = 0
-                weatherselectedString = R.string.normal
-            }
-            coldCL.setOnClickListener() {
-                setselected(coldweatherimg, warmweatherimg, hotweatherimg, normalweatherimg)
-                setselectedtext(
-                    coldtext1,
-                    warmtext1,
-                    normaltext1,
-                    hottext1,
-                    coldtext11,
-                    warmtext11,
-                    normaltext11,
-                    hottext11
-                )
-                weatherselectedDrawable = R.drawable.cold
-                weathertext1 = coldtext1.id
-                weathertext11 = coldtext11.id
-                weatherimg = coldweatherimg.id
-                weatheadded = mPrefs.getInt("winterVal", 210)
-                weatherselectedString = R.string.winter
-            }
-            builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
-                val lastadded: Int = mPrefs.getInt("weatheadded", 0)
-                var getdrinked: Int = mPrefs.getInt("dailygoal", 3000)
-                if (weathertext11 == hottext11.id) {
-                    getdrinked -= lastadded
-                    getdrinked += weatheadded
-                    Log.e("Call", "very_activetext2")
-                } else if (weathertext11 == warmtext11.id) {
-                    getdrinked -= lastadded
-                    getdrinked += weatheadded
-                    Log.e("Call", "moderate_active2")
-                } else if (weathertext11 == normaltext11.id) {
-                    getdrinked -= lastadded
-                    getdrinked += weatheadded
-                    Log.e("Call", "lightlyactive2")
-
-                } else if (weathertext11 == coldtext11.id) {
-                    getdrinked -= lastadded
-                    getdrinked += weatheadded
-                    Log.e("Call", "sedentary2")
-                }
-                animateTextView(mPrefs.getInt("dailygoal", 3000), getdrinked, waterinput)
-                putIntSharep("weatherselectedDrawable", weatherselectedDrawable)
-                putIntSharep("weathertext1", weathertext1)
-                putIntSharep("weathertext11", weathertext11)
-                putIntSharep("weatherimg", weatherimg)
-                putIntSharep("weatheadded", weatheadded)
-                putIntSharep("weatherselectedString", weatherselectedString)
-                putIntSharep("dailygoal", getdrinked)
-                weather.setImageResource(weatherselectedDrawable)
-                dialog.cancel()
-            }.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
-                dialog.cancel()
-            }
-            builder.setView(inflate)
-            val dialog: AlertDialog = builder.create()
-            dialog.show()
-        }
-        reminderCardView.setOnClickListener() {
-            startActivity(Intent(this, Reminder::class.java))
-        }
         updatelog()
         logAdapter = LogAdapter(applicationContext, loglist, timelist, drawablelist)
         val layoutManager = LinearLayoutManager(applicationContext)
@@ -589,17 +291,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drinkPicker.displayedValues = drinkArray
         drinkPicker.maxValue = drinkArray.size - 1
         drinkPicker.minValue = 0
-//        if (mPrefs.getBoolean("purFirstLoad",false)){
-//            Log.e("TAG", "purFirstLoad:true ", )
-//            drinkPicker.value = 0
-//            adjustMidbutton(midicon[0], R.color.Blue)
-//            putBooleanShareP("purFirstLoad",false)
-//
-//        }else{
-//            Log.e("TAG", "purFirstLoad:false ", )
-//            drinkPicker.value = mPrefs.getInt("drinkPicker", 0)
-//        }
-
         drinkPicker.value = mPrefs.getInt("drinkPicker", 0)
         drinkPicker.invalidate()
         drinkPicker.wrapSelectorWheel = true
@@ -654,177 +345,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
         }
-        plusWater.setOnClickListener() {
-            if (oldlist.size >= 1) {
-                if (oldlist.size == 1) {
-                    drinkSize.text = oldlist[0]
-                    mid_button.text = oldlist[0]
-                    putStringSharep("mid_button_text", mid_button.text.toString())
-                    putIntSharep("getval", getval)
-                } else {
-                    getval++
-                    if (getval >= oldlist.size) {
-                        getval = 0
-                        drinkSize.text = oldlist[getval]
-                        mid_button.text = oldlist[getval]
-                        putStringSharep("mid_button_text", mid_button.text.toString())
-                        putIntSharep("getval", getval)
-
-                    } else {
-                        drinkSize.text = oldlist[getval]
-                        mid_button.text = oldlist[getval]
-                        putStringSharep("mid_button_text", mid_button.text.toString())
-                        putIntSharep("getval", getval)
-
-                    }
-                }
-            } else {
-                drinkSize.text = "NULL"
-                mid_button.text = "NULL"
-                putStringSharep("mid_button_text", mid_button.text.toString())
-
-            }
-        }
-        minusWater.setOnClickListener() {
-            if (oldlist.size >= 1) {
-                if (oldlist.size == 1) {
-                    drinkSize.text = oldlist[0]
-                    mid_button.text = oldlist[0]
-                    putStringSharep("mid_button_text", mid_button.text.toString())
-                    putIntSharep("getval", getval)
-
-                } else {
-                    getval--
-                    if (getval <= 0) {
-                        if (getval < 0) {
-                            getval = oldlist.size
-                            drinkSize.text = oldlist[getval - 1]
-                            mid_button.text = oldlist[getval - 1]
-                            putStringSharep("mid_button_text", mid_button.text.toString())
-                            putIntSharep("getval", getval)
-
-                        } else {
-                            drinkSize.text = oldlist[getval]
-                            mid_button.text = oldlist[getval]
-                            getval = oldlist.size
-                            putStringSharep("mid_button_text", mid_button.text.toString())
-                            putIntSharep("getval", getval)
-
-                        }
-                    } else {
-                        drinkSize.text = oldlist[getval]
-                        mid_button.text = oldlist[getval]
-                        putStringSharep("mid_button_text", mid_button.text.toString())
-                        putIntSharep("getval", getval)
-                    }
-                }
-            } else {
-                drinkSize.text = "NULL"
-                mid_button.text = "NULL"
-                putStringSharep("mid_button_text", mid_button.text.toString())
-            }
-        }
-        addNew.setOnClickListener() {
-            var already = false
-            val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
-            builder.setTitle(R.string.addandremove)
-            oldlist.clear()
-            val getData = mPrefs.getString("watervalues", "100ml,200ml, 300ml")
-            oldlist = convertStringToArray(getData.toString())
-            val inflater = LayoutInflater.from(this)
-            val inflate: View = inflater.inflate(R.layout.addnew, null)
-            val cupinput: EditText = inflate.findViewById(R.id.addnewcups)
-            val add: ImageButton = inflate.findViewById(R.id.addnewcupbutton)
-            val recyclerView: RecyclerView = inflate.findViewById(R.id.addnewrv)
-            val cupAdapter = CupAdapter(applicationContext, oldlist)
-            recyclerView.layoutManager = LinearLayoutManager(applicationContext)
-            recyclerView.adapter = cupAdapter
-
-            cupAdapter.notifyDataSetChanged()
-            cupinput.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                }
-
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
-
-                override fun onTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    before: Int,
-                    count: Int
-                ) {
-                    if (!s?.isEmpty()!!) {
-                        add.visibility = View.VISIBLE
-                        add.isEnabled = true
-                    } else {
-                        add.visibility = View.GONE
-                        add.isEnabled = false
-                    }
-                }
-            })
-            add.setOnClickListener() {
-                var addedcup = mPrefs.getInt("addedCup", 0)
-                val input: String = cupinput.text.toString()
-                val addnew: Int = input.replace("[\\D]".toRegex(), "").toInt()
-                for (i in 0 until oldlist.size) {
-                    val check: Int = oldlist[i].replace("[\\D]".toRegex(), "").toInt()
-                    if (check == addnew) {
-                        already = true
-                        break
-                    } else already = false
-                }
-                if (already)
-                    Toast.makeText(this, "Already added", Toast.LENGTH_SHORT).show()
-                else {
-                    oldlist.add("$input$getgoaltype")
-                    cupAdapter.notifyDataSetChanged()
-                    cupinput.setText("")
-                    if (!mPrefs.getBoolean("cupaddedtask", false)) {
-                        addedcup++
-                        putIntSharep("addedCup", addedcup)
-                    }
-                }
-            }
-            builder.setPositiveButton(getString(R.string.save)) { dialog, which ->
-                cupAdapter.notifyDataSetChanged()
-                if (oldlist.size <= 1) {
-                    drinkSize.text = "NULL"
-                    mid_button.text = "NULL"
-                    putStringSharep("mid_button_text", mid_button.text.toString())
-                }
-                val getcupdata: String = convertArrayToString(oldlist)
-                putStringSharep("watervalues", getcupdata)
-
-                if (mPrefs.getInt("addedCup", 0) >= 3) {
-                    if (!mPrefs.getBoolean("cupaddedtask", false)) {
-                        putBooleanShareP("cupaddedtask", true)
-                        createRewardDialog(R.drawable.cupmaker, "Cup Maker")
-                        putIntSharep("totalAchieve", mPrefs.getInt("totalAchieve", 0) + 1)
-                    }
-                }
-                dialog.cancel()
-            }
-            builder.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
-                if (mPrefs.getInt("addedCup", 0) >= 3) {
-                    if (!mPrefs.getBoolean("cupaddedtask", false)) {
-                        putBooleanShareP("cupaddedtask", true)
-                        createRewardDialog(R.drawable.cupmaker, "Cup Maker")
-                        putIntSharep("totalAchieve", mPrefs.getInt("totalAchieve", 0) + 1)
-                    }
-                }
-                dialog.dismiss()
-            }
-            builder.setView(inflate)
-            val dialog: AlertDialog = builder.create()
-            dialog.window?.setLayout(600, 400)
-            dialog.show()
-        }
         if (logAdapter.itemCount == 0) {
             cardView.visibility = View.GONE
         } else if (logAdapter.itemCount >= 0) {
@@ -837,200 +357,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         ObjectAnimator.ofInt(progress_bar, "progress", progrvalue.toInt())
             .setDuration(500)
             .start()
-
         slash.text = "/"
         try {
-            //waterDrinked.text = "$totaldrink"
             animateTextView(0, totaldrink, waterDrinked)
             waterinput.text = "${mPrefs.getInt("dailygoal", 3000)}"
             waterMeasures.text = getgoaltype
 
         } catch (e: Exception) {
             Log.e("Exception", "$e")
-        }
-        // setwaternumberpicker()
-        waterIndicator.setOnClickListener() {
-            val suggestedDailyGoal = mPrefs.getInt("suggestedDailyGoal", 2640)
-            val genderValueTXT = mPrefs.getString("genderValueTXT", "Male")!!
-            val weightTXT = mPrefs.getString("weightTXT", "65kg")!!
-            val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
-            builder.setTitle(R.string.daily_goal)
-            builder.setMessage(
-                getString(R.string.daily_goal_info) + " ($genderValueTXT) and weight ($weightTXT) " + getString(
-                    R.string.according
-                ) + " $suggestedDailyGoal ml"
-            )
-            val inflater = LayoutInflater.from(this)
-            val inflate: View = inflater.inflate(R.layout.daily_goal_alert, null)
-            val goal_edit: EditText = inflate.findViewById(R.id.daily_goal_take)
-            val goal_type: TextView = inflate.findViewById(R.id.daily_goal_type_alert)
-            val daily_goalTotal: TextView = inflate.findViewById(R.id.daily_goalTotal)
-            val pcText: TextView = inflate.findViewById(R.id.dailyGoalPC)
-            val weatherText: TextView = inflate.findViewById(R.id.dailyGoalWeather)
-            val pcimg: ImageView = inflate.findViewById(R.id.dailyGoalPCimg)
-            val weatherimg: ImageView = inflate.findViewById(R.id.dailyGoalWeatherimg)
-            val getpcnum = mPrefs.getInt("pcadded", 0)
-            val getweathernum = mPrefs.getInt("weatheadded", 0)
-            pcText.text = getString(
-                mPrefs.getInt(
-                    "pcselectedString",
-                    R.string.not_active
-                )
-            ) +": +$getpcnum"
-            weatherText.text = getString(
-                mPrefs.getInt(
-                    "weatherselectedString",
-                    R.string.normal
-                )
-            ) + ": +$getweathernum"
-
-            pcimg.setImageResource(mPrefs.getInt("pcselectedDrawable", R.drawable.human))
-            weatherimg.setImageResource(
-                mPrefs.getInt(
-                    "weatherselectedDrawable",
-                    R.drawable.cloudy
-                )
-            )
-
-            goal_type.text = getgoaltype
-            val getgoaledit = mPrefs.getInt("dailygoal", 3000)
-
-            goal_edit.setText(getgoaledit.toString())
-            daily_goalTotal.text = getString(R.string.total_sum)+"$getgoaledit ${goal_type.text}"
-            goal_edit.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                }
-
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (s != null) {
-                        try {
-                            val afterInput: Int = s.replace("[\\D]".toRegex(), "").toInt()
-                            val set: Int = afterInput + getpcnum + getweathernum
-                            daily_goalTotal.text = getString(R.string.total_sum)+"$set ${goal_type.text}"
-                        } catch (e: Exception) {
-                        }
-                    }
-                }
-            })
-            builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
-                val input: String = goal_edit.text.toString()
-                val set: Int = input.replace("[\\D]".toRegex(), "").toInt()
-                resetprogress(set)
-                waterDrinked.text = "$totaldrink"
-                val lastval: Int = waterinput.text.replace("[\\D]".toRegex(), "").toInt()
-                animateTextView(lastval, set, waterinput)
-                waterMeasures.text = "${goal_type.text}"
-                putStringSharep("targetTXT", input + " " + goal_type.text)
-                editor = mPrefs.edit()
-                editor.putInt("dailygoal", set)
-                editor.commit()
-            }.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
-                dialog.cancel()
-            }
-            builder.setView(inflate)
-            val dialog: AlertDialog = builder.create()
-            dialog.show()
-        }
-
-        mid_button.setOnClickListener() {
-            if (mPrefs.getInt("drinkimg", R.drawable.water_glass) == R.drawable.crown) {
-                startActivity(
-                    Intent(
-                        this,
-                        UpgradeActivity::class.java
-                    )
-                )
-            } else if (mid_button.text == "NULL") {
-                //  Toast.makeText(this,"Please add values !!",Toast.LENGTH_SHORT).show()
-                Snackbar.make(
-                    window.decorView.rootView,
-                    "Please add values !!",
-                    Snackbar.LENGTH_LONG
-                ).show()
-            } else {
-                val total: Int = mPrefs.getInt("dailygoal", 3000)
-                val num: Int = drinkSize.text.replace("[\\D]".toRegex(), "").toInt()
-                if (totaldrink >= total && progrvalue >= 100f) {
-                    Snackbar.make(
-                        window.decorView.rootView,
-                        "Your daily goal completed",
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                    ObjectAnimator.ofInt(progress_bar, "progress", 100)
-                        .setDuration(500)
-                        .start()
-                    progrvalue = 100f
-                    val putLog: String = convertArrayToString(loglist)
-                    val putTime: String = convertArrayToString(timelist)
-                    val putDrawable: String = convertArrayToString(drawablelist)
-                    val logupdate = LogData(
-                        date.time,
-                        putDrawable,
-                        putLog,
-                        putTime,
-                        mPrefs.getInt("dailygoal", 3000),
-                        mPrefs.getInt("dailygoal", 3000)
-                    )
-                    DB.updateContact(logupdate)
-                    editor = mPrefs.edit()
-                    editor.putFloat("progress", 100f)
-                    editor.commit()
-                } else {
-                    val addpercent: Float = ((num * 100) / total).toFloat()
-                    if (progrvalue <= 100) {
-                        progrvalue += addpercent
-                        updateProgressBar(num)
-                    }
-                }
-                if (progrvalue >= 100f) {
-                    var rowCount = 0
-                    if (!mPrefs.getBoolean("Fivedaysrow", false)) {
-                        if (mPrefs.getBoolean("oneTime", true)) {
-                            val calendar = Calendar.getInstance()
-                            val getdate: Long = getmilis(sdfdate.format(calendar.time))
-                            val weekCal = Calendar.getInstance()
-                            val weekMili = ArrayList<Long>()
-                            weekMili.clear()
-                            weekCal.timeInMillis = getdate
-                            for (i in 1..5) {
-                                weekCal.set(Calendar.DATE, -1).toString()
-                                Log.e("TAG", "onCreate: " + sdfdate.format(weekCal.time))
-                                calendar.time = weekCal.time
-                                weekMili.add(calendar.timeInMillis)
-                            }
-                            for (i in 0..4) {
-                                if (DB.checkIfRecordExist(weekMili[i])) {
-                                    val getOldRecord = DB.getonevalue(weekMili[i])
-                                    if (getOldRecord.totaldrink!! >= getOldRecord.dailygoal!!) {
-                                        rowCount++
-                                    }
-                                } else {
-                                    Log.e("TAG", "Not Exist: ")
-                                }
-                            }
-                            Log.e("TAG", "rowCount:$rowCount ")
-                            putBooleanShareP("oneTime", false)
-                            checkAchievements()
-                        }
-                    }
-                    if (!mPrefs.getBoolean("achivedailygoal", false)) {
-                        putBooleanShareP("achivedailygoal", true)
-                        Log.e("TAG", "achivedailygoal:true ")
-                        createRewardDialog(R.drawable.mountainflag, "1st Strike")
-                        putIntSharep("totalAchieve", mPrefs.getInt("totalAchieve", 0) + 1)
-                    }
-                }
-                updateAchievementPB()
-            }
         }
         val adsLayout: LinearLayout = findViewById(R.id.adsll)
         mAdView = findViewById(R.id.madView)
@@ -1040,8 +374,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (networkState.isNetworkAvailable(this)) {
                 val adRequest = AdRequest.Builder().build()
                 mAdView.loadAd(adRequest)
-                    adsLayout.visibility = View.VISIBLE
-              }
+                adsLayout.visibility = View.VISIBLE
+                if (mPrefs.getBoolean("addCupAds", false)) {
+                    loadAd()
+                    Log.e("TAG", "MainScreen:loadAd() ")
+                }
+            }
         }
 
         sendnotification()
@@ -1451,18 +789,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun updatereminderText() {
-        if (totaldrink >= mPrefs.getInt("dailygoal", 3000)) {
-            Log.e("TAG", " If:updatereminderText: ", )
-            remindTime.text = mPrefs.getString("wake_up_time", "8:00 AM")
-        } else {
-            Log.e("TAG", " Else:updatereminderText: ", )
-            val nextremindertime: Long = mPrefs.getLong(
-                "lastdrinktime",
-                1621600680000
-            ) + TimeUnit.MINUTES.toMillis(
-                mPrefs.getInt("intervalTime", 90).toLong()
-            )
-            remindTime.text = getDate(nextremindertime)
+        try {
+            if (totaldrink >= mPrefs.getInt("dailygoal", 3000)) {
+                Log.e("TAG", " If:updatereminderText: ")
+                remindTime.text = mPrefs.getString("wake_up_time", "8:00 AM")
+            } else {
+                Log.e("TAG", " Else:updatereminderText: ")
+                val nextremindertime: Long = mPrefs.getLong(
+                    "lastdrinktime",
+                    1621600680000
+                ) + TimeUnit.MINUTES.toMillis(
+                    mPrefs.getInt("intervalTime", 90).toLong()
+                )
+                remindTime.text = getDate(nextremindertime)
+            }
+        } catch (e: Exception) {
+            Log.e("TAG", "Error updatereminderText: " + e.message)
         }
     }
 
@@ -1476,18 +818,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun updatelog() {
-        val res: Cursor = DB.getdata()
-        if (res.count == 0) {
-            return
-        } else {
-            val getdatechecker = DB.checkIfRecordExist(date.time)
-            if (getdatechecker) {
-                DB = DatabaseHandler(this)
-                val getOldRecord = DB.getonevalue(date.time)
-                loglist = convertStringToArray(getOldRecord.logvalue.toString())
-                timelist = convertStringToArray(getOldRecord.time.toString())
-                drawablelist = convertStringToArray(getOldRecord.drawable.toString())
+        Log.e("TAG", "updatelog: ")
+        try {
+            val res: Cursor = DB.getdata()
+            if (res.count == 0) {
+                return
+            } else {
+                val getdatechecker = DB.checkIfRecordExist(date.time)
+                if (getdatechecker) {
+                    DB = DatabaseHandler(this)
+                    val getOldRecord = DB.getonevalue(date.time)
+                    loglist = convertStringToArray(getOldRecord.logvalue.toString())
+                    timelist = convertStringToArray(getOldRecord.time.toString())
+                    drawablelist = convertStringToArray(getOldRecord.drawable.toString())
+                }
             }
+        } catch (e: Exception) {
+            Log.e("TAG", " Error updatelog: " + e.message)
         }
     }
 
@@ -1643,6 +990,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     val rating = ratingbar.rating.toString()
                     if (rating.isEmpty()) {
                         Toast.makeText(this, "RATE US ", Toast.LENGTH_SHORT).show()
+                        val uri: Uri = Uri.parse("market://details?id=" + this.packageName)
+                        val goToMarket = Intent(Intent.ACTION_VIEW, uri)
+                        try {
+                            this.startActivity(goToMarket)
+                        } catch (e: ActivityNotFoundException) {
+                            Log.e("TAG", "Error: " + e.message)
+                        }
                     } else {
                         Toast.makeText(applicationContext, rating, Toast.LENGTH_LONG).show()
                         dialog.dismiss()
@@ -1667,37 +1021,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 startActivity(ishare)
                 putBooleanShareP("share", true)
             }
-//            R.id.backup -> {
-//                startActivity(Intent(this, Backup::class.java))
-//            }
             R.id.drawer_home -> {
                 startActivity(Intent(this, MainActivity::class.java))
             }
             R.id.settings -> {
                 startActivity(Intent(this, Setting::class.java))
             }
-            R.id.privacyPolicyBTN -> {
-//                val url = "https://heavyapps.co.in/privacy_policy.html"
-//                val i = Intent(Intent.ACTION_VIEW)
-//                i.data = Uri.parse(url)
-//                startActivity(i)
-                startActivity(Intent(this, WebViewActivity::class.java))
-                val toWeb = Intent(this, WebViewActivity::class.java)
-                toWeb.putExtra("webTitle", getString(R.string.privacy))
-                toWeb.putExtra("webUrl", "https://heavyapps.co.in/privacy_policy.html")
-                startActivity(toWeb)
-            }
-            R.id.termAndCondition -> {
-//                val url = "https://heavyapps.co.in/termsandconditions.html"
-//                val i = Intent(Intent.ACTION_VIEW)
-//                i.data = Uri.parse(url)
-//                startActivity(i)
-                startActivity(Intent(this, WebViewActivity::class.java))
-                val toWeb = Intent(this, WebViewActivity::class.java)
-                toWeb.putExtra("webTitle", getString(R.string.termcondition))
-                toWeb.putExtra("webUrl", "https://heavyapps.co.in/termsandconditions.html")
-                startActivity(toWeb)
-            }
+
         }
         return true
 
@@ -1708,46 +1038,37 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val locale = Locale(languageToLoad!!)
         Locale.setDefault(locale)
         val config = Configuration()
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            config.setLocale(locale)
-//            baseContext.createConfigurationContext(config)
-//        } else {
-            config.locale = locale
-            baseContext.resources.updateConfiguration(
-                config,
-                baseContext.resources.displayMetrics
-            )
+        config.locale = locale
+        baseContext.resources.updateConfiguration(
+            config,
+            baseContext.resources.displayMetrics
+        )
 
         this.setContentView(activity)
 
     }
-
-//    override fun onStart() {
-//        super.onStart()
-//         val  mPrefs: SharedPreferences = getSharedPreferences(
-//            MyPREFERENCES, Context.MODE_PRIVATE
-//        )
-//        val getlag = mPrefs.getString("language", "en")
-//        setLocale(R.layout.activity_main, getlag)
-//    }
+    @SuppressLint("ShortAlarm")
     fun sendnotification() {
-        if (!mPrefs.getBoolean("reminderSwitch", true)) {
-            if (mPrefs.getBoolean("permanent_notification", false)) {
-                val intent1 = Intent(this, NotificationReceiver::class.java)
-                val pendingIntent = PendingIntent.getBroadcast(
-                    this,
-                    0,
-                    intent1,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-                )
-                val cal = Calendar.getInstance()
-                cal.add(Calendar.MINUTE, mPrefs.getInt("intervalTime", 90))
-                val am = this.getSystemService(ALARM_SERVICE) as AlarmManager
-                am.setRepeating(
-                    AlarmManager.RTC_WAKEUP, cal.timeInMillis, 60000,
-                    pendingIntent
-                )
-            }
+        if (mPrefs.getBoolean("reminderSwitch", true)) {
+//            if (!mPrefs.getBoolean("permanent_notification", false)) {
+            val intent1 = Intent(this, NotificationReceiver::class.java)
+            val pendingIntent = PendingIntent.getBroadcast(
+                this,
+                0,
+                intent1,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+            val cal = Calendar.getInstance()
+            cal.add(Calendar.MINUTE, mPrefs.getInt("intervalTime", 90))
+//                cal.add(Calendar.SECOND,30)
+            val intervalTIME: Long = (mPrefs.getInt("intervalTime", 90) * 6000).toLong()
+            val am = this.getSystemService(ALARM_SERVICE) as AlarmManager
+            am.setRepeating(
+                AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), intervalTIME,
+                pendingIntent
+            )
+            Log.e("TAG", "Main Activity sendnotification: ")
+//            }
         }
 
     }
@@ -1794,7 +1115,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return false
     }
 
-
     var mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
             Log.e("TAG", "onReceive: ")
@@ -1824,18 +1144,845 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
     }
+
     override fun onPause() {
-        if (mAdView!=null) {
-            mAdView.pause();
-        }
+        mAdView.pause()
         super.onPause()
     }
 
-    override fun onDestroy() {
-        if (mAdView != null) {
-            mAdView.destroy();
+    private fun loadAd() {
+        val networkState = NetworkState()
+        if (networkState.isNetworkAvailable(this)) {
+            InterstitialAd.load(
+                this,
+                resources.getString(R.string.drink_interstitial),
+                AdRequest.Builder().build(),
+                object : InterstitialAdLoadCallback() {
+                    override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                        Log.e("TAG", "onAdLoaded: ")
+                        interstitial = interstitialAd
+                    }
+
+                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                        super.onAdFailedToLoad(loadAdError)
+                        Log.e("Call", "onAdFailedToLoad")
+                        interstitial = null
+                    }
+                })
+        } else {
+            Log.e("TAG", "Internet not connected: ")
         }
-        super.onDestroy();
+
     }
+
+    override fun onDestroy() {
+        mAdView.destroy()
+        super.onDestroy()
+    }
+    @SuppressLint("CommitPrefEdits")
+    private fun showAds(dialog: DialogInterface?) {
+        val networkState = NetworkState()
+        if (networkState.isNetworkAvailable(this)) {
+            if (interstitial != null) {
+                interstitial!!.show(this)
+                interstitial!!.fullScreenContentCallback =
+                    object : FullScreenContentCallback() {
+                        @SuppressLint("CommitPrefEdits")
+                        override fun onAdDismissedFullScreenContent() {
+                            Log.e("TAG", "The ad was dismissed.")
+                            cupAdapter!!.notifyDataSetChanged()
+                            if (oldlist.size <= 1) {
+                                drinkSize.text = "NULL"
+                                mid_button.text = "NULL"
+                                putStringSharep("mid_button_text", mid_button.text.toString())
+                            }
+                            val getcupdata: String = convertArrayToString(oldlist)
+                            putStringSharep("watervalues", getcupdata)
+
+                            if (mPrefs.getInt("addedCup", 0) >= 3) {
+                                if (!mPrefs.getBoolean("cupaddedtask", false)) {
+                                    putBooleanShareP("cupaddedtask", true)
+                                    createRewardDialog(R.drawable.cupmaker, "Cup Maker")
+                                    putIntSharep(
+                                        "totalAchieve",
+                                        mPrefs.getInt("totalAchieve", 0) + 1
+                                    )
+                                }
+                            }
+                            dialog?.dismiss()
+                            cupAdapter = null
+                            putBooleanShareP("addCupAds", false)
+                        }
+
+                        override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                            // Called when fullscreen content failed to show.
+                            Log.e("TAG", "The ad failed to show.")
+                        }
+
+                        override fun onAdShowedFullScreenContent() {
+                            // Called when fullscreen content is shown.
+                            // Make sure to set your reference to null so you don't
+                            // show it a second time.
+                            //mInterstitialAd = null;
+                            Log.e("TAG", "The ad was shown.")
+                        }
+                    }
+            } else {
+                Log.e("TAG", "showAds:null ")
+                cupAdapter!!.notifyDataSetChanged()
+                if (oldlist.size <= 1) {
+                    drinkSize.text = "NULL"
+                    mid_button.text = "NULL"
+                    putStringSharep("mid_button_text", mid_button.text.toString())
+                }
+                val getcupdata: String = convertArrayToString(oldlist)
+                putStringSharep("watervalues", getcupdata)
+
+                if (mPrefs.getInt("addedCup", 0) >= 3) {
+                    if (!mPrefs.getBoolean("cupaddedtask", false)) {
+                        putBooleanShareP("cupaddedtask", true)
+                        createRewardDialog(R.drawable.cupmaker, "Cup Maker")
+                        putIntSharep("totalAchieve", mPrefs.getInt("totalAchieve", 0) + 1)
+                    }
+                }
+                cupAdapter = null
+                dialog?.dismiss()
+                putBooleanShareP("addCupAds", false)
+            }
+        } else {
+            cupAdapter!!.notifyDataSetChanged()
+            if (oldlist.size <= 1) {
+                drinkSize.text = "NULL"
+                mid_button.text = "NULL"
+                putStringSharep("mid_button_text", mid_button.text.toString())
+            }
+            val getcupdata: String = convertArrayToString(oldlist)
+            putStringSharep("watervalues", getcupdata)
+
+            if (mPrefs.getInt("addedCup", 0) >= 3) {
+                if (!mPrefs.getBoolean("cupaddedtask", false)) {
+                    putBooleanShareP("cupaddedtask", true)
+                    createRewardDialog(R.drawable.cupmaker, "Cup Maker")
+                    putIntSharep("totalAchieve", mPrefs.getInt("totalAchieve", 0) + 1)
+                }
+            }
+            cupAdapter = null
+            dialog?.dismiss()
+            putBooleanShareP("addCupAds", false)
+        }
+
+    }
+
+    override fun onClick(v: View?) {
+        if (v == ratingHintTXT) {
+            val uri: Uri = Uri.parse("market://details?id=" + this.packageName)
+            val goToMarket = Intent(Intent.ACTION_VIEW, uri)
+            try {
+                this.startActivity(goToMarket)
+            } catch (e: ActivityNotFoundException) {
+                Log.e("TAG", "Error: " + e.message)
+            }
+        } else if (v == ratingHintCancel) {
+            val builder = android.app.AlertDialog.Builder(this)
+            builder.setMessage("Are you sure you want to remove it ? You won't to be able to see it until we update it again !")
+            builder.setPositiveButton(
+                "Yes"
+            )
+            { dialog, which ->
+                putBooleanShareP("ratingHint", true)
+                ratingHint.visibility = View.GONE
+                hintExtraHeight.visibility = View.GONE
+            }.setNegativeButton(
+                "No"
+            ) { dialog: DialogInterface, which: Int -> dialog.dismiss() }
+            val alertDialog = builder.create()
+            alertDialog.show()
+        } else if (v == physicalActivity) {
+            var pcselectedDrawable = mPrefs.getInt("pcselectedDrawable", R.drawable.human)
+            var pctext1 = mPrefs.getInt("pctext1", R.id.sedentary1)
+            var pctext2 = mPrefs.getInt("pctext2", R.id.sedentary2)
+            var pcimg = mPrefs.getInt("pcimg", R.id.sedentaryimg)
+            var pcadded = mPrefs.getInt("pcadded", 0)
+            var pcselectedString = 0
+            val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
+            builder.setTitle(R.string.Physical_activity)
+            val inflater = LayoutInflater.from(this)
+            val inflate: View = inflater.inflate(R.layout.physicalactivity, null)
+            val veryActiveCL: ConstraintLayout = inflate.findViewById(R.id.veryActiveCL)
+            val moderateActiveCL: ConstraintLayout = inflate.findViewById(R.id.moderateActiveCL)
+            val lightlyActiveCL: ConstraintLayout = inflate.findViewById(R.id.lightlyActiveCL)
+            val sedentaryCL: ConstraintLayout = inflate.findViewById(R.id.sedentaryCL)
+            val very_activeimg: ImageView = inflate.findViewById(R.id.very_activeimg)
+            val moderateactiveimg: ImageView = inflate.findViewById(R.id.moderateactiveimg)
+            val lightlyactiveimg: ImageView = inflate.findViewById(R.id.lightlyactiveimg)
+            val sedentaryimg: ImageView = inflate.findViewById(R.id.sedentaryimg)
+            val very_activetext1: TextView = inflate.findViewById(R.id.very_activetext1)
+            val very_activetext2: TextView = inflate.findViewById(R.id.very_activetext2)
+            val moderate_active1: TextView = inflate.findViewById(R.id.moderate_active1)
+            val moderate_active2: TextView = inflate.findViewById(R.id.moderate_active2)
+            val lightlyactive1: TextView = inflate.findViewById(R.id.lightlyactive1)
+            val lightlyactive2: TextView = inflate.findViewById(R.id.lightlyactive2)
+            val sedentary1: TextView = inflate.findViewById(R.id.sedentary1)
+            val sedentary2: TextView = inflate.findViewById(R.id.sedentary2)
+            very_activetext2.text = "+${mPrefs.getInt("veryActive", 650)}" + " ml"
+            moderate_active2.text = "+${mPrefs.getInt("mediumActive", 450)}" + " ml"
+            lightlyactive2.text = "+${mPrefs.getInt("littleActive", 220)}" + " ml"
+
+            when (pctext1) {
+                very_activetext1.id -> {
+                    preselected(very_activetext1, very_activetext2, very_activeimg)
+                }
+                moderate_active1.id -> {
+                    preselected(moderate_active1, moderate_active2, moderateactiveimg)
+                }
+                lightlyactive1.id -> {
+                    preselected(lightlyactive1, lightlyactive2, lightlyactiveimg)
+                }
+                sedentary1.id -> {
+                    preselected(sedentary1, sedentary2, sedentaryimg)
+                }
+            }
+            veryActiveCL.setOnClickListener() {
+                setselected(very_activeimg, sedentaryimg, moderateactiveimg, lightlyactiveimg)
+                setselectedtext(
+                    very_activetext1,
+                    moderate_active1,
+                    lightlyactive1,
+                    sedentary1,
+                    very_activetext2,
+                    moderate_active2,
+                    lightlyactive2,
+                    sedentary2
+                )
+                pcselectedDrawable = R.drawable.gym
+                pctext1 = very_activetext1.id
+                pctext2 = very_activetext2.id
+                pcimg = very_activeimg.id
+                pcadded = mPrefs.getInt("veryActive", 650)
+
+                pcselectedString = R.string.very_active
+            }
+            moderateActiveCL.setOnClickListener() {
+                setselected(moderateactiveimg, sedentaryimg, very_activeimg, lightlyactiveimg)
+                setselectedtext(
+                    moderate_active1,
+                    very_activetext1,
+                    lightlyactive1,
+                    sedentary1,
+                    moderate_active2,
+                    very_activetext2,
+                    lightlyactive2,
+                    sedentary2
+                )
+                pcselectedDrawable = R.drawable.moderateactive
+                pctext1 = moderate_active1.id
+                pctext2 = moderate_active2.id
+                pcimg = moderateactiveimg.id
+                pcadded = mPrefs.getInt("mediumActive", 450)
+                pcselectedString = R.string.medium_active
+            }
+            lightlyActiveCL.setOnClickListener() {
+                setselected(lightlyactiveimg, moderateactiveimg, very_activeimg, sedentaryimg)
+                setselectedtext(
+                    lightlyactive1,
+                    moderate_active1,
+                    very_activetext1,
+                    sedentary1,
+                    lightlyactive2,
+                    moderate_active2,
+                    very_activetext2,
+                    sedentary2
+                )
+                pcselectedDrawable = R.drawable.lightlyactive
+                pctext1 = lightlyactive1.id
+                pctext2 = lightlyactive2.id
+                pcimg = lightlyactiveimg.id
+                pcadded = mPrefs.getInt("littleActive", 220)
+                pcselectedString = R.string.little_active
+            }
+            sedentaryCL.setOnClickListener() {
+                setselected(sedentaryimg, moderateactiveimg, very_activeimg, lightlyactiveimg)
+                setselectedtext(
+                    sedentary1,
+                    moderate_active1,
+                    lightlyactive1,
+                    very_activetext1,
+                    sedentary2,
+                    moderate_active2,
+                    lightlyactive2,
+                    very_activetext2
+                )
+                pcselectedDrawable = R.drawable.human
+                pctext1 = sedentary1.id
+                pctext2 = sedentary2.id
+                pcimg = sedentaryimg.id
+                pcadded = 0
+                pcselectedString = R.string.not_active
+            }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
+                val lastadded: Int = mPrefs.getInt("pcadded", 0)
+                var getdrinked: Int = mPrefs.getInt("dailygoal", 3000)
+                Log.e("before getdrinked", "" + getdrinked)
+                Log.e("before pcadded", "" + lastadded)
+
+                if (pctext2 == very_activetext2.id) {
+                    getdrinked -= lastadded
+                    getdrinked += pcadded
+                    Log.e("Call", "very_activetext2")
+                } else if (pctext2 == moderate_active2.id) {
+                    getdrinked -= lastadded
+                    getdrinked += pcadded
+                    Log.e("Call", "moderate_active2")
+
+                } else if (pctext2 == lightlyactive2.id) {
+                    getdrinked -= lastadded
+                    getdrinked += pcadded
+                    Log.e("Call", "lightlyactive2")
+
+                } else if (pctext2 == sedentary2.id) {
+                    getdrinked -= lastadded
+                    getdrinked += pcadded
+                    Log.e("Call", "sedentary2")
+                }
+                animateTextView(mPrefs.getInt("dailygoal", 3000), getdrinked, waterinput)
+                Log.e("After getdrinked", "" + getdrinked)
+                putIntSharep("pcselectedDrawable", pcselectedDrawable)
+                putIntSharep("pctext1", pctext1)
+                putIntSharep("pctext2", pctext2)
+                putIntSharep("pcimg", pcimg)
+                putIntSharep("pcadded", pcadded)
+                putIntSharep("pcselectedString", pcselectedString)
+                putIntSharep("dailygoal", getdrinked)
+                physicalActivity.setImageResource(pcselectedDrawable)
+                Log.e("pcadded", "" + mPrefs.getInt("pcadded", 0))
+                dialog.cancel()
+            }.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
+                dialog.cancel()
+            }
+            builder.setView(inflate)
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
+        } else if (v == weather) {
+            var weatherselectedDrawable =
+                mPrefs.getInt("weatherselectedDrawable", R.drawable.cloudy)
+            var weathertext1 = mPrefs.getInt("weathertext1", R.id.normaltext1)
+            var weathertext11 = mPrefs.getInt("weathertext11", R.id.normaltext11)
+            var weatherimg = mPrefs.getInt("weatherimg", R.id.pc3)
+            var weatheadded = mPrefs.getInt("weatheadded", 0)
+            var weatherselectedString = 0
+            val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
+            builder.setTitle(R.string.Physical_activity)
+            val inflater = LayoutInflater.from(this)
+            val inflate: View = inflater.inflate(R.layout.custom_weather, null)
+            //  val weatherSwtich: SwitchCompat = inflate.findViewById(R.id.weatherSwtich)
+            val hotCL: ConstraintLayout = inflate.findViewById(R.id.hotCL)
+            val warmCL: ConstraintLayout = inflate.findViewById(R.id.warmCL)
+            val normalCL: ConstraintLayout = inflate.findViewById(R.id.normalCL)
+            val coldCL: ConstraintLayout = inflate.findViewById(R.id.coldCL)
+            val hotweatherimg: ImageView = inflate.findViewById(R.id.cw1)
+            val coldweatherimg: ImageView = inflate.findViewById(R.id.pc4)
+            val warmweatherimg: ImageView = inflate.findViewById(R.id.pc2)
+            val normalweatherimg: ImageView = inflate.findViewById(R.id.pc3)
+            val hottext1: TextView = inflate.findViewById(R.id.hottext1)
+            val hottext11: TextView = inflate.findViewById(R.id.hottext11)
+            val warmtext1: TextView = inflate.findViewById(R.id.warmtext1)
+            val warmtext11: TextView = inflate.findViewById(R.id.warmtext11)
+            val normaltext1: TextView = inflate.findViewById(R.id.normaltext1)
+            val normaltext11: TextView = inflate.findViewById(R.id.normaltext11)
+            val coldtext1: TextView = inflate.findViewById(R.id.coldtext1)
+            val coldtext11: TextView = inflate.findViewById(R.id.coldtext11)
+            hottext11.text = "+${mPrefs.getInt("summersVal", 530)}" + " ml"
+            warmtext11.text = "+${mPrefs.getInt("springVal", 325)}" + " ml"
+            coldtext11.text = "+${mPrefs.getInt("winterVal", 210)}" + " ml"
+            when (weathertext1) {
+                hottext1.id -> {
+                    preselected(hottext1, hottext11, hotweatherimg)
+                }
+                warmtext1.id -> {
+                    preselected(warmtext1, warmtext11, warmweatherimg)
+                }
+                normaltext1.id -> {
+                    preselected(normaltext1, normaltext11, normalweatherimg)
+                }
+                coldtext1.id -> {
+                    preselected(coldtext1, coldtext11, coldweatherimg)
+                }
+            }
+
+            hotCL.setOnClickListener() {
+                setselected(hotweatherimg, coldweatherimg, warmweatherimg, normalweatherimg)
+                setselectedtext(
+                    hottext1,
+                    warmtext1,
+                    normaltext1,
+                    coldtext1,
+                    hottext11,
+                    warmtext11,
+                    normaltext11,
+                    coldtext11
+                )
+                weatherselectedDrawable = R.drawable.sun
+                weathertext1 = hottext1.id
+                weathertext11 = hottext11.id
+                weatherimg = hotweatherimg.id
+                weatheadded = mPrefs.getInt("summersVal", 530)
+                weatherselectedString = R.string.Summer
+            }
+            warmCL.setOnClickListener() {
+                setselected(warmweatherimg, coldweatherimg, hotweatherimg, normalweatherimg)
+                setselectedtext(
+                    warmtext1,
+                    hottext1,
+                    normaltext1,
+                    coldtext1,
+                    warmtext11,
+                    hottext11,
+                    normaltext11,
+                    coldtext11
+                )
+                weatherselectedDrawable = R.drawable.warm
+                weathertext1 = warmtext1.id
+                weathertext11 = warmtext11.id
+                weatherimg = warmweatherimg.id
+                weatheadded = mPrefs.getInt("springVal", 325)
+                weatherselectedString = R.string.spring
+            }
+            normalCL.setOnClickListener() {
+                setselected(normalweatherimg, warmweatherimg, hotweatherimg, coldweatherimg)
+                setselectedtext(
+                    normaltext1,
+                    warmtext1,
+                    hottext1,
+                    coldtext1,
+                    normaltext11,
+                    warmtext11,
+                    hottext11,
+                    coldtext11
+                )
+                weatherselectedDrawable = R.drawable.cloudy
+                weathertext1 = normaltext1.id
+                weathertext11 = normaltext11.id
+                weatherimg = normalweatherimg.id
+                weatheadded = 0
+                weatherselectedString = R.string.normal
+            }
+            coldCL.setOnClickListener() {
+                setselected(coldweatherimg, warmweatherimg, hotweatherimg, normalweatherimg)
+                setselectedtext(
+                    coldtext1,
+                    warmtext1,
+                    normaltext1,
+                    hottext1,
+                    coldtext11,
+                    warmtext11,
+                    normaltext11,
+                    hottext11
+                )
+                weatherselectedDrawable = R.drawable.cold
+                weathertext1 = coldtext1.id
+                weathertext11 = coldtext11.id
+                weatherimg = coldweatherimg.id
+                weatheadded = mPrefs.getInt("winterVal", 210)
+                weatherselectedString = R.string.winter
+            }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
+                val lastadded: Int = mPrefs.getInt("weatheadded", 0)
+                var getdrinked: Int = mPrefs.getInt("dailygoal", 3000)
+                if (weathertext11 == hottext11.id) {
+                    getdrinked -= lastadded
+                    getdrinked += weatheadded
+                    Log.e("Call", "very_activetext2")
+                } else if (weathertext11 == warmtext11.id) {
+                    getdrinked -= lastadded
+                    getdrinked += weatheadded
+                    Log.e("Call", "moderate_active2")
+                } else if (weathertext11 == normaltext11.id) {
+                    getdrinked -= lastadded
+                    getdrinked += weatheadded
+                    Log.e("Call", "lightlyactive2")
+
+                } else if (weathertext11 == coldtext11.id) {
+                    getdrinked -= lastadded
+                    getdrinked += weatheadded
+                    Log.e("Call", "sedentary2")
+                }
+                animateTextView(mPrefs.getInt("dailygoal", 3000), getdrinked, waterinput)
+                putIntSharep("weatherselectedDrawable", weatherselectedDrawable)
+                putIntSharep("weathertext1", weathertext1)
+                putIntSharep("weathertext11", weathertext11)
+                putIntSharep("weatherimg", weatherimg)
+                putIntSharep("weatheadded", weatheadded)
+                putIntSharep("weatherselectedString", weatherselectedString)
+                putIntSharep("dailygoal", getdrinked)
+                weather.setImageResource(weatherselectedDrawable)
+                dialog.cancel()
+            }.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
+                dialog.cancel()
+            }
+            builder.setView(inflate)
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
+        } else if (v == reminderCardView) {
+            startActivity(Intent(this, Reminder::class.java))
+        } else if (v == plusWater) {
+            if (oldlist.size >= 1) {
+                if (oldlist.size == 1) {
+                    drinkSize.text = oldlist[0]
+                    mid_button.text = oldlist[0]
+                    putStringSharep("mid_button_text", mid_button.text.toString())
+                    putIntSharep("getval", getval)
+                } else {
+                    getval++
+                    if (getval >= oldlist.size) {
+                        getval = 0
+                        drinkSize.text = oldlist[getval]
+                        mid_button.text = oldlist[getval]
+                        putStringSharep("mid_button_text", mid_button.text.toString())
+                        putIntSharep("getval", getval)
+
+                    } else {
+                        drinkSize.text = oldlist[getval]
+                        mid_button.text = oldlist[getval]
+                        putStringSharep("mid_button_text", mid_button.text.toString())
+                        putIntSharep("getval", getval)
+
+                    }
+                }
+            } else {
+                drinkSize.text = "NULL"
+                mid_button.text = "NULL"
+                putStringSharep("mid_button_text", mid_button.text.toString())
+
+            }
+        } else if (v == minusWater) {
+            if (oldlist.size >= 1) {
+                if (oldlist.size == 1) {
+                    drinkSize.text = oldlist[0]
+                    mid_button.text = oldlist[0]
+                    putStringSharep("mid_button_text", mid_button.text.toString())
+                    putIntSharep("getval", getval)
+
+                } else {
+                    getval--
+                    if (getval <= 0) {
+                        if (getval < 0) {
+                            getval = oldlist.size
+                            drinkSize.text = oldlist[getval - 1]
+                            mid_button.text = oldlist[getval - 1]
+                            putStringSharep("mid_button_text", mid_button.text.toString())
+                            putIntSharep("getval", getval)
+
+                        } else {
+                            drinkSize.text = oldlist[getval]
+                            mid_button.text = oldlist[getval]
+                            getval = oldlist.size
+                            putStringSharep("mid_button_text", mid_button.text.toString())
+                            putIntSharep("getval", getval)
+
+                        }
+                    } else {
+                        drinkSize.text = oldlist[getval]
+                        mid_button.text = oldlist[getval]
+                        putStringSharep("mid_button_text", mid_button.text.toString())
+                        putIntSharep("getval", getval)
+                    }
+                }
+            } else {
+                drinkSize.text = "NULL"
+                mid_button.text = "NULL"
+                putStringSharep("mid_button_text", mid_button.text.toString())
+            }
+        } else if (v == addNew) {
+            var already = false
+            val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
+            builder.setTitle(R.string.addandremove)
+            oldlist.clear()
+            val getData = mPrefs.getString("watervalues", "100ml,200ml, 300ml")
+            oldlist = convertStringToArray(getData.toString())
+            val inflater = LayoutInflater.from(this)
+            val inflate: View = inflater.inflate(R.layout.addnew, null)
+            val cupinput: EditText = inflate.findViewById(R.id.addnewcups)
+            val add: ImageButton = inflate.findViewById(R.id.addnewcupbutton)
+            val recyclerView: RecyclerView = inflate.findViewById(R.id.addnewrv)
+            cupAdapter = CupAdapter(applicationContext, oldlist)
+            recyclerView.layoutManager = LinearLayoutManager(applicationContext)
+            recyclerView.adapter = cupAdapter
+
+            cupAdapter!!.notifyDataSetChanged()
+            cupinput.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int
+                ) {
+                    if (!s?.isEmpty()!!) {
+                        add.visibility = View.VISIBLE
+                        add.isEnabled = true
+                    } else {
+                        add.visibility = View.GONE
+                        add.isEnabled = false
+                    }
+                }
+            })
+            add.setOnClickListener() {
+                var addedcup = mPrefs.getInt("addedCup", 0)
+                val input: String = cupinput.text.toString()
+                val addnew: Int = input.replace("[\\D]".toRegex(), "").toInt()
+                for (i in 0 until oldlist.size) {
+                    val check: Int = oldlist[i].replace("[\\D]".toRegex(), "").toInt()
+                    if (check == addnew) {
+                        already = true
+                        break
+                    } else already = false
+                }
+                if (already)
+                    Toast.makeText(this, "Already added", Toast.LENGTH_SHORT).show()
+                else {
+                    oldlist.add("$input$getgoaltype")
+                    cupAdapter!!.notifyDataSetChanged()
+                    cupinput.setText("")
+                    if (!mPrefs.getBoolean("cupaddedtask", false)) {
+                        addedcup++
+                        putIntSharep("addedCup", addedcup)
+                    }
+                }
+            }
+            builder.setPositiveButton(getString(R.string.save), null)
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
+                if (mPrefs.getInt("addedCup", 0) >= 3) {
+                    if (!mPrefs.getBoolean("cupaddedtask", false)) {
+                        putBooleanShareP("cupaddedtask", true)
+                        createRewardDialog(R.drawable.cupmaker, "Cup Maker")
+                        putIntSharep("totalAchieve", mPrefs.getInt("totalAchieve", 0) + 1)
+                    }
+                }
+                dialog.dismiss()
+            }
+            builder.setCancelable(false)
+            builder.setView(inflate)
+            val dialog: AlertDialog = builder.create()
+            dialog.window?.setLayout(600, 400)
+            dialog.show()
+            val positiveButton: Button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            positiveButton.setOnClickListener() {
+                if (mPrefs.getBoolean("addCupAds", false)) {
+                    showAds(dialog)
+                } else {
+                    cupAdapter!!.notifyDataSetChanged()
+                    if (oldlist.size <= 1) {
+                        drinkSize.text = "NULL"
+                        mid_button.text = "NULL"
+                        putStringSharep("mid_button_text", mid_button.text.toString())
+                    }
+                    val getcupdata: String = convertArrayToString(oldlist)
+                    putStringSharep("watervalues", getcupdata)
+                    if (mPrefs.getInt("addedCup", 0) >= 3) {
+                        if (!mPrefs.getBoolean("cupaddedtask", false)) {
+                            putBooleanShareP("cupaddedtask", true)
+                            createRewardDialog(R.drawable.cupmaker, "Cup Maker")
+                            putIntSharep("totalAchieve", mPrefs.getInt("totalAchieve", 0) + 1)
+                        }
+                    }
+                    dialog.cancel()
+                }
+            }
+        } else if (v == waterIndicator) {
+            val suggestedDailyGoal = mPrefs.getInt("suggestedDailyGoal", 2640)
+            val genderValueTXT = mPrefs.getString("genderValueTXT", "Male")!!
+            val weightTXT = mPrefs.getString("weightTXT", "65kg")!!
+            val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
+            builder.setTitle(R.string.daily_goal)
+            builder.setMessage(
+                getString(R.string.daily_goal_info) + " ($genderValueTXT) and weight ($weightTXT) " + getString(
+                    R.string.according
+                ) + " $suggestedDailyGoal ml"
+            )
+            val inflater = LayoutInflater.from(this)
+            val inflate: View = inflater.inflate(R.layout.daily_goal_alert, null)
+            val goal_edit: EditText = inflate.findViewById(R.id.daily_goal_take)
+            val goal_type: TextView = inflate.findViewById(R.id.daily_goal_type_alert)
+            val daily_goalTotal: TextView = inflate.findViewById(R.id.daily_goalTotal)
+            val pcText: TextView = inflate.findViewById(R.id.dailyGoalPC)
+            val weatherText: TextView = inflate.findViewById(R.id.dailyGoalWeather)
+            val pcimg: ImageView = inflate.findViewById(R.id.dailyGoalPCimg)
+            val weatherimg: ImageView = inflate.findViewById(R.id.dailyGoalWeatherimg)
+            val getpcnum = mPrefs.getInt("pcadded", 0)
+            val getweathernum = mPrefs.getInt("weatheadded", 0)
+            pcText.text = getString(
+                mPrefs.getInt(
+                    "pcselectedString",
+                    R.string.not_active
+                )
+            ) + ": +$getpcnum"
+            weatherText.text = getString(
+                mPrefs.getInt(
+                    "weatherselectedString",
+                    R.string.normal
+                )
+            ) + ": +$getweathernum"
+
+            pcimg.setImageResource(mPrefs.getInt("pcselectedDrawable", R.drawable.human))
+            weatherimg.setImageResource(
+                mPrefs.getInt(
+                    "weatherselectedDrawable",
+                    R.drawable.cloudy
+                )
+            )
+
+            goal_type.text = getgoaltype
+            val getgoaledit = mPrefs.getInt("dailygoal", 3000)
+
+            goal_edit.setText(getgoaledit.toString())
+            daily_goalTotal.text = getString(R.string.total_sum) + "$getgoaledit ${goal_type.text}"
+            goal_edit.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    if (s != null) {
+                        try {
+                            val afterInput: Int = s.replace("[\\D]".toRegex(), "").toInt()
+                            val set: Int = afterInput + getpcnum + getweathernum
+                            daily_goalTotal.text =
+                                getString(R.string.total_sum) + "$set ${goal_type.text}"
+                        } catch (e: Exception) {
+                        }
+                    }
+                }
+            })
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
+                val input: String = goal_edit.text.toString()
+                val set: Int = input.replace("[\\D]".toRegex(), "").toInt()
+                resetprogress(set)
+                waterDrinked.text = "$totaldrink"
+                val lastval: Int = waterinput.text.replace("[\\D]".toRegex(), "").toInt()
+                animateTextView(lastval, set, waterinput)
+                waterMeasures.text = "${goal_type.text}"
+                putStringSharep("targetTXT", input + " " + goal_type.text)
+                editor = mPrefs.edit()
+                editor.putInt("dailygoal", set)
+                editor.commit()
+            }.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
+                dialog.cancel()
+            }
+            builder.setView(inflate)
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
+        } else if (v == mid_button) {
+            if (mPrefs.getInt("drinkimg", R.drawable.water_glass) == R.drawable.crown) {
+//                startActivity(
+//                    Intent(
+//                        this,
+//                        UpgradeActivity::class.java
+//                    )
+//                )
+                Toast.makeText(this,"Prime Drink",Toast.LENGTH_SHORT).show()
+            } else if (mid_button.text == "NULL") {
+                //  Toast.makeText(this,"Please add values !!",Toast.LENGTH_SHORT).show()
+                Snackbar.make(
+                    window.decorView.rootView,
+                    "Please add values !!",
+                    Snackbar.LENGTH_LONG
+                ).show()
+            } else {
+                val total: Int = mPrefs.getInt("dailygoal", 3000)
+                val num: Int = drinkSize.text.replace("[\\D]".toRegex(), "").toInt()
+                if (totaldrink >= total && progrvalue >= 100f) {
+                    Snackbar.make(
+                        window.decorView.rootView,
+                        "Your daily goal completed",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    ObjectAnimator.ofInt(progress_bar, "progress", 100)
+                        .setDuration(500)
+                        .start()
+                    progrvalue = 100f
+                    val putLog: String = convertArrayToString(loglist)
+                    val putTime: String = convertArrayToString(timelist)
+                    val putDrawable: String = convertArrayToString(drawablelist)
+                    val logupdate = LogData(
+                        date.time,
+                        putDrawable,
+                        putLog,
+                        putTime,
+                        mPrefs.getInt("dailygoal", 3000),
+                        mPrefs.getInt("dailygoal", 3000)
+                    )
+                    DB.updateContact(logupdate)
+                    editor = mPrefs.edit()
+                    editor.putFloat("progress", 100f)
+                    editor.commit()
+                } else {
+                    val addpercent: Float = ((num * 100) / total).toFloat()
+                    if (progrvalue <= 100) {
+                        progrvalue += addpercent
+                        updateProgressBar(num)
+                        sendnotification()
+                    }
+                }
+                if (progrvalue >= 100f) {
+                    var rowCount = 0
+                    if (!mPrefs.getBoolean("Fivedaysrow", false)) {
+                        if (mPrefs.getBoolean("oneTime", true)) {
+                            val calendar = Calendar.getInstance()
+                            val getdate: Long = getmilis(sdfdate.format(calendar.time))
+                            val weekCal = Calendar.getInstance()
+                            val weekMili = ArrayList<Long>()
+                            weekMili.clear()
+                            weekCal.timeInMillis = getdate
+                            for (i in 1..5) {
+                                weekCal.set(Calendar.DATE, -1).toString()
+                                Log.e("TAG", "onCreate: " + sdfdate.format(weekCal.time))
+                                calendar.time = weekCal.time
+                                weekMili.add(calendar.timeInMillis)
+                            }
+                            for (i in 0..4) {
+                                if (DB.checkIfRecordExist(weekMili[i])) {
+                                    val getOldRecord = DB.getonevalue(weekMili[i])
+                                    if (getOldRecord.totaldrink!! >= getOldRecord.dailygoal!!) {
+                                        rowCount++
+                                    }
+                                } else {
+                                    Log.e("TAG", "Not Exist: ")
+                                }
+                            }
+                            Log.e("TAG", "rowCount:$rowCount ")
+                            putBooleanShareP("oneTime", false)
+                            checkAchievements()
+                        }
+                    }
+                    if (!mPrefs.getBoolean("achivedailygoal", false)) {
+                        putBooleanShareP("achivedailygoal", true)
+                        Log.e("TAG", "achivedailygoal:true ")
+                        createRewardDialog(R.drawable.mountainflag, "1st Strike")
+                        putIntSharep("totalAchieve", mPrefs.getInt("totalAchieve", 0) + 1)
+                    }
+                }
+                updateAchievementPB()
+            }
+        }
+    }
+
 }
 

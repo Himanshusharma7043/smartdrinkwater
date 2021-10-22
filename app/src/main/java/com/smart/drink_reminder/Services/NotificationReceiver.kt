@@ -18,24 +18,24 @@ import com.smart.drink_reminder.MainActivity
 import com.smart.drink_reminder.R
 
 class NotificationReceiver : BroadcastReceiver() {
-
     var MID = 1
     lateinit var mPrefs: SharedPreferences
-
     @SuppressLint("ResourceAsColor")
     override fun onReceive(context: Context, intent: Intent?) {
-
-        mPrefs = context.getSharedPreferences(
-            "DrinkWater", Context.MODE_PRIVATE
-        )
-        //val time = System.currentTimeMillis()
-        val setprogress: Int = mPrefs.getFloat("progress", 0f).toInt()
-        val CHANNEL_ID: String = mPrefs.getString("channelID", "channelid_1").toString()
-        val totaldrink = mPrefs.getInt("totaldrink", 0)
-        val getinput = mPrefs.getInt("dailygoal", 3000)
-        val getgoaltype = mPrefs.getString("goaltype", "ml")!!
-        if (!mPrefs.getBoolean("reminderSwitch", false)) {
-            if (!mPrefs.getBoolean("permanent_notification", false)) {
+        try {
+            mPrefs = context.getSharedPreferences(
+                "DrinkWater", Context.MODE_PRIVATE
+            )
+            //val time = System.currentTimeMillis()
+            Log.e("TAG", "Notification receiver onReceive: ")
+            val setprogress: Int = mPrefs.getFloat("progress", 0f).toInt()
+            val CHANNEL_ID: String = mPrefs.getString("channelID", "channelid_1").toString()
+            val totaldrink = mPrefs.getInt("totaldrink", 0)
+            val getinput = mPrefs.getInt("dailygoal", 3000)
+            val getgoaltype = mPrefs.getString("goaltype", "ml")!!
+            if (mPrefs.getBoolean("reminderSwitch", true)) {
+    //            if (!mPrefs.getBoolean("permanent_notification", false)) {
+                Log.e("TAG", "Notification receiver : Notification Loaded")
                 val mBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
                 val ii = Intent(context, MainActivity::class.java)
                 val pendingIntent =
@@ -81,7 +81,6 @@ class NotificationReceiver : BroadcastReceiver() {
                     Log.e("vibration", "true")
                 }
                 Log.e("vibration", "false")
-
                 val mNotificationManager: NotificationManager =
                     context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -128,11 +127,14 @@ class NotificationReceiver : BroadcastReceiver() {
                     }
                     mNotificationManager.createNotificationChannel(channel)
                     mBuilder.setChannelId(CHANNEL_ID)
-                }else{
-                    mNotificationManager.notify(0, mBuilder.build())
+                } else {
+                    Log.e("Call", "AlarmReceiver")
                 }
-                Log.e("Call", "AlarmReceiver")
+                mNotificationManager.notify(0, mBuilder.build())
+    //            }
             }
+        } catch (e: Exception) {
+            Log.e("TAG", "onReceive: "+e.message )
         }
     }
 
